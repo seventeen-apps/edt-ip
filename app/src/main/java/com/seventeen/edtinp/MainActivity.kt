@@ -106,7 +106,6 @@ class MainActivity : AppCompatActivity() {
 
         webView.loadUrl(url)
 
-
         val prevButton = findViewById<Button>(R.id.prev_week)
         val nextButton = findViewById<Button>(R.id.next_week)
 
