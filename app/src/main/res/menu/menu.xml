@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.seventeen.mywardrobe.MainRecyclerViewActivity">
+    <item
+        android:id="@+id/action_second_year"
+        android:orderInCategory="200"
+        android:title="@string/A2"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_first_year"
+        android:title="@string/A1" />
+</menu>
