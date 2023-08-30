@@ -1,11 +1,8 @@
 package com.seventeen.edtinp
 
 
-
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.provider.ContactsContract.Data
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Menu
@@ -14,11 +11,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
-import androidx.core.view.marginBottom
-import androidx.core.view.marginEnd
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import java.util.Calendar
 
@@ -26,6 +18,8 @@ import java.util.Calendar
 class MainActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     lateinit var webView: WebView
+    val url = "https://edt.grenoble-inp.fr/2023-2024/exterieur"
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +28,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.toolbar))
 
 
-        val url = "https://edt.grenoble-inp.fr/2023-2024/exterieur"
-
         webView = findViewById(R.id.webView)
         webView.settings.javaScriptEnabled = true
 
@@ -43,8 +35,8 @@ class MainActivity : AppCompatActivity() {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         val width = displayMetrics.widthPixels
-        Log.d("WebViewHandler", "Gained pixels: ${width*18/100}")
-        webView.layoutParams.width = width + width*18/100 + 25
+        Log.d("WebViewHandler", "Gained pixels: ${width * 18 / 100}")
+        webView.layoutParams.width = width + width * 18 / 100 + 25
 
         DataHandler().setup(this)
 
@@ -80,24 +72,24 @@ class MainActivity : AppCompatActivity() {
                 webView.evaluateJavascript(jsCode, null)
 
 
-
                 // Vérification de la semaine affichée
                 webView.evaluateJavascript(getFromPage) {
-                    val cache_week_str = it.subSequence(2, 4).toString()
-                    var current_week = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR)
-                    if (cache_week_str != "ll") {
-                        if (cache_week_str.toInt() != current_week) {
-                            Log.d("Preloader", "Found cached week, reloading...")
-                            if (current_week < 32) {
-                                current_week += 20
-                            } else {
-                                current_week -= 32
-                            }
-                            webView.evaluateJavascript(
-                                (js_functions + "push(${current_week}, true)"),
-                                null
-                            )
+                    current_week = calendar.get(Calendar.WEEK_OF_YEAR)
+                    var cache_week_str = it.subSequence(2, 4).toString()
+                    if (cache_week_str == "ll") {
+                        cache_week_str = 0.toString()
+                    }
+                    if (cache_week_str.toInt() != current_week) {
+                        Log.d("Preloader", "Found cached week, reloading...")
+                        if (current_week < 32) {
+                            current_week += 20
+                        } else {
+                            current_week -= 32
                         }
+                        webView.evaluateJavascript(
+                            (js_functions + "push(${current_week}, true)"),
+                            null
+                        )
                     }
                 }
             }
@@ -121,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun changeClasse(classe : String) {
+    fun changeClasse(classe: String) {
         DataHandler.data.classe = classe
         DataHandler().updateSave(this)
     }
@@ -134,50 +126,51 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         var preload = ""
-        when (item.title){
-            getString(R.string.A1) -> { DataHandler.data.classe = "1A-PINP"//item.title.toString()
-                                        DataHandler().updateSave(this)
-                                        Log.v("Menu Handler", DataHandler.data.classe)
-                                        preload = preload_1A }
+        when (item.title) {
+            getString(R.string.A1) -> {
+                changeClasse("1A-PINP")
+                Log.v("Menu Handler", DataHandler.data.classe)
+                preload = preload_1A
+            }
 
-            getString(R.string.A2) -> { DataHandler.data.classe = "1A-PINP"//item.title.toString()
-                                        DataHandler().updateSave(this)
-                                        Log.v("Menu Handler", DataHandler.data.classe)
-                                        preload = preload_2A }
+            getString(R.string.A2) -> {
+                changeClasse("2A-PINP")
+                Log.v("Menu Handler", DataHandler.data.classe)
+                preload = preload_2A
+            }
         }
         webView.evaluateJavascript(getFromPage) {
-            val selectedWeek = it.subSequence(2, 4).toString().toInt()
-            val jsCode =
-                ("setTimeout(function() {${cleanup + preload + setup_saturday + setup_sunday}}, 100)")
-            webView.evaluateJavascript(jsCode, null)
+            val selectedWeek = it.subSequence(2, 4).toString()
+            Log.d("Switch", selectedWeek)
+            Calendar.getInstance().get(Calendar.WEEK_OF_YEAR)
+            if (selectedWeek == "ll") {
+                webView.loadUrl(url)
+            } else {
+                val jsCode =
+                    ("setTimeout(function() {${cleanup + preload + setup_saturday + setup_sunday}}, 100)")
+                webView.evaluateJavascript(jsCode, null)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 }
 
 
-
-
-
-
-
-
-
-        /*val button = findViewById<Button>(R.id.button)
-        button.setOnClickListener {
-            Log.v("scraper", "fetching...")*/
+/*val button = findViewById<Button>(R.id.button)
+button.setOnClickListener {
+    Log.v("scraper", "fetching...")*/
 //            scrapeedt()
-            /*ContentScrapper.getHTMLData(this,"https://edt.grenoble-inp.fr/2023-2024/etudiant/prepaINPValence",object : ContentScrapper.ScrapListener{
-                override fun onResponse(html: String?) {
-                    if(html != null) {
-                        Toast.makeText(it.context ,html, Toast.LENGTH_LONG).show()
-                        Log.v("Scraping", html)
-                    } else {
-                        Toast.makeText(it.context,"Not found",Toast.LENGTH_LONG).show()
-                        Log.v("Scraping", "not found")
-                    }
-                }
-            })*/
+/*ContentScrapper.getHTMLData(this,"https://edt.grenoble-inp.fr/2023-2024/etudiant/prepaINPValence",object : ContentScrapper.ScrapListener{
+    override fun onResponse(html: String?) {
+        if(html != null) {
+            Toast.makeText(it.context ,html, Toast.LENGTH_LONG).show()
+            Log.v("Scraping", html)
+        } else {
+            Toast.makeText(it.context,"Not found",Toast.LENGTH_LONG).show()
+            Log.v("Scraping", "not found")
+        }
+    }
+})*/
 
 //            GetMainHtml.main(this)
 
@@ -185,19 +178,17 @@ class MainActivity : AppCompatActivity() {
 //            Log.v("Scraper", token)
 
 
-
-
-            /*val SDK_INT = Build.VERSION.SDK_INT
-            if (SDK_INT > 8) {
-                val policy = ThreadPolicy.Builder()
-                    .permitAll().build()
-                StrictMode.setThreadPolicy(policy)
-                //your codes here
-                val url = URL("https://edt.grenoble-inp.fr")
-                val urlConnection: URLConnection = url.openConnection()
-                val inputStream: InputStream = urlConnection.getInputStream()
-                Log.v("Checker", inputStream.toString())
-            }*/
+/*val SDK_INT = Build.VERSION.SDK_INT
+if (SDK_INT > 8) {
+    val policy = ThreadPolicy.Builder()
+        .permitAll().build()
+    StrictMode.setThreadPolicy(policy)
+    //your codes here
+    val url = URL("https://edt.grenoble-inp.fr")
+    val urlConnection: URLConnection = url.openConnection()
+    val inputStream: InputStream = urlConnection.getInputStream()
+    Log.v("Checker", inputStream.toString())
+}*/
 //        }
 
 
