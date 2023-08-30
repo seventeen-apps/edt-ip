@@ -44,20 +44,28 @@
         android:layout_gravity="bottom"
         android:paddingEnd="5dp"
         android:paddingStart="5dp">
+
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/prev_week"
-            android:text="semaine précédente"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="semaine précédente"
+            android:textSize="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/next_week"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="TextSizeCheck" />
+
+        <Button
             android:id="@+id/next_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="semaine suivante"
+            android:textSize="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toEndOf="@id/prev_week"
+            tools:ignore="TextSizeCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
