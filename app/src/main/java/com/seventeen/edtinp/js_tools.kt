@@ -1,12 +1,20 @@
 package com.seventeen.edtinp
 
 
-var preload_1A = (
+var preload = (
         "var framesets = document.getElementsByTagName(\"frameset\");" +// Les frameset sur la raçine
                 "var treeFrameset = framesets[1];" +
                 "if (treeFrameset) {" +
-                "   var treeFrame = treeFrameset.getElementsByTagName(\"frame\")[0];" +
-                "   var tosearch = \"1A-PINP\";" +
+                "   var treeFrame = treeFrameset.getElementsByTagName(\"frame\")[0];")
+
+var search1A = "   var tosearch = \"1A-PINP\";"
+var search2A = "   var tosearch = \"2A-PINP\";"
+var searchHN1 = "   var tosearch = \"HN1-PINP\";"
+var searchHN2 = "   var tosearch = \"HN2-PINP\";"
+var searchHN3 = "   var tosearch = \"HN3-PINP\";"
+
+
+var load = (
                 "   if (treeFrame) {" +
                 "      var frameContent = treeFrame.contentWindow.document;" +// Récupère le contenu de la frame de recherche
                 "      if (frameContent) {" +

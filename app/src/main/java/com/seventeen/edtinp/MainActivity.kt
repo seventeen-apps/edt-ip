@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
 import java.util.Calendar
@@ -27,6 +28,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         //Add the toolbar
         setSupportActionBar(findViewById(R.id.toolbar))
+
+
 
 
         webView = findViewById(R.id.webView)
@@ -82,12 +85,15 @@ class MainActivity : AppCompatActivity() {
                 // Mise en page du contenu
                 if (url !=  mainUrl) {
                     Log.v("URL Loader", "Loading page")
-                    var preload = ""
+                    var search = ""
                     when (DataHandler.data.classe) {
-                        "1A-PINP" -> preload = preload_1A
-                        "2A-PINP" -> preload = preload_2A
+                        "1A-PINP" -> search = search1A
+                        "2A-PINP" -> search = search2A
+                        "HN1-PINP" -> search = searchHN1
+                        "HN2-PINP" -> search = searchHN2
+                        "HN3-PINP" -> search = searchHN3
                     }
-                    val jsCode = ("setTimeout(function() {${cleanup + preload + setup_saturday + setup_sunday}}, 0)")
+                    val jsCode = ("setTimeout(function() {${cleanup + preload + search + load + setup_saturday + setup_sunday}}, 0)")
                     webView.evaluateJavascript(jsCode, null)
                 }
                 // Vérification de la semaine affichée
@@ -142,28 +148,47 @@ class MainActivity : AppCompatActivity() {
     //Setup the menu at the top left corner
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
+        val classeTextView = findViewById<TextView>(R.id.classe_tv)
+        classeTextView.text = DataHandler.data.classe
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        var preload = ""
+        var search = ""
         when (item.title) {
             getString(R.string.A1) -> {
                 changeClasse("1A-PINP")
                 Log.v("Menu Handler", DataHandler.data.classe)
-                preload = preload_1A
+                search = search1A
             }
 
             getString(R.string.A2) -> {
                 changeClasse("2A-PINP")
                 Log.v("Menu Handler", DataHandler.data.classe)
-                preload = preload_2A
+                search = search2A
+            }
+            getString(R.string.HN1) -> {
+                changeClasse("HN1-PINP")
+                Log.v("Menu Handler", DataHandler.data.classe)
+                search = searchHN1
+            }
+            getString(R.string.HN2) -> {
+                changeClasse("HN2-PINP")
+                Log.v("Menu Handler", DataHandler.data.classe)
+                search = searchHN2
+            }
+            getString(R.string.HN3) -> {
+                changeClasse("HN3-PINP")
+                Log.v("Menu Handler", DataHandler.data.classe)
+                search = searchHN3
             }
         }
+        val classeTextView = findViewById<TextView>(R.id.classe_tv)
+        classeTextView.text = DataHandler.data.classe
         webView.evaluateJavascript(getFromPage) {
             if ((it == "null") or (it.length < 5)) { Log.d("Preloader", "Got null resource"); webView.loadUrl(mainUrl) }
             else {
-                Log.v("DEBUG", "relaod")
+                Log.v("DEBUG", "reload")
                 /*var selectedWeek = it.subSequence(2, 4).toString()
                 if (selectedWeek[1].toString() == " ") { selectedWeek = selectedWeek[0].toString() }
                 if (selectedWeek < 32) {
@@ -173,7 +198,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 Log.d("Switch", selectedWeek)*/
                 val jsCode =
-                    ("${preload}")
+                    ("${preload + search + load}")
                 webView.evaluateJavascript(jsCode, null)
             }
         }
