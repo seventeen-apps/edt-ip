@@ -2,6 +2,7 @@ package com.seventeen.edtinp
 
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -18,7 +19,7 @@ import java.util.Calendar
 class MainActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     lateinit var webView: WebView
-    val url = "https://edt.grenoble-inp.fr/2023-2024/exterieur"
+    val mainUrl = "https://edt.grenoble-inp.fr/2023-2024/exterieur"
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,73 +43,93 @@ class MainActivity : AppCompatActivity() {
 
         // Obtention de l'id de la semaine actuelle
         val calendar = Calendar.getInstance()
-        var current_week = calendar.get(Calendar.WEEK_OF_YEAR)
-        if (current_week < 32) {
-            current_week += 20
+        val current_week_number = calendar.get(Calendar.WEEK_OF_YEAR)
+        var current_week_id =  0
+        if (current_week_number < 32) {
+            current_week_id = current_week_number + 20
         } else {
-            current_week -= 32
+            current_week_id = current_week_number - 32
         }
+        var displayed_week_id = current_week_id
+        Log.v("Date Handler", "Week number is $current_week_number week id is $current_week_id")
 
 
-        Log.v("Date Handler", "Week is $current_week")
 
 
         // Redéfinition de la méthode onPageFinished
         webView.webViewClient = object : WebViewClient() {
+            var isRedirected = false
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                if (!isRedirected) {
+                    Log.v("URL Loader", "Loading $url")
+                    //Do something you want when starts loading
+                }
+                isRedirected = false
+            }
+
+            override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
+                view.loadUrl(url!!)
+                isRedirected = true
+                return true
+            }
+
             override fun onPageFinished(view: WebView?, url: String) {
                 super.onPageFinished(view, url)
+                if (isRedirected) { Log.v("URL Loader", "Redirected from $url") }
 
-                Log.v("URL Loader", url)
 //                webView.evaluateJavascript("var framesets = document.getElementsByTagName('frameset')[1];", null)
                 // Mise en page du contenu
-
-                var preload = ""
-                when (DataHandler.data.classe) {
-                    "1A-PINP" -> preload = preload_1A
-                    "2A-PINP" -> preload = preload_2A
+                if (url !=  mainUrl) {
+                    Log.v("URL Loader", "Loading page")
+                    var preload = ""
+                    when (DataHandler.data.classe) {
+                        "1A-PINP" -> preload = preload_1A
+                        "2A-PINP" -> preload = preload_2A
+                    }
+                    val jsCode = ("setTimeout(function() {${cleanup + preload + setup_saturday + setup_sunday}}, 0)")
+                    webView.evaluateJavascript(jsCode, null)
                 }
-                val jsCode =
-                    ("setTimeout(function() {${cleanup + preload + setup_saturday + setup_sunday}}, 100)")
-                webView.evaluateJavascript(jsCode, null)
-
-
                 // Vérification de la semaine affichée
-                webView.evaluateJavascript(getFromPage) {
-                    current_week = calendar.get(Calendar.WEEK_OF_YEAR)
-                    var cache_week_str = it.subSequence(2, 4).toString()
-                    if (cache_week_str == "ll") {
-                        cache_week_str = 0.toString()
-                    }
-                    if (cache_week_str.toInt() != current_week) {
-                        Log.d("Preloader", "Found cached week, reloading...")
-                        if (current_week < 32) {
-                            current_week += 20
-                        } else {
-                            current_week -= 32
+                webView.evaluateJavascript("$getFromPage") {
+                    var cache_week_number = ""
+                    if ((it == "null") or (it.length < 5)) {
+                        Log.d("Preloader", "Got null resource")
+                    } else {
+                        cache_week_number = it.subSequence(2, 4).toString()
+                        if (cache_week_number[1].toString() == " ") { cache_week_number = cache_week_number[0].toString() }
+                        Log.d("Scraping", "${cache_week_number.toInt()} ${current_week_number}")
+                        if (cache_week_number.toInt() != current_week_number) {
+                            Log.d("Preloader", "Found cached week, reloading to ${current_week_id}")
+                            webView.evaluateJavascript(
+                                ("setTimeout(function() {${js_functions + "push($current_week_id, true)"}}, 1000)"),
+                                null
+                            )
+                            displayed_week_id = current_week_id
                         }
-                        webView.evaluateJavascript(
-                            (js_functions + "push(${current_week}, true)"),
-                            null
-                        )
                     }
                 }
+
             }
         }
 
 
-        webView.loadUrl(url)
+        webView.loadUrl(mainUrl)
+
+
 
         val prevButton = findViewById<Button>(R.id.prev_week)
         val nextButton = findViewById<Button>(R.id.next_week)
 
         prevButton.setOnClickListener {
-            val jsCode = (js_functions + "push($current_week-1, true)")
-            current_week -= 1
+            val jsCode = (js_functions + "push(${displayed_week_id-1}, true)")
+            displayed_week_id -= 1
             webView.evaluateJavascript(jsCode, null)
         }
         nextButton.setOnClickListener {
-            val jsCode = (js_functions + "push($current_week+1, true)")
-            current_week += 1
+            val jsCode = (js_functions + "push(${displayed_week_id+1}, true)")
+            displayed_week_id += 1
+            Log.v("Date Handler", "Moving to week $displayed_week_id")
             webView.evaluateJavascript(jsCode, null)
         }
     }
@@ -140,14 +161,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
         webView.evaluateJavascript(getFromPage) {
-            val selectedWeek = it.subSequence(2, 4).toString()
-            Log.d("Switch", selectedWeek)
-            Calendar.getInstance().get(Calendar.WEEK_OF_YEAR)
-            if (selectedWeek == "ll") {
-                webView.loadUrl(url)
-            } else {
+            if ((it == "null") or (it.length < 5)) { Log.d("Preloader", "Got null resource"); webView.loadUrl(mainUrl) }
+            else {
+                Log.v("DEBUG", "relaod")
+                /*var selectedWeek = it.subSequence(2, 4).toString()
+                if (selectedWeek[1].toString() == " ") { selectedWeek = selectedWeek[0].toString() }
+                if (selectedWeek < 32) {
+                        selectedWeek += 20
+                    } else {
+                        selectedWeek -= 32
+                    }
+                Log.d("Switch", selectedWeek)*/
                 val jsCode =
-                    ("setTimeout(function() {${cleanup + preload + setup_saturday + setup_sunday}}, 100)")
+                    ("${preload}")
                 webView.evaluateJavascript(jsCode, null)
             }
         }
