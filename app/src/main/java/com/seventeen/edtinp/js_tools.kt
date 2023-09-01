@@ -1,107 +1,174 @@
 package com.seventeen.edtinp
 
 
-var preload_1A = ("console.log('Pre-load beginning');" +
+var preload_1A = (
         "var framesets = document.getElementsByTagName(\"frameset\");" +// Les frameset sur la raçine
-        "var treeFrameset = framesets[1];" +
-        "var treeFrame = treeFrameset.getElementsByTagName(\"frame\")[0];" +
-        "var tosearch = \"1A-PINP\";" +
-        "var frameContent = treeFrame.contentWindow.document;" +// Récupère le contenu de la frame de recherche
-        "const inputField = frameContent.querySelector('input[name=\"search\"]');" +// Sélectionne l'input dans le contenu du frame
-        "if (inputField) {" +// Vérifie si le champ de saisie et le bouton sont trouvés
-        "    inputField.focus();" +
-        "    inputField.value = tosearch;" + // Insère la saisie
-        "    const inputEvent = new InputEvent(\"input\");" +
-        "    inputField.dispatchEvent(inputEvent);" + //simule un click humain
-        "    const form = inputField.closest(\"form\");" +
-        "    form.submit();" + // Lance la recherche
-        "};" +
-        "console.log('Pre-load finished');")
+                "var treeFrameset = framesets[1];" +
+                "if (treeFrameset) {" +
+                "   var treeFrame = treeFrameset.getElementsByTagName(\"frame\")[0];" +
+                "   var tosearch = \"1A-PINP\";" +
+                "   if (treeFrame) {" +
+                "      var frameContent = treeFrame.contentWindow.document;" +// Récupère le contenu de la frame de recherche
+                "      if (frameContent) {" +
+                "         const inputField = frameContent.querySelector('input[name=\"search\"]');" +// Sélectionne l'input dans le contenu du frame
+                "         if (inputField) {" +// Vérifie si le champ de saisie et le bouton sont trouvés
+                "            inputField.focus();" +
+                "            inputField.value = tosearch;" + // Insère la saisie
+                "            const inputEvent = new InputEvent(\"input\");" +
+                "            inputField.dispatchEvent(inputEvent);" + //simule un click humain
+                "            const form = inputField.closest(\"form\");" +
+                "            form.submit();" + // Lance la recherche
+                "            console.log('Pre-load done (1A)');" +
+                "         }" +
+                "      }" +
+                "   }" +
+                "}" +
+                "else {" +
+                "   console.log('Pre-load aborted')" +
+                "};")
 
-const val preload_2A = ("console.log('Pre-load beginning');" +
+const val preload_2A = (
         "var framesets = document.getElementsByTagName(\"frameset\");" +// Les frameset sur la raçine
         "var treeFrameset = framesets[1];" +
-        "var treeFrame = treeFrameset.getElementsByTagName(\"frame\")[0];" +
-        "var tosearch = \"2A-PINP\";" +
-        "var frameContent = treeFrame.contentWindow.document;" +// Récupère le contenu de la frame de recherche
-        "const inputField = frameContent.querySelector('input[name=\"search\"]');" +// Sélectionne l'input dans le contenu du frame
-        "if (inputField) {" +// Vérifie si le champ de saisie et le bouton sont trouvés
-        "    inputField.focus();" +
-        "    inputField.value = tosearch;" + // Insère la saisie
-        "    const inputEvent = new InputEvent(\"input\");" +
-        "    inputField.dispatchEvent(inputEvent);" + //simule un click humain
-        "    const form = inputField.closest(\"form\");" +
-        "    form.submit();" + // Lance la recherche
-        "};" +
-        "console.log('Pre-load finished');")
+        "if (treeFrameset) {" +
+        "   var treeFrame = treeFrameset.getElementsByTagName(\"frame\")[0];" +
+        "   var tosearch = \"2A-PINP\";" +
+        "   if (treeFrame) {" +
+        "      var frameContent = treeFrame.contentWindow.document;" +// Récupère le contenu de la frame de recherche
+        "      if (frameContent) {" +
+        "         const inputField = frameContent.querySelector('input[name=\"search\"]');" +// Sélectionne l'input dans le contenu du frame
+        "         if (inputField) {" +// Vérifie si le champ de saisie et le bouton sont trouvés
+        "            inputField.focus();" +
+        "            inputField.value = tosearch;" + // Insère la saisie
+        "            const inputEvent = new InputEvent(\"input\");" +
+        "            inputField.dispatchEvent(inputEvent);" + //simule un click humain
+        "            const form = inputField.closest(\"form\");" +
+        "            form.submit();" + // Lance la recherche
+        "            console.log('Pre-load done (2A)');" +
+        "         }" +
+        "      }" +
+        "   }" +
+        "}" +
+        "else {" +
+        "   console.log('Pre-load aborted')" +
+        "};")
 
 const val setup_saturday = (
 
 //        "setTimeout(function() {" +
-        "    console.log('Removing saturday');" +
-        "    var framesets = document.getElementsByTagName(\"frameset\");" +
-        "    var etFrameset = framesets[2];" +
-        "    var etFrames = etFrameset.getElementsByTagName('frame');" +
-        "    for (i = 0; i<etFrames.length; i++) {" + // Récupère la frame pianoDays pour supprimer le samedi et le dimanche
-        "        if (etFrames[i].name == 'pianoDays') {" +
-        "            var etFrame = etFrames[i];" +
+        "var framesets = document.getElementsByTagName(\"frameset\");" +
+        "var etFrameset = framesets[2];" +
+        "    if (etFrameset) {" +
+        "        var etFrames = etFrameset.getElementsByTagName('frame');" +
+        "        for (i = 0; i<etFrames.length; i++) {" + // Récupère la frame pianoDays pour supprimer le samedi et le dimanche
+        "            if (etFrames[i].name == 'pianoDays') {" +
+        "                var etFrame = etFrames[i];" +
+        "            }" +
         "        }" +
-        "    };" +
 //        "console.log('frame found: '+etFrame);" +
-        "    var etFrameContent = etFrame.contentDocument;" +
-        "    var tr = etFrameContent.getElementsByTagName('tr')[0];" +
+        "        if (etFrame) {" +
+        "            var etFrameContent = etFrame.contentDocument;" +
+        "            if (etFrameContent) {" +
+        "                var tr = etFrameContent.getElementsByTagName('tr')[0];" +
 //        "console.log('tr found: '+tr);" +
-        "    var days = tr.getElementsByTagName('td');" +
+        "                if (tr) {" +
+        "                    var days = tr.getElementsByTagName('td');" +
 //        "console.log('td found '+days);" +
 
         // Enlève samedi
-        "    if (days[5].className == 'pianoselected') {" +
-        "        var map = days[5].getElementsByTagName('map')[0];" +
-        "        var area = map.getElementsByTagName('area')[0];" +
-        "        if (area) {" +
-        "            area.click();" +
-        "            console.log('removed saturday');" +
-        "        };" +
-        "    };" +
-        "    if (days[5].className == 'piano') {" +
-        "        console.log('Nothing to remove');" +
+        "                    if (days[5].className == 'pianoselected') {" +
+        "                        var map = days[5].getElementsByTagName('map')[0];" +
+        "                        if (map) {" +
+        "                            var area = map.getElementsByTagName('area')[0];" +
+        "                            if (area) {" +
+        "                                area.click();" +
+        "                                console.log('removed saturday');" +
+        "                            };" +
+        "                        };" +
+        "                    };" +
+        "                    if (days[5].className == 'piano') {" +
+        "                        console.log('Not removing saturday');" +
+        "                    }" +
+        "                }" +
+        "            }" +
+        "        }" +
+        "    }" +
+        "    else {" +
+        "       console.log('Removal aborted (saturday)')" +
         "    };"
+
 //        + "}, 0);"
         )
 
 const val setup_sunday = (
 
 //        "setTimeout(function() {" +
-                "    console.log('Removing sunday');" +
-                "    var framesets = document.getElementsByTagName(\"frameset\");" +
-                "    var etFrameset = framesets[2];" +
-                "    var etFrames = etFrameset.getElementsByTagName('frame');" +
-                "    for (i = 0; i<etFrames.length; i++) {" + // Récupère la frame pianoDays pour supprimer le samedi et le dimanche
-                "        if (etFrames[i].name == 'pianoDays') {" +
-                "            var etFrame = etFrames[i];" +
-                "        }" +
-                "    };" +
+
+        "var framesets = document.getElementsByTagName(\"frameset\");" +
+        "var etFrameset = framesets[2];" +
+        "    if (etFrameset) {" +
+        "        var etFrames = etFrameset.getElementsByTagName('frame');" +
+        "        for (i = 0; i<etFrames.length; i++) {" + // Récupère la frame pianoDays pour supprimer le samedi et le dimanche
+        "            if (etFrames[i].name == 'pianoDays') {" +
+        "                var etFrame = etFrames[i];" +
+        "            }" +
+        "        }" +
 //        "console.log('frame found: '+etFrame);" +
-                "    var etFrameContent = etFrame.contentDocument;" +
-                "    var tr = etFrameContent.getElementsByTagName('tr')[0];" +
+        "        if (etFrame) {" +
+        "            var etFrameContent = etFrame.contentDocument;" +
+        "            if (etFrameContent) {" +
+        "                var tr = etFrameContent.getElementsByTagName('tr')[0];" +
 //        "console.log('tr found: '+tr);" +
-                "    var days = tr.getElementsByTagName('td');" +
+        "                if (tr) {" +
+        "                    var days = tr.getElementsByTagName('td');" +
 //        "console.log('td found '+days);" +
 
-                // Enlève samedi
-                "    if (days[6].className == 'pianoselected') {" +
-                "        var map = days[6].getElementsByTagName('map')[0];" +
-                "        var area = map.getElementsByTagName('area')[0];" +
-                "        if (area) {" +
-                "            area.click();" +
-                "            console.log('removed saturday');" +
-                "        };" +
-                "    };" +
-                "    if (days[5].className == 'piano') {" +
-                "        console.log('Nothing to remove');" +
-                "    };"
-//                + "}, 0);"
+        // Enlève dimanche
+        "                    if (days[6].className == 'pianoselected') {" +
+        "                        var map = days[6].getElementsByTagName('map')[0];" +
+        "                        if (map) {" +
+        "                            var area = map.getElementsByTagName('area')[0];" +
+        "                            if (area) {" +
+        "                                area.click();" +
+        "                                console.log('removed sunday');" +
+        "                            };" +
+        "                        };" +
+        "                    };" +
+        "                    if (days[6].className == 'piano') {" +
+        "                        console.log('Not removing sunday');" +
+        "                    }" +
+        "                }" +
+        "            }" +
+        "        }" +
+        "    }" +
+        "    else {" +
+        "       console.log('Removal aborted (sunday)')" +
+        "    };"
+
+//        + "}, 0);"
         )
+
+
+val reveal_input = (
+        "var outerFrameset = document.getElementsByTagName('frameset')[0];"
+        + "if (outerFrameset) {"
+        + "    var innerFramesets = outerFrameset.getElementsByTagName('frameset');"
+        + "    if (innerFramesets[0]) {"
+        + "        var frames = innerFramesets[0].getElementsByTagName('frame');"
+        + "        for (var i = 0; i < frames.length; i++) {"
+        + "            if (true) {"//frames[i].name === 'tree') {"
+        + "                frames[i].style.visibility = 'visible'"
+        + "            }"
+        + "        }"
+        + "    }"
+        + "    console.log('Reveal done');"
+        + "}"
+        + "else {"
+        + "   console.log('Reveal aborted')"
+        + "};"
+        )
+
+
 
 val cleanup = (
 //        "setTimeout(function() {" +
@@ -112,142 +179,136 @@ val cleanup = (
                 + "        if (innerFramesets[j]) {"
                 + "            var frames = innerFramesets[j].getElementsByTagName('frame');"
                 + "            for (var i = 0; i < frames.length; i++) {"
-                + "                if (frames[i].name === 'et') {"
-                + "                    frames[i].style.visbillity = 'show';"
+                + "                if ((frames[i].name == 'pianoWeeks') || (frames[i].name == 'et')) {"
+                + "                    frames[i].style.visibility = 'visible';"
                 + "                } else {"
                 + "                    frames[i].style.visibility = 'hidden';"
                 + "                }"
                 + "            }"
                 + "        }"
-                + "    }"
+                + "    };"
+                + "    console.log('Cleanup done');"
+                + "}"
+                + "else {"
+                + "   console.log('Cleanup aborted')"
                 + "};"
-                + "console.log('Cleanup done');"
 //                + "}, 3000);"
         )
 
-const val getFromPage = "(function() { " +
-        "var divs = document.getElementsByTagName('frameset')[2].getElementsByTagName('frame')[2].contentDocument.getElementsByTagName('div');" +
-        "for (i = 0;i<divs.length;i++) {" +
-        "    if (divs[i].className == 'pianoselected') {" +
-        "        return divs[i].getElementsByTagName('img')[0].alt;" +
+const val getFromPage = ("(function() {" +
+        "  var frameset = document.getElementsByTagName('frameset')[2];" +
+        "  if (frameset) {" +
+        "    var frame = frameset.getElementsByTagName('frame')[2];" +
+        "    if (frame) {" +
+        "      var divs = frame.contentDocument.getElementsByTagName('div');" +
+        "      for (i = 0;i<divs.length;i++) {" +
+        "        if (divs[i].className == 'pianoselected') {" +
+        "          return divs[i].getElementsByTagName('img')[0].alt;" +
+        "        }" +
+        "      }" +
         "    }" +
-        "}" +
-        "})();"
+        "  };" +
+        "  return null;" +
+        "})();")
 
 
-const val js_functions = ("\n" +
-        "\t\tfunction scrollwindow()\n" +
-        "\t\t{\n" +
-        "\t\t\t\n" +
-        "\t\t\twindow.scroll(450,0);\n" +
-        "\t\t\t\n" +
-        "\t\t\t// launch img\n" +
-        "\t\t\tlaunchImg2();\n" +
-        "\t\t}\n" +
-        "\n" +
-        "\t\tfunction changeClassCell(cell, reset)\n" +
-        "\t\t{\t\n" +
-        "\t\t\t//Reset\n" +
-        "\t\t\t//\n" +
-        "\t\t\tif (reset == 'true')\n" +
-        "\t\t\t{\n" +
-        "\t\t\t\tvar row = cell.parentNode ;\n" +
-        "\t\t\t\tvar aCell = row.firstChild ;\n" +
-        "\t\t\t\t\n" +
-        "\t\t\t\twhile (aCell != row.lastChild)\n" +
-        "\t\t\t\t{\n" +
-        "\t\t\t\t\taCell.className = \"piano\" ;\n" +
-        "\t\t\t\t\taCell = aCell.nextSibling;\n" +
-        "\t\t\t\t}\n" +
-        "\t\t\t\taCell.className = \"piano\" ;\n" +
-        "\t\t\t}\n" +
-        "\t\t\t\n" +
-        "\t\t\t// change the selected cell\n" +
-        "\t\t\t//\n" +
-        "\t\t\tclassName = cell.className ;\n" +
-        "\t\t\tif (className == \"piano\")\n" +
-        "\t\t\t{\n" +
-        "\t\t\t\tcell.className = \"pianoselected\" ;\n" +
-        "\t\t\t}\n" +
-        "\t\t\telse\n" +
-        "\t\t\t{\n" +
-        "\t\t\t\tcell.className = \"piano\" ;\n" +
-        "\t\t\t}\n" +
-        "\t\t}\n" +
-        "\t\t\n" +
-        "\t\tfunction getCurrentPosX()\n" +
-        "\t\t{\n" +
-        "\t\t\tvar X;\n" +
-        "\t\t    if(typeof window.pageXOffset != 'undefined')\n" +
-        "\t\t    {\n" +
-        "\t\t        X = window.pageXOffset;\n" +
-        "\t\t    }\n" +
-        "\t\t    else\n" +
-        "\t\t    {\n" +
-        "\t\t       \tif((!window.document.compatMode)||\n" +
-        "\t\t          (window.document.compatMode == 'BackCompat'))\n" +
-        "\t\t        {\n" +
-        "\t\t            X = window.document.body.scrollLeft;\n" +
-        "\t\t        }\n" +
-        "\t\t        else\n" +
-        "\t\t        {\n" +
-        "\t\t            X = window.document.documentElement.scrollLeft;\n" +
-        "\t\t        }\n" +
-        "\t\t    }\n" +
-        "\t\t\treturn X;\n" +
-        "\t\t}\n" +
-        "\t\t\n" +
-        "\t\tfunction launchImg(id, reset)\n" +
-        "\t\t{\n" +
-        "\t\t\ttop.frames[\"et\"].location='/2023-2024/exterieur/jsp/custom/modules/plannings/bounds.jsp?clearTree=false&week='+id+'&reset='+reset;\n" +
-        "\t\t}\n" +
-        "\t\t\n" +
-        "\t\tfunction launchImg2()\n" +
-        "\t\t{\n" +
-        "\t\t\ttop.frames[\"et\"].location='/2023-2024/exterieur/jsp/custom/modules/plannings/bounds.jsp?clearTree=false';\n" +
-        "\t\t}\n" +
-        "\t\t\n" +
-        "\t\tfunction push(id, reset)\n" +
-        "\t\t{\n" +
-        "\t\t\tlaunchImg(id, reset) ;\n" +
-        "\t\t\t\n" +
-        "\t\t\t// Highlight some buttons\n" +
-        "\t\t\t//\n" +
-        "\t\t\tvar imgsrc = new String (document.images[id].src) ;\n" +
-        "\t\t\tvar index = imgsrc.indexOf(\"&\",0);\n" +
-        "\t\t\tvar newImgsrc = imgsrc.substring(0, index);\n" +
-        "\t\t\t\n" +
-        "\t\t\tif (reset == 'true')\n" +
-        "\t\t\t{\n" +
-        "\t\t\t\tfor (i=0; i<document.images.length; i++)\n" +
-        "\t\t\t\t{\n" +
-        "\t\t\t\t\tvar anImgsrc = new String(document.images[i].src) ;\n" +
-        "\t\t\t\t\tvar anIndex = anImgsrc.indexOf(\"&\",0);\n" +
-        "\t\t\t\t\tvar aNewImgsrc = anImgsrc.substring(0, anIndex);\n" +
-        "\t\t\t\t\tvar aNewImgsrcFin = anImgsrc.substring(anIndex+1);\n" +
-        "\t\t\t\t\t\n" +
-        "\t\t\t\t\tif ((aNewImgsrcFin == \"cssClass=div.pianoselected\")||(aNewImgsrcFin == \"cssClass=div.pianoselected&cssClassPlus=td.pianoPlus\"))\n" +
-        "\t\t\t\t\t{\n" +
-        "\t\t\t\t\t\taNewImgsrc = aNewImgsrc + '&cssClass=div.piano' ;\n" +
-        "\t\t\t\t\t\tdocument.images[i].src = aNewImgsrc ;\n" +
-        "\t\t\t\t\t}\n" +
-        "\t\t\t\t}\n" +
-        "\t\t\t\t\n" +
-        "\t\t\t\tnewImgsrc = newImgsrc + '&cssClass=div.pianoselected' ;\n" +
-        "\t\t\t\tdocument.images[id].src = newImgsrc ;\n" +
-        "\t\t\t}\n" +
-        "\t\t\telse\n" +
-        "\t\t\t{\n" +
-        "\t\t\t\tvar newImgsrcFin = imgsrc.substring(index+1);\n" +
-        "\t\t\t\tif (newImgsrcFin == \"cssClass=div.pianoselected\")\n" +
-        "\t\t\t\t{\n" +
-        "\t\t\t\t\tnewImgsrc = newImgsrc + '&cssClass=div.piano' ;\n" +
-        "\t\t\t\t\tdocument.images[id].src = newImgsrc ;\n" +
-        "\t\t\t\t}\n" +
-        "\t\t\t\telse\n" +
-        "\t\t\t\t{\n" +
-        "\t\t\t\t\tnewImgsrc = newImgsrc + '&cssClass=div.pianoselected' ;\n" +
-        "\t\t\t\t\tdocument.images[id].src = newImgsrc ;\n" +
-        "\t\t\t\t}\n" +
-        "\t\t\t}\n" +
-        "\t\t};\n")
+const val js_functions =
+        ("   function scrollwindow()" +
+        "      {" +
+        "         window.scroll(450,0);" +
+        "         launchImg2();" +
+        "      }" +
+        "   function changeClassCell(cell, reset)" +
+        "      {   " +
+        "         if (reset == 'true')" +
+        "         {" +
+        "            var row = cell.parentNode ;" +
+        "            var aCell = row.firstChild ;" +
+        "            " +
+        "            while (aCell != row.lastChild)" +
+        "            {" +
+        "               aCell.className = \"piano\" ;" +
+        "               aCell = aCell.nextSibling;" +
+        "            }" +
+        "            aCell.className = \"piano\" ;" +
+        "         }" +
+                  // change the selected cell
+        "         className = cell.className ;" +
+        "         if (className == \"piano\")" +
+        "         {" +
+        "            cell.className = \"pianoselected\" ;" +
+        "         }" +
+        "         else" +
+        "         {" +
+        "            cell.className = \"piano\" ;" +
+        "         }" +
+        "      }" +
+        "   function getCurrentPosX()" +
+        "      {" +
+        "         var X;" +
+        "          if(typeof window.pageXOffset != 'undefined')" +
+        "          {" +
+        "              X = window.pageXOffset;" +
+        "          }" +
+        "          else" +
+        "          {" +
+        "                if((!window.document.compatMode)||" +
+        "                (window.document.compatMode == 'BackCompat'))" +
+        "              {" +
+        "                  X = window.document.body.scrollLeft;" +
+        "              }" +
+        "              else" +
+        "              {" +
+        "                  X = window.document.documentElement.scrollLeft;" +
+        "              }" +
+        "          }" +
+        "         return X;" +
+        "      }" +
+        "   function launchImg(id, reset)" +
+        "      {" +
+        "         top.frames[\"et\"].location='/2023-2024/exterieur/jsp/custom/modules/plannings/bounds.jsp?clearTree=false&week='+id+'&reset='+reset;" +
+        "      }" +
+        "      " +
+        "   function launchImg2()" +
+        "      {" +
+        "         top.frames[\"et\"].location='/2023-2024/exterieur/jsp/custom/modules/plannings/bounds.jsp?clearTree=false';" +
+        "      }" +
+        "   function push(id, reset)" +
+        "      {" +
+        "         launchImg(id, reset) ;" +
+                  // Highlight some buttons
+        "         var imgsrc = new String (document.images[id].src) ;" +
+        "         var index = imgsrc.indexOf(\"&\",0);" +
+        "         var newImgsrc = imgsrc.substring(0, index);" +
+        "         if (reset == 'true')" +
+        "         {" +
+        "            for (i=0; i<document.images.length; i++)" +
+        "            {" +
+        "               var anImgsrc = new String(document.images[i].src) ;" +
+        "               var anIndex = anImgsrc.indexOf(\"&\",0);" +
+        "               var aNewImgsrc = anImgsrc.substring(0, anIndex);" +
+        "               var aNewImgsrcFin = anImgsrc.substring(anIndex+1);" +
+        "               if ((aNewImgsrcFin == \"cssClass=div.pianoselected\")||(aNewImgsrcFin == \"cssClass=div.pianoselected&cssClassPlus=td.pianoPlus\"))" +
+        "               {" +
+        "                  aNewImgsrc = aNewImgsrc + '&cssClass=div.piano' ;" +
+        "                  document.images[i].src = aNewImgsrc ;" +
+        "               }" +
+        "            }" +
+        "            newImgsrc = newImgsrc + '&cssClass=div.pianoselected' ;" +
+        "            document.images[id].src = newImgsrc ;" +
+        "         }" +
+        "         else" +
+        "         {" +
+        "            var newImgsrcFin = imgsrc.substring(index+1);" +
+        "            if (newImgsrcFin == \"cssClass=div.pianoselected\")" +
+        "            {" +
+        "               newImgsrc = newImgsrc + '&cssClass=div.piano' ;" +
+        "               document.images[id].src = newImgsrc ;" +
+        "            }" +
+        "            else" +
+        "            {" +
+        "               newImgsrc = newImgsrc + '&cssClass=div.pianoselected' ;" +
+        "               document.images[id].src = newImgsrc ;" +
+        "            }" +
+        "         };" +
+        "      };")
