@@ -17,6 +17,7 @@ import kotlinx.coroutines.*
 import java.util.Calendar
 
 
+
 class MainActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     lateinit var webView: WebView
@@ -46,7 +47,8 @@ class MainActivity : AppCompatActivity() {
 
         // Obtention de l'id de la semaine actuelle
         val calendar = Calendar.getInstance()
-        val current_week_number = calendar.get(Calendar.WEEK_OF_YEAR)
+        var current_week_number = calendar.get(Calendar.WEEK_OF_YEAR)
+        if ((calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) or (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)) {current_week_number += 1 }
         var current_week_id = 0
         if (current_week_number < 32) {
             current_week_id = current_week_number + 20

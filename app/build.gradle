@@ -12,12 +12,17 @@ android {
         minSdk 26
         targetSdk 33
         versionCode 1
-        versionName '1.2'
+        versionName '1.2.1'
+
+
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        release {
+            versionNameSuffix 'beta'
+        }
         edtinp {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
