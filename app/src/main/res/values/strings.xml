@@ -2,4 +2,7 @@
     <string name="app_name">EDT INP</string>
     <string name="A1">1ère année</string>
     <string name="A2">2ème année</string>
+    <string name="HN1">HN 1</string>
+    <string name="HN2">HN 2</string>
+    <string name="HN3">HN 3</string>
 </resources>

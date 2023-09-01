@@ -7,11 +7,11 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 
-class DataHandler() {
+class DataHandler {
     //Setup the data storing file
     val dataFile = "Data.txt"
     fun setup(context: Context) {
-        val defaultData = DataClass("1A-PINP")
+        val defaultData = DataClass("2A-PINP")
         setupFile(dataFile, Json.encodeToString(defaultData), context)
         //editFile(dataFile, Json.encodeToString(defaultData))
         data = Json.decodeFromString<DataClass>(openFile(dataFile, context))

@@ -5,11 +5,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.seventeen.mywardrobe.MainRecyclerViewActivity">
     <item
+        android:id="@+id/action_first_year"
+        android:title="@string/A1" />
+    <item
         android:id="@+id/action_second_year"
-        android:orderInCategory="200"
         android:title="@string/A2"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_first_year"
-        android:title="@string/A1" />
+        android:id="@+id/action_hn_one"
+        android:title="@string/HN1" />
+    <item
+        android:id="@+id/action_hn_two"
+        android:title="@string/HN2" />
+    <item
+        android:id="@+id/action_hn_three"
+        android:title="@string/HN3" />
 </menu>
