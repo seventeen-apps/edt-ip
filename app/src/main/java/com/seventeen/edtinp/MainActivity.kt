@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         // Obtention de l'id de la semaine actuelle
         val calendar = Calendar.getInstance()
         val current_week_number = calendar.get(Calendar.WEEK_OF_YEAR)
-        var current_week_id =  0
+        var current_week_id = 0
         if (current_week_number < 32) {
             current_week_id = current_week_number + 20
         } else {
@@ -55,8 +55,6 @@ class MainActivity : AppCompatActivity() {
         }
         var displayed_week_id = current_week_id
         Log.v("Date Handler", "Week number is $current_week_number week id is $current_week_id")
-
-
 
 
         // Redéfinition de la méthode onPageFinished
@@ -79,11 +77,13 @@ class MainActivity : AppCompatActivity() {
 
             override fun onPageFinished(view: WebView?, url: String) {
                 super.onPageFinished(view, url)
-                if (isRedirected) { Log.v("URL Loader", "Redirected from $url") }
+                if (isRedirected) {
+                    Log.v("URL Loader", "Redirected from $url")
+                }
 
 //                webView.evaluateJavascript("var framesets = document.getElementsByTagName('frameset')[1];", null)
                 // Mise en page du contenu
-                if (url !=  mainUrl) {
+                if (url != mainUrl) {
                     Log.v("URL Loader", "Loading page")
                     var search = ""
                     when (DataHandler.data.classe) {
@@ -93,7 +93,8 @@ class MainActivity : AppCompatActivity() {
                         "HN2-PINP" -> search = searchHN2
                         "HN3-PINP" -> search = searchHN3
                     }
-                    val jsCode = ("setTimeout(function() {${cleanup + preload + search + load + setup_saturday + setup_sunday}}, 0)")
+                    val jsCode =
+                        ("setTimeout(function() {${cleanup + preload + search + load + setup_saturday + setup_sunday}}, 0)")
                     webView.evaluateJavascript(jsCode, null)
                 }
                 // Vérification de la semaine affichée
@@ -103,7 +104,9 @@ class MainActivity : AppCompatActivity() {
                         Log.d("Preloader", "Got null resource")
                     } else {
                         cache_week_number = it.subSequence(2, 4).toString()
-                        if (cache_week_number[1].toString() == " ") { cache_week_number = cache_week_number[0].toString() }
+                        if (cache_week_number[1].toString() == " ") {
+                            cache_week_number = cache_week_number[0].toString()
+                        }
                         Log.d("Scraping", "${cache_week_number.toInt()} ${current_week_number}")
                         if (cache_week_number.toInt() != current_week_number) {
                             Log.d("Preloader", "Found cached week, reloading to ${current_week_id}")
@@ -123,20 +126,23 @@ class MainActivity : AppCompatActivity() {
         webView.loadUrl(mainUrl)
 
 
-
         val prevButton = findViewById<Button>(R.id.prev_week)
         val nextButton = findViewById<Button>(R.id.next_week)
 
         prevButton.setOnClickListener {
-            val jsCode = (js_functions + "push(${displayed_week_id-1}, true)")
-            displayed_week_id -= 1
-            webView.evaluateJavascript(jsCode, null)
+            if (displayed_week_id > 0) {
+                val jsCode = (js_functions + "push(${displayed_week_id - 1}, true)")
+                displayed_week_id -= 1
+                webView.evaluateJavascript(jsCode, null)
+            }
         }
         nextButton.setOnClickListener {
-            val jsCode = (js_functions + "push(${displayed_week_id+1}, true)")
-            displayed_week_id += 1
-            Log.v("Date Handler", "Moving to week $displayed_week_id")
-            webView.evaluateJavascript(jsCode, null)
+            if (displayed_week_id < 51) {
+                val jsCode = (js_functions + "push(${displayed_week_id + 1}, true)")
+                displayed_week_id += 1
+                Log.v("Date Handler", "Moving to week $displayed_week_id")
+                webView.evaluateJavascript(jsCode, null)
+            }
         }
     }
 
@@ -167,16 +173,19 @@ class MainActivity : AppCompatActivity() {
                 Log.v("Menu Handler", DataHandler.data.classe)
                 search = search2A
             }
+
             getString(R.string.HN1) -> {
                 changeClasse("HN1-PINP")
                 Log.v("Menu Handler", DataHandler.data.classe)
                 search = searchHN1
             }
+
             getString(R.string.HN2) -> {
                 changeClasse("HN2-PINP")
                 Log.v("Menu Handler", DataHandler.data.classe)
                 search = searchHN2
             }
+
             getString(R.string.HN3) -> {
                 changeClasse("HN3-PINP")
                 Log.v("Menu Handler", DataHandler.data.classe)
@@ -186,8 +195,9 @@ class MainActivity : AppCompatActivity() {
         val classeTextView = findViewById<TextView>(R.id.classe_tv)
         classeTextView.text = DataHandler.data.classe
         webView.evaluateJavascript(getFromPage) {
-            if ((it == "null") or (it.length < 5)) { Log.d("Preloader", "Got null resource"); webView.loadUrl(mainUrl) }
-            else {
+            if ((it == "null") or (it.length < 5)) {
+                Log.d("Preloader", "Got null resource"); webView.loadUrl(mainUrl)
+            } else {
                 Log.v("DEBUG", "reload")
                 /*var selectedWeek = it.subSequence(2, 4).toString()
                 if (selectedWeek[1].toString() == " ") { selectedWeek = selectedWeek[0].toString() }
