@@ -9,7 +9,7 @@ import java.io.File
 
 class DataHandler {
     //Setup the data storing file
-    val dataFile = "Data.txt"
+    private val dataFile = "Data.txt"
     fun setup(context: Context) {
         val defaultData = DataClass("2A-PINP")
         setupFile(dataFile, Json.encodeToString(defaultData), context)
