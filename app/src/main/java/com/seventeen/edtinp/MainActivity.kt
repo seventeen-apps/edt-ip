@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         // On agrandit la taille du webView pour optimiser l'affichage
         val displayMetrics = DisplayMetrics()
+        @Suppress("DEPRECATION")
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         val width = displayMetrics.widthPixels
         Log.d("WebViewHandler", "Gained pixels: ${width * 18 / 100}")
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         val calendar = Calendar.getInstance()
         var current_week_number = calendar.get(Calendar.WEEK_OF_YEAR)
         if ((calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) or (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)) {current_week_number += 1 }
-        var current_week_id = 0
+        val current_week_id: Int
         if (current_week_number < 32) {
             current_week_id = current_week_number + 20
         } else {
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity() {
                 isRedirected = false
             }
 
+            @Deprecated("Ignore")
             override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
                 view.loadUrl(url!!)
                 isRedirected = true
@@ -100,8 +102,8 @@ class MainActivity : AppCompatActivity() {
                     webView.evaluateJavascript(jsCode, null)
                 }
                 // Vérification de la semaine affichée
-                webView.evaluateJavascript("$getFromPage") {
-                    var cache_week_number = ""
+                webView.evaluateJavascript(getFromPage) {
+                    var cache_week_number: String
                     if ((it == "null") or (it.length < 5)) {
                         Log.d("Preloader", "Got null resource")
                     } else {
@@ -210,7 +212,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 Log.d("Switch", selectedWeek)*/
                 val jsCode =
-                    ("${preload + search + load}")
+                    (preload + search + load)
                 webView.evaluateJavascript(jsCode, null)
             }
         }
