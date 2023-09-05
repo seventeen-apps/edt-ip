@@ -111,7 +111,6 @@ class MainActivity : AppCompatActivity() {
                         if (cache_week_number[1].toString() == " ") {
                             cache_week_number = cache_week_number[0].toString()
                         }
-                        Log.d("Scraping", "${cache_week_number.toInt()} ${current_week_number}")
                         if (cache_week_number.toInt() != current_week_number) {
                             Log.d("Preloader", "Found cached week, reloading to ${current_week_id}")
                             webView.evaluateJavascript(
