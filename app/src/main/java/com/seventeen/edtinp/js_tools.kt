@@ -35,35 +35,9 @@ var load = (
                 "   console.log('Pre-load aborted')" +
                 "};")
 
-const val preload_2A = (
-        "var framesets = document.getElementsByTagName(\"frameset\");" +// Les frameset sur la raçine
-        "var treeFrameset = framesets[1];" +
-        "if (treeFrameset) {" +
-        "   var treeFrame = treeFrameset.getElementsByTagName(\"frame\")[0];" +
-        "   var tosearch = \"2A-PINP\";" +
-        "   if (treeFrame) {" +
-        "      var frameContent = treeFrame.contentWindow.document;" +// Récupère le contenu de la frame de recherche
-        "      if (frameContent) {" +
-        "         const inputField = frameContent.querySelector('input[name=\"search\"]');" +// Sélectionne l'input dans le contenu du frame
-        "         if (inputField) {" +// Vérifie si le champ de saisie et le bouton sont trouvés
-        "            inputField.focus();" +
-        "            inputField.value = tosearch;" + // Insère la saisie
-        "            const inputEvent = new InputEvent(\"input\");" +
-        "            inputField.dispatchEvent(inputEvent);" + //simule un click humain
-        "            const form = inputField.closest(\"form\");" +
-        "            form.submit();" + // Lance la recherche
-        "            console.log('Pre-load done (2A)');" +
-        "         }" +
-        "      }" +
-        "   }" +
-        "}" +
-        "else {" +
-        "   console.log('Pre-load aborted')" +
-        "};")
-
 const val setup_saturday = (
 
-//        "setTimeout(function() {" +
+        "setTimeout(function() {" +
         "var framesets = document.getElementsByTagName(\"frameset\");" +
         "var etFrameset = framesets[2];" +
         "    if (etFrameset) {" +
@@ -105,7 +79,7 @@ const val setup_saturday = (
         "       console.log('Removal aborted (saturday)')" +
         "    };"
 
-//        + "}, 0);"
+        + "}, 100);"
         )
 
 const val setup_sunday = (
