@@ -3,25 +3,51 @@ package com.seventeen.edtinp
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
+import java.net.URL
 import java.util.Calendar
-
 
 
 class MainActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
-    lateinit var webView: WebView
+    lateinit var backgroundWebView: WebView
+    lateinit var imageWebView: WebView
+
     val mainUrl = "https://edt.grenoble-inp.fr/2023-2024/exterieur"
+
+    var imgsrc = "https://via.placeholder.com/120x120&text=image1"
+//        "https://edt.grenoble-inp.fr/2023-2024/exterieur/jsp/imageEt?identifier=dbb76b76e990cedcbb0ff47422fb9f0aw14553&projectId=12&idPianoWeek=4&idPianoDay=0%2C1%2C2%2C3%2C4&idTree=13808%2C13807&width=382&height=690&lunchName=REPAS&displayMode=1057855&showLoad=false&ttl=1694188961792&displayConfId=15"
+
+    val scope = CoroutineScope(Dispatchers.IO)
+
+
+    suspend fun getImgRes(webView: WebView) = coroutineScope {
+        Log.d("Coroutine", "Coroutine hey")
+        launch {
+            delay(1000)
+            Log.d("Coroutine", "Coroutine Hello")
+            webView.evaluateJavascript("setTimeout(function() {${getImageResource + "getImgRes()"}}, 1000)") {
+//            val url = it.toString().subSequence(1, it.length-1).toString()
+            Log.d("net", it)
+//            imageWebView.loadUrl(url)
+            }
+        }
+    }
+
+
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,8 +59,13 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        webView = findViewById(R.id.webView)
-        webView.settings.javaScriptEnabled = true
+        backgroundWebView = findViewById(R.id.backgroundWebView)
+        backgroundWebView.settings.javaScriptEnabled = true
+        backgroundWebView.visibility = View.VISIBLE
+
+        imageWebView = findViewById(R.id.imageWebView)
+        imageWebView.settings.javaScriptEnabled = true
+        imageWebView.visibility = View.INVISIBLE
 
         // On agrandit la taille du webView pour optimiser l'affichage
         val displayMetrics = DisplayMetrics()
@@ -42,14 +73,16 @@ class MainActivity : AppCompatActivity() {
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         val width = displayMetrics.widthPixels
         Log.d("WebViewHandler", "Gained pixels: ${width * 18 / 100}")
-        webView.layoutParams.width = width + width * 18 / 100 + 25
+        backgroundWebView.layoutParams.width = width + width * 18 / 100 + 25
 
         DataHandler().setup(this)
 
         // Obtention de l'id de la semaine actuelle
         val calendar = Calendar.getInstance()
         var current_week_number = calendar.get(Calendar.WEEK_OF_YEAR)
-        if ((calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) or (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)) {current_week_number += 1 }
+        if ((calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) or (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)) {
+            current_week_number += 1
+        }
         val current_week_id: Int
         if (current_week_number < 32) {
             current_week_id = current_week_number + 20
@@ -60,8 +93,17 @@ class MainActivity : AppCompatActivity() {
         Log.v("Date Handler", "Week number is $current_week_number week id is $current_week_id")
 
 
-        // Redéfinition de la méthode onPageFinished
-        webView.webViewClient = object : WebViewClient() {
+
+        imageWebView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                Log.v("ImageHandler", "Loading page in webview")
+            }
+        }
+
+
+        // Redéfinition des la méthodes de la WebView d'arrière-plan
+        backgroundWebView.webViewClient = object : WebViewClient() {
             var isRedirected = false
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -99,52 +141,113 @@ class MainActivity : AppCompatActivity() {
                     }
                     val jsCode =
                         ("setTimeout(function() {${cleanup + preload + search + load + setup_saturday + setup_sunday}}, 0)")
-                    webView.evaluateJavascript(jsCode, null)
-                }
-                // Vérification de la semaine affichée
-                webView.evaluateJavascript(getFromPage) {
-                    var cache_week_number: String
-                    if ((it == "null") or (it.length < 5)) {
-                        Log.d("Preloader", "Got null resource")
-                    } else {
-                        cache_week_number = it.subSequence(2, 4).toString()
-                        if (cache_week_number[1].toString() == " ") {
-                            cache_week_number = cache_week_number[0].toString()
-                        }
-                        if (cache_week_number.toInt() != current_week_number) {
-                            Log.d("Preloader", "Found cached week, reloading to ${current_week_id}")
-                            webView.evaluateJavascript(
-                                ("setTimeout(function() {${js_functions + "push($current_week_id, true)"}}, 1000)"),
-                                null
-                            )
-                            displayed_week_id = current_week_id
+                    backgroundWebView.evaluateJavascript(jsCode, null)
+//                }
+                    // Vérification de la semaine affichée
+                    backgroundWebView.evaluateJavascript(getSelectedWeek) {
+                        var cache_week_number: String
+                        if ((it == "null") or (it.length < 5)) {
+                            Log.d("Preloader", "Got null resource")
+                        } else {
+                            cache_week_number = it.subSequence(2, 4).toString()
+                            if (cache_week_number[1].toString() == " ") {
+                                cache_week_number = cache_week_number[0].toString()
+                            }
+                            if (cache_week_number.toInt() != current_week_number) {
+                                Log.d(
+                                    "Preloader",
+                                    "Found cached week, reloading to ${current_week_id}"
+                                )
+                                displayed_week_id = current_week_id
+                            } else {
+
+                            }
+                            imageWebView.visibility = View.INVISIBLE
+
+
+
+                            Log.v("hey", "I AM HERE")
+
+//                            scope.launch { getImgRes(imageWebView) }
+//                            Handler().postDelayed(java.lang.Runnable { SetupImageTask(imageWebView).execute() }, 3000)
+//TODO revoir la méthode onPageFinished de zéro pour la restructurer
+
+                            imageWebView.loadUrl(imgsrc)
                         }
                     }
-                }
 
+                    /*val jsCode = (js_functions + "push(${displayed_week_id + 1}, true)")
+                    backgroundWebView.evaluateJavascript(jsCode) {
+    //                            val url = "https://${it.toString().subSequence(9, it.length).toString()}"
+                        val url = it.toString().subSequence(1, it.length-1).toString()
+                        Log.d("net" ,url)
+                        imageWebView.loadUrl(url)
+                    }*/
+
+                }
             }
+
         }
 
 
-        webView.loadUrl(mainUrl)
+        backgroundWebView.loadUrl(mainUrl)
 
 
         val prevButton = findViewById<Button>(R.id.prev_week)
         val nextButton = findViewById<Button>(R.id.next_week)
 
+
+//TODO désactiver les boutons par défaut et les activer lorsque la page est affichée ?
+
         prevButton.setOnClickListener {
             if (displayed_week_id > 0) {
-                val jsCode = (js_functions + "push(${displayed_week_id - 1}, true)")
+                /*val jsCode =
+                    (js_functions + "push(${displayed_week_id - 1}, true)" + setup_sunday + setup_saturday)
                 displayed_week_id -= 1
-                webView.evaluateJavascript(jsCode, null)
+                backgroundWebView.evaluateJavascript(jsCode, null)*/
+//                webView.evaluateJavascript("setTimeout(function() {${setup_saturday + setup_sunday}}, 1000)", null)
+                //TODO
+                val jsCode = (checkWeekAvailability)
+                backgroundWebView.evaluateJavascript(jsCode) {
+                    if (it != "null") {
+                        val result = it.toInt()
+                        Log.d("ImageHandler", result.toString())
+                        if ((displayed_week_id < 51) and (result != 0)) {
+                            val jsCode = (js_functions + "push(${displayed_week_id - 1}, true)")
+                            displayed_week_id -= 1
+                            Log.v("Date Handler", "Moving to week $displayed_week_id")
+                            // Charge l'image dans la WebView image
+                            backgroundWebView.evaluateJavascript(jsCode) { val url = it.toString().subSequence(1, it.length - 1).toString();Log.d("net", url);imageWebView.loadUrl(url) }
+                        }
+                    }
+                }
             }
         }
         nextButton.setOnClickListener {
-            if (displayed_week_id < 51) {
-                val jsCode = (js_functions + "push(${displayed_week_id + 1}, true)")
-                displayed_week_id += 1
-                Log.v("Date Handler", "Moving to week $displayed_week_id")
-                webView.evaluateJavascript(jsCode, null)
+            val jsCode = (checkWeekAvailability)
+            backgroundWebView.evaluateJavascript(jsCode) {
+                if (it != "null") {
+                    val result = it.toInt()
+                    Log.d("ImageHandler", result.toString())
+                    if ((displayed_week_id < 51) and (result != 0)) {
+                        val jsCode = (js_functions + "push(${displayed_week_id + 1}, true)")
+                        displayed_week_id += 1
+                        Log.v("Date Handler", "Moving to week $displayed_week_id")
+                        // Charge l'image dans la WebView image
+                        backgroundWebView.evaluateJavascript(jsCode) {
+//                            val url = "https://${it.toString().subSequence(9, it.length).toString()}"
+                            val url = it.toString().subSequence(1, it.length - 1).toString()
+                            Log.d("net", url)
+
+                            imageWebView.loadUrl(url)
+//                            imageWebView.loadUrl(it.toString().subSequence(9, it.length).toString())
+//                            imageWebView.loadUrl("https://${it.toString().subSequence(9, it.length).toString()}")
+                            /*imageWebView.evaluateJavascript(getHtml) {
+                                Log.d("ImageHandler", it)//TODO
+                            }*/
+                        }
+                    }
+                }
             }
         }
     }
@@ -197,9 +300,9 @@ class MainActivity : AppCompatActivity() {
         }
         val classeTextView = findViewById<TextView>(R.id.classe_tv)
         classeTextView.text = DataHandler.data.classe
-        webView.evaluateJavascript(getFromPage) {
+        backgroundWebView.evaluateJavascript(getSelectedWeek) {
             if ((it == "null") or (it.length < 5)) {
-                Log.d("Preloader", "Got null resource"); webView.loadUrl(mainUrl)
+                Log.d("Preloader", "Got null resource"); backgroundWebView.loadUrl(mainUrl)
             } else {
                 Log.v("DEBUG", "reload")
                 /*var selectedWeek = it.subSequence(2, 4).toString()
@@ -212,14 +315,35 @@ class MainActivity : AppCompatActivity() {
                 Log.d("Switch", selectedWeek)*/
                 val jsCode =
                     (preload + search + load)
-                webView.evaluateJavascript(jsCode, null)
+                backgroundWebView.evaluateJavascript(jsCode, null)
             }
         }
         return super.onOptionsItemSelected(item)
     }
 }
 
+private class SetupImageTask(webView: WebView) : AsyncTask<URL?, Int?, Long>() {
+    /*protected fun doInBackground(vararg urls: URL) {
+        }*/
+    val webView = webView
+    override fun doInBackground(vararg p0: URL?): Long {
+        Log.v("async", "heyho")
+        webView.evaluateJavascript("setTimeout(function() {${getImageResource + "getImgRes()"}}, 1000)") {
+//            val url = it.toString().subSequence(1, it.length-1).toString()
+            Log.d("net", it)
+//            imageWebView.loadUrl(url)
+        }
+        return 0
+    }
+//TODO la asynctask est peut etre une solution, premièrement réussir à faire une asynctask qui marche
+    /*protected override fun onProgressUpdate(vararg progress: Int) {
+        setProgressPercent(progress[0])
+    }*/
 
+    /*override fun onPostExecute(result: Long) {
+        showDialog("Downloaded $result bytes")
+    }*/
+}
 /*val button = findViewById<Button>(R.id.button)
 button.setOnClickListener {
     Log.v("scraper", "fetching...")*/

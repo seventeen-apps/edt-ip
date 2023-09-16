@@ -38,6 +38,7 @@ var load = (
 const val setup_saturday = (
 
         "setTimeout(function() {" +
+                "console.log('removing saturday');" +
         "var framesets = document.getElementsByTagName(\"frameset\");" +
         "var etFrameset = framesets[2];" +
         "    if (etFrameset) {" +
@@ -177,7 +178,7 @@ val cleanup = (
 //                + "}, 3000);"
         )
 
-const val getFromPage = ("(function() {" +
+const val getSelectedWeek = ("(function() {" +
         "  var frameset = document.getElementsByTagName('frameset')[2];" +
         "  if (frameset) {" +
         "    var frame = frameset.getElementsByTagName('frame')[2];" +
@@ -193,6 +194,36 @@ const val getFromPage = ("(function() {" +
         "  return null;" +
         "})();")
 
+const val getHtml = (
+        "(function() {" +
+//                "return document.documentElement.innerHTML;" +
+//                "return document.getElementsByTagName('img').length;" +
+                "return document.documentElement.outerHTML;" +
+                "})();"
+        )
+
+const val checkWeekAvailability = ("(function() {" +
+        "var frameset = document.getElementsByTagName('frameset')[2];" +
+        "if (frameset) {" +
+        "  var frame = frameset.getElementsByTagName('frame')[0];" +
+        "  if (frame) {" +
+        "    var result = frame.contentDocument.getElementsByTagName('img');" +
+        "    return result.length;" +
+        "  };" +
+        "};" +
+        "})();")
+
+const val getImageResource = (
+        "function getImgRes()" +
+                "{" +
+        "        var frameset = document.getElementsByTagName('frameset')[2];" +
+                "        var framecontent = frameset.getElementsByTagName('frame')[0].contentDocument;" +
+                "        var imgsrc = framecontent.getElementsByTagName('img')[0].src;" +
+                "console.log('poupidou');" +
+                "console.log(imgsrc);" +
+                "        return imgsrc;" +
+        "};"
+        )
 
 const val js_functions =
         ("   function scrollwindow()" +
@@ -257,40 +288,46 @@ const val js_functions =
         "      }" +
         "   function push(id, reset)" +
         "      {" +
-        "         launchImg(id, reset) ;" +
+        "         launchImg(id, reset);" +
+                "        var frameset = document.getElementsByTagName('frameset')[2];" +
+                "        var framecontent = frameset.getElementsByTagName('frame')[0].contentDocument;" +
+                "        var imgsrc = framecontent.getElementsByTagName('img')[0].src;" +
+                "        return imgsrc;" +
                   // Highlight some buttons
-        "         var imgsrc = new String (document.images[id].src) ;" +
-        "         var index = imgsrc.indexOf(\"&\",0);" +
-        "         var newImgsrc = imgsrc.substring(0, index);" +
-        "         if (reset == 'true')" +
-        "         {" +
-        "            for (i=0; i<document.images.length; i++)" +
-        "            {" +
-        "               var anImgsrc = new String(document.images[i].src) ;" +
-        "               var anIndex = anImgsrc.indexOf(\"&\",0);" +
-        "               var aNewImgsrc = anImgsrc.substring(0, anIndex);" +
-        "               var aNewImgsrcFin = anImgsrc.substring(anIndex+1);" +
-        "               if ((aNewImgsrcFin == \"cssClass=div.pianoselected\")||(aNewImgsrcFin == \"cssClass=div.pianoselected&cssClassPlus=td.pianoPlus\"))" +
-        "               {" +
-        "                  aNewImgsrc = aNewImgsrc + '&cssClass=div.piano' ;" +
-        "                  document.images[i].src = aNewImgsrc ;" +
-        "               }" +
-        "            }" +
-        "            newImgsrc = newImgsrc + '&cssClass=div.pianoselected' ;" +
-        "            document.images[id].src = newImgsrc ;" +
-        "         }" +
-        "         else" +
-        "         {" +
-        "            var newImgsrcFin = imgsrc.substring(index+1);" +
-        "            if (newImgsrcFin == \"cssClass=div.pianoselected\")" +
-        "            {" +
-        "               newImgsrc = newImgsrc + '&cssClass=div.piano' ;" +
-        "               document.images[id].src = newImgsrc ;" +
-        "            }" +
-        "            else" +
-        "            {" +
-        "               newImgsrc = newImgsrc + '&cssClass=div.pianoselected' ;" +
-        "               document.images[id].src = newImgsrc ;" +
-        "            }" +
-        "         };" +
+//        "        var frameset = document.getElementsByTagName('frameset')[2];" +
+//        "        var framecontent = frameset.getElementsByTagName('frame')[2].contentDocument;" +
+//        "         var imgsrc = new String (framecontent.images[id].src) ;" +
+//        "         var index = imgsrc.indexOf(\"&\",0);" +
+//        "         var newImgsrc = imgsrc.substring(0, index);" +
+//        "         if (reset == 'true')" +
+//        "         {" +
+//        "            for (i=0; i<framecontent.images.length; i++)" +
+//        "            {" +
+//        "               var anImgsrc = new String(framecontent.images[i].src) ;" +
+//        "               var anIndex = anImgsrc.indexOf(\"&\",0);" +
+//        "               var aNewImgsrc = anImgsrc.substring(0, anIndex);" +
+//        "               var aNewImgsrcFin = anImgsrc.substring(anIndex+1);" +
+//        "               if ((aNewImgsrcFin == \"cssClass=div.pianoselected\")||(aNewImgsrcFin == \"cssClass=div.pianoselected&cssClassPlus=td.pianoPlus\"))" +
+//        "               {" +
+//        "                  aNewImgsrc = aNewImgsrc + '&cssClass=div.piano' ;" +
+//        "                  framecontent.images[i].src = aNewImgsrc ;" +
+//        "               }" +
+//        "            }" +
+//        "            newImgsrc = newImgsrc + '&cssClass=div.pianoselected' ;" +
+//        "            framecontent.images[id].src = newImgsrc ;" +
+//        "         }" +
+//        "         else" +
+//        "         {" +
+//        "            var newImgsrcFin = imgsrc.substring(index+1);" +
+//        "            if (newImgsrcFin == \"cssClass=div.pianoselected\")" +
+//        "            {" +
+//        "               newImgsrc = newImgsrc + '&cssClass=div.piano' ;" +
+//        "               framecontent.images[id].src = newImgsrc ;" +
+//        "            }" +
+//        "            else" +
+//        "            {" +
+//        "               newImgsrc = newImgsrc + '&cssClass=div.pianoselected' ;" +
+//        "               framecontent.images[id].src = newImgsrc ;" +
+//        "            }" +
+//        "         };" +
         "      };")
