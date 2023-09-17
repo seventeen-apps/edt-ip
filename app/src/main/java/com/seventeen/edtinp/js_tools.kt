@@ -242,7 +242,7 @@ val set_reference_url = (
                 "if (framecontent.getElementsByTagName('img')[0]) {" +
                         "var imgsrc = framecontent.getElementsByTagName('img')[0].src;" +
                         "console.log('found image resource '+imgsrc);" +
-                        "app.makeToast('Reference url found !', true);" +
+//                        "app.makeToast('Reference url found !', true);" +
                         "app.setReferenceUrl(imgsrc);" +
                 "} else {" +
                         "console.log('Cannot get reference url');" +

@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     val scope = CoroutineScope(Dispatchers.IO)
 
-
+    var displayedWeekId = 0
     /*suspend fun getImgRes(webView: WebView) = coroutineScope {
         Log.d("Coroutine", "Coroutine hey")
         launch {
@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             currentWeekId = currentWeekNumber - 32
         }
-        var displayedWeekId = currentWeekId
+        displayedWeekId = currentWeekId
         Log.v("Date Handler", "Week number is $currentWeekNumber week id is $currentWeekId")
 
 
@@ -101,9 +101,9 @@ class MainActivity : AppCompatActivity() {
         imageWebView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                imageWebView.evaluateJavascript(get_html) {
+                /*imageWebView.evaluateJavascript(get_html) {
                     Log.d("ImageHandler", it)
-                }
+                }*/
 //                imageWebView.evaluateJavascript("setTimeout(function() {document.body.setAttribute('style', 'background-color:(255, 255, 255)')}, 100);", null)
             }
         }
@@ -222,7 +222,7 @@ class MainActivity : AppCompatActivity() {
                         // Charge l'image dans la WebView principale
                         val spliturl = referenceURL.split("&") as MutableList
                         spliturl[idSemaineUrl] = "idPianoWeek=$displayedWeekId"
-                        Log.d("Identifier", spliturl.joinToString("&"))
+//                        Log.d("Identifier", spliturl.joinToString("&"))
                         loadImage(imageWebView, spliturl.joinToString("&"))
 
                     }
@@ -299,6 +299,11 @@ class MainActivity : AppCompatActivity() {
                 // Si la classe est changée, alors on remet à jour la page
                 Log.v("DEBUG", "reload")
                 backgroundWebView.evaluateJavascript(preload + search + load + setup_saturday + setup_sunday, null)
+                backgroundWebView.evaluateJavascript(js_functions + "push($displayedWeekId, true)", null)
+                // Lance l'affichage de la WebView principale
+                backgroundWebView.evaluateJavascript("setTimeout(function() {$set_image_resource}, 1000)", null)
+                // Initialise les objets de la classe
+                backgroundWebView.evaluateJavascript("setTimeout(function() {$set_reference_url}, 1000)", null)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -334,10 +339,10 @@ class MainActivity : AppCompatActivity() {
         /** Charge l'image dans la WebView principale*/
         @JavascriptInterface
         fun setImg(src: String) {
-            Log.d("resourcecheck", "last    " + lastUrl)
-            Log.d("resourcecheck", "current " + src)
+            /*Log.d("resourcecheck", "last    " + lastUrl)
+            Log.d("resourcecheck", "current " + src)*/
 
-            if (lastUrl == src) { backgroundWebView.post { Log.d("resourcecheck", "got same url, retrying"); backgroundWebView.evaluateJavascript(set_image_resource, null) }; return }
+//            if (lastUrl == src) { backgroundWebView.post { Log.d("resourcecheck", "got same url, retrying"); backgroundWebView.evaluateJavascript(set_image_resource, null) }; return }
             if (lastUrl == "") { lastUrl = src }
 
             // TODO vérifier ce qu'il se passe quand on change de classe, il ne faut pas rappeler cette méthode !
