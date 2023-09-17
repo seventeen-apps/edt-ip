@@ -75,12 +75,15 @@ const val setup_saturday = (
         "                }" +
         "            }" +
         "        }" +
+        "        else {" +
+                "console.log(\"Can't find frame for saturday!\");"+
+                "};"+
         "    }" +
         "    else {" +
         "       console.log('Removal aborted (saturday)')" +
-        "    };"
+        "    };" +
+        "}, 0);"
 
-        + "}, 100);"
         )
 
 const val setup_sunday = (
@@ -178,7 +181,7 @@ val cleanup = (
 //                + "}, 3000);"
         )
 
-const val getSelectedWeek = ("(function() {" +
+const val get_selected_week = ("(function() {" +
         "  var frameset = document.getElementsByTagName('frameset')[2];" +
         "  if (frameset) {" +
         "    var frame = frameset.getElementsByTagName('frame')[2];" +
@@ -194,7 +197,7 @@ const val getSelectedWeek = ("(function() {" +
         "  return null;" +
         "})();")
 
-const val getHtml = (
+const val get_html = (
         "(function() {" +
 //                "return document.documentElement.innerHTML;" +
 //                "return document.getElementsByTagName('img').length;" +
@@ -202,7 +205,7 @@ const val getHtml = (
                 "})();"
         )
 
-const val checkWeekAvailability = ("(function() {" +
+const val check_edt_availability = ("(function() {" +
         "var frameset = document.getElementsByTagName('frameset')[2];" +
         "if (frameset) {" +
         "  var frame = frameset.getElementsByTagName('frame')[0];" +
@@ -213,17 +216,40 @@ const val checkWeekAvailability = ("(function() {" +
         "};" +
         "})();")
 
-const val getImageResource = (
-        "function getImgRes()" +
-                "{" +
-        "        var frameset = document.getElementsByTagName('frameset')[2];" +
-                "        var framecontent = frameset.getElementsByTagName('frame')[0].contentDocument;" +
-                "        var imgsrc = framecontent.getElementsByTagName('img')[0].src;" +
-                "console.log('poupidou');" +
-                "console.log(imgsrc);" +
-                "        return imgsrc;" +
+const val set_image_resource = (
+//        "function getImgRes()" +
+//        "{" +
+                "var frameset = document.getElementsByTagName('frameset')[2];" +
+                "if (frameset) {" +
+                        "var framecontent = frameset.getElementsByTagName('frame')[0].contentDocument;" +
+                        "if (framecontent.getElementsByTagName('img')[0]) {" +
+                                "var imgsrc = framecontent.getElementsByTagName('img')[0].src;" +
+                                "console.log('found image resource '+imgsrc);" +
+//                                "app.makeToast('Resource found !', true);" +
+                                "app.setImg(imgsrc);" +
+                        "} else {" +
+                                "console.log('Cannot get image resource');" +
+                        "};" +
+                "};"
+//        + "};"
+        )
+
+
+val set_reference_url = (
+        "var frameset = document.getElementsByTagName('frameset')[2];" +
+        "if (frameset) {" +
+                "var framecontent = frameset.getElementsByTagName('frame')[0].contentDocument;" +
+                "if (framecontent.getElementsByTagName('img')[0]) {" +
+                        "var imgsrc = framecontent.getElementsByTagName('img')[0].src;" +
+                        "console.log('found image resource '+imgsrc);" +
+                        "app.makeToast('Reference url found !', true);" +
+                        "app.setReferenceUrl(imgsrc);" +
+                "} else {" +
+                        "console.log('Cannot get reference url');" +
+                "};" +
         "};"
         )
+
 
 const val js_functions =
         ("   function scrollwindow()" +
@@ -289,10 +315,12 @@ const val js_functions =
         "   function push(id, reset)" +
         "      {" +
         "         launchImg(id, reset);" +
+                /*"        setTimeout(function() {" +
                 "        var frameset = document.getElementsByTagName('frameset')[2];" +
                 "        var framecontent = frameset.getElementsByTagName('frame')[0].contentDocument;" +
                 "        var imgsrc = framecontent.getElementsByTagName('img')[0].src;" +
-                "        return imgsrc;" +
+                "        app.setImg(imgsrc)}, 100);" +*/
+//                "        return null;" +
                   // Highlight some buttons
 //        "        var frameset = document.getElementsByTagName('frameset')[2];" +
 //        "        var framecontent = frameset.getElementsByTagName('frame')[2].contentDocument;" +
