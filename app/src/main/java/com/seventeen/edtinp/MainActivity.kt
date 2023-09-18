@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -15,14 +16,19 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
+import com.seventeen.mywardrobe.DatePicker
 import kotlinx.coroutines.*
 import java.util.Calendar
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     @SuppressLint("SetJavaScriptEnabled")
     lateinit var backgroundWebView: WebView
     lateinit var imageWebView: WebView
@@ -34,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     val scope = CoroutineScope(Dispatchers.IO)
 
-    var displayedWeekId = 0
+
     /*suspend fun getImgRes(webView: WebView) = coroutineScope {
         Log.d("Coroutine", "Coroutine hey")
         launch {
@@ -67,6 +73,16 @@ class MainActivity : AppCompatActivity() {
         backgroundWebView.settings.javaScriptEnabled = true
         backgroundWebView.addJavascriptInterface(WebViewJavaScriptInterface(this, backgroundWebView, imageWebView), "app");
         backgroundWebView.visibility = View.INVISIBLE //TODO: mettre invisible
+
+
+
+        //Setup date picker
+        val date_button = findViewById<ImageView>(R.id.calendar_button)
+        date_button.setOnClickListener {
+            val datePicker =
+                DatePicker(this)
+            datePicker.show(supportFragmentManager, datePicker.TAG)
+        }
 
 
 
@@ -243,6 +259,12 @@ class MainActivity : AppCompatActivity() {
 
     /** Initialise le menu en haut à gauche en ajoutant le nom de l'appli à côté */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        //Get the menu icon
+        val hamButton: Drawable? = ContextCompat.getDrawable(this, R.drawable.ic_baseline_menu_24)
+        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
+        //Set the menu icon as navigation button
+        toolbar.navigationIcon = hamButton
+
 
         menuInflater.inflate(R.menu.menu, menu)
         val classeTextView = findViewById<TextView>(R.id.classe_tv)
@@ -250,6 +272,20 @@ class MainActivity : AppCompatActivity() {
         return true
     }
     //
+    //TODO Documenter
+    override fun onDatePass(weekId: String, activity: FragmentActivity?) {
+        Log.v("TempSave", "Updated to ${weekId}")
+        selectedWeekId = weekId.toInt()
+        /*displayedWeekId = selectedWeekId.toInt()
+        Log.v("Date Handler", "Moving to week $displayedWeekId")
+
+        // Charge l'image dans la WebView principale
+        val spliturl = referenceURL.split("&") as MutableList
+        spliturl[idSemaineUrl] = "idPianoWeek=$displayedWeekId"
+        loadImage(imageWebView, spliturl.joinToString("&"))*/
+    }
+
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         /** Callback lors d'un clic dans le menu de sélection de classe en haut à droite  */
@@ -379,6 +415,8 @@ class MainActivity : AppCompatActivity() {
     companion object {
         var referenceURL : String = ""
         var idSemaineUrl : Int = 0
+        var selectedWeekId : Int = 0
+        var displayedWeekId : Int = 0
     }
 }
 
@@ -387,13 +425,25 @@ class MainActivity : AppCompatActivity() {
  * @param imageWebView WebView destinataire
  * @param src url source de l'image à envoyer dans la WebView destinataire */
 fun loadImage(imageWebView: WebView, src: String) {
-//    Log.v("ImageHandler", src)
-    val a = "https://edt.grenoble-inp.fr/2023-2024/exterieur/jsp/imageEt?identifier=a5f603e1a43101eb53d6bdebac6605aaw4874&projectId=12&idPianoWeek=25&idPianoDay=0%2C1%2C2%2C3%2C4&idTree=13808%2C13807&width=382&height=690&lunchName=REPAS&displayMode=1057855&showLoad=false&ttl=1694954684416&displayConfId=15"
-    val html = "<html style=\"height: 100%;\"><head><meta name=\"viewport\" content=\"width=device-width, minimum-scale=0.1\"><title>imageEt (382×690)</title></head><body style=\"margin: 0px; height: 100%; background-color: rgb(14, 14, 14);\"><img style=\"display: block;-webkit-user-select: none;max-width: 100%;margin: auto;background-color: hsl(0, 0%, 90%);\" src='$src'></body></html>"
-//    imageWebView.loadData(html, "text/html; charset=utf-8", "UTF-8")
+    Log.v("ImageHandler", src)
     imageWebView.loadUrl(src)
+//    val a = "https://edt.grenoble-inp.fr/2023-2024/exterieur/jsp/imageEt?identifier=a5f603e1a43101eb53d6bdebac6605aaw4874&projectId=12&idPianoWeek=25&idPianoDay=0%2C1%2C2%2C3%2C4&idTree=13808%2C13807&width=382&height=690&lunchName=REPAS&displayMode=1057855&showLoad=false&ttl=1694954684416&displayConfId=15"
+//    val html = "<html style=\"height: 100%;\"><head><meta name=\"viewport\" content=\"width=device-width, minimum-scale=0.1\"><title>imageEt (382×690)</title></head><body style=\"margin: 0px; height: 100%; background-color: rgb(14, 14, 14);\"><img style=\"display: block;-webkit-user-select: none;max-width: 100%;margin: auto;background-color: hsl(0, 0%, 90%);\" src='$src'></body></html>"
+//    imageWebView.loadData(html, "text/html; charset=utf-8", "UTF-8")
+//    imageWebView.evaluateJavascript(download_image + "downloadImage('$src');") {
+//        Log.v("it", it)
+//    }
 
 }
+
+//TODO Documenter
+/*public fun loadWeek(weekId : Int) {
+
+    // Charge l'image dans la WebView principale
+    val spliturl = MainActivity.referenceURL.split("&") as MutableList
+    spliturl[MainActivity.idSemaineUrl] = "idPianoWeek=$weekId"
+    loadImage(imageWebView, spliturl.joinToString("&"))
+}*/
 
 /*private class SetupImageTask(webView: WebView) : AsyncTask<URL?, Int?, Long>() {
     *//*protected fun doInBackground(vararg urls: URL) {

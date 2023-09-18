@@ -234,6 +234,27 @@ const val set_image_resource = (
 //        + "};"
         )
 
+const val download_image = (
+        "async function downloadImage(imageSrc) {\n" +
+//                "  const image = await fetch(imageSrc, { mode: 'no-cors' })\n" +
+                "  const image = await fetch(imageSrc)\n" +
+                "   .then( response => response.json() )\n" +
+                "   .then( data => console.log(data) );" +
+                "  const imageBlog = await image.blob()\n" +
+                "  console.log(imageBlog.size);" +
+                "  return imageBlog" +
+                /*"  const imageURL = URL.createObjectURL(imageBlog)\n" +
+                "\n" +
+                "  const link = document.createElement('a')\n" +
+                "  link.href = imageURL\n" +
+                "  link.download = 'image file name here'\n" +
+                "  document.body.appendChild(link)\n" +
+                "  link.click()\n" +
+                "  document.body.removeChild(link)\n" +
+                "  console.log('got image');" +*/
+                "};"
+        )
+
 
 val set_reference_url = (
         "var frameset = document.getElementsByTagName('frameset')[2];" +
