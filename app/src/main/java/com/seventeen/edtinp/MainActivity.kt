@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                         "HN3-PINP" -> search = searchHN3
                     }
                     val jsCode =
-                        ("setTimeout(function() {${cleanup + preload + search + load + setup_weekend}}, 0)")
+                        (preload + search + load)
                     backgroundWebView.evaluateJavascript(jsCode, null)
 
                     // Vérification de la semaine affichée
@@ -310,7 +310,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             } else {
                 // Si la classe est changée, alors on remet à jour la page
                 Log.v("DEBUG", "reload")
-                backgroundWebView.evaluateJavascript(preload + search + load + setup_weekend, null)
+                backgroundWebView.evaluateJavascript(preload + search + load, null)
                 backgroundWebView.evaluateJavascript(
                     js_functions + "push($displayedWeekId, true)",
                     null
@@ -371,6 +371,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             } else {
                 referenceURL = url
 
+
                 // Met à jour l'objet id de la semaine
                 val splitUrl = referenceURL.split("&") as MutableList
                 var i = 0
@@ -382,6 +383,11 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                     }
                     i += 1
                 }
+
+                // Crée le lien vers l'image
+                val spliturl = referenceURL.split("&") as MutableList
+                spliturl[idSemaineUrl +1] = "idPianoDay=0%2C1%2C2%2C3%2C4"
+                referenceURL = spliturl.joinToString("&")
 
                 Log.v(
                     "ImageHandler",
