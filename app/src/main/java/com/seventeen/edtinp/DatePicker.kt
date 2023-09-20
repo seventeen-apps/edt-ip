@@ -15,15 +15,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
+import com.seventeen.edtinp.ImageHandler
 import com.seventeen.edtinp.MainActivity
 import com.seventeen.edtinp.R
 import com.seventeen.edtinp.loadImage
 import java.util.*
 
-class DatePicker(ctx: MainActivity) :
+class DatePicker(ctx: MainActivity, imageHandler: ImageHandler) :
     DialogFragment(R.layout.date_dialog_fragment) {
 
     val ctx = ctx
+    val imageHandler = imageHandler
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val inflater = activity?.layoutInflater
         val view: View = inflater!!.inflate(R.layout.date_picker_fragment, null)
@@ -101,6 +103,8 @@ class DatePicker(ctx: MainActivity) :
                 val spliturl = MainActivity.referenceURL.split("&") as MutableList
                 spliturl[MainActivity.idSemaineUrl] = "idPianoWeek=${MainActivity.selectedWeekId}"
                 loadImage(imageWebView, spliturl.joinToString("&"))
+                imageHandler.setImage(spliturl.joinToString("&"))
+
             }
 
             activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()

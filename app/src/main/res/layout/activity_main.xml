@@ -66,8 +66,15 @@
         android:layout_marginEnd="2dp"
         android:layout_marginTop="56dp"
         android:foregroundGravity="center"
-        android:elevation="4dp"
+        android:elevation="3dp"
         />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chargement..."
+        android:layout_gravity="center"/>
+
     <WebView
         android:id="@+id/backgroundWebView"
         android:layout_width="fill_parent"

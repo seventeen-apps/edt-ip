@@ -2,6 +2,7 @@ package com.seventeen.edtinp
 
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -19,14 +20,30 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.seventeen.mywardrobe.DatePicker
 import kotlinx.coroutines.*
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.MalformedURLException
+import java.net.URL
 import java.util.Calendar
-
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     @SuppressLint("SetJavaScriptEnabled")
@@ -40,6 +57,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
     val scope = CoroutineScope(Dispatchers.IO)
 
+    val imgtest = "https://edt.grenoble-inp.fr/2023-2024/exterieur/jsp/imageEt?identifier=3597fe08f16acc0775c1bbf89879b9e2w10859&projectId=12&idPianoWeek=6&idPianoDay=0%2C1%2C2%2C3%2C4%2C5%2C6&idTree=13808%2C13807&width=1140&height=572&lunchName=REPAS&displayMode=1057855&showLoad=false&ttl=1695209881600&displayConfId=15"
 
     /*suspend fun getImgRes(webView: WebView) = coroutineScope {
         Log.d("Coroutine", "Coroutine hey")
@@ -64,6 +82,14 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         setSupportActionBar(findViewById(R.id.toolbar))
 
 
+        val myExecutor = Executors.newSingleThreadExecutor()
+        val myHandler = Handler(Looper.getMainLooper())
+
+        val imageView: ImageView = findViewById(R.id.imageView)
+
+        val imageHandler = ImageHandler(this, imageView, myExecutor, myHandler)
+
+
         imageWebView = findViewById(R.id.imageWebView)
         imageWebView.settings.javaScriptEnabled = true
         imageWebView.visibility = View.INVISIBLE
@@ -71,18 +97,24 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
         backgroundWebView = findViewById(R.id.backgroundWebView)
         backgroundWebView.settings.javaScriptEnabled = true
-        backgroundWebView.addJavascriptInterface(WebViewJavaScriptInterface(this, backgroundWebView, imageWebView), "app");
+        backgroundWebView.addJavascriptInterface(WebViewJavaScriptInterface(this, backgroundWebView, imageWebView, imageHandler), "app");
         backgroundWebView.visibility = View.INVISIBLE //TODO: mettre invisible
-
 
 
         //Setup date picker
         val date_button = findViewById<ImageView>(R.id.calendar_button)
         date_button.setOnClickListener {
             val datePicker =
-                DatePicker(this)
+                DatePicker(this, imageHandler)
             datePicker.show(supportFragmentManager, datePicker.TAG)
         }
+
+
+
+
+        // When Button is clicked, executor will
+        // fetch the image and handler will display it.
+        // Once displayed, it is stored locally
 
 
 
@@ -221,6 +253,10 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                         spliturl[idSemaineUrl] = "idPianoWeek=$displayedWeekId"
                         loadImage(imageWebView, spliturl.joinToString("&"))
 
+
+                        // Met l'image dans une ImageView
+
+                        imageHandler.setImage(spliturl.joinToString("&"))
                     }
                 }
             }
@@ -240,6 +276,11 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                         spliturl[idSemaineUrl] = "idPianoWeek=$displayedWeekId"
 //                        Log.d("Identifier", spliturl.joinToString("&"))
                         loadImage(imageWebView, spliturl.joinToString("&"))
+
+
+                        // Met l'image dans une ImageView
+
+                        imageHandler.setImage(spliturl.joinToString("&"))
 
                     }
                 }
@@ -355,7 +396,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
      */
     class WebViewJavaScriptInterface    /*
         * Need a reference to the context in order to sent a post message
-        */(private val context: Context, private val backgroundWebView: WebView, private val imageWebView: WebView) {
+        */(private val context: Context, private val backgroundWebView: WebView, private val imageWebView: WebView, private val imageHandler: ImageHandler) {
 
         private var lastUrl = ""
 
@@ -364,7 +405,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         * This method can be called from Android. @JavascriptInterface
         * required after SDK version 17.
         */
-        fun makeToast(message: String?, lengthLong: Boolean) {
+        fun makeToast(message: String?, lengthLong: Boolean = true) {
             Toast.makeText(
                 context,
                 message,
@@ -385,6 +426,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             Log.v("URL_Loader", "Got src "+src)
             imageWebView.post {
                 loadImage(imageWebView, src)
+                imageHandler.setImage(src)
             }
         }
 
@@ -408,7 +450,18 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                     i+=1
                 }
                 Log.v("ImageHandler", "Reference url set to $referenceURL and week id set to $idSemaineUrl")
+                makeToast("Connection établie")
+                imageHandler.setImage(referenceURL)
             }
+        }
+
+
+
+
+        //TODO documenter
+        @JavascriptInterface
+        fun onLoadingFail() {
+            makeToast("Chargement échoué")
         }
     }
 
@@ -421,12 +474,88 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 }
 
 
+class ImageHandler
+    (private val context: Context, private val imageView: ImageView, private val executor: ExecutorService, private val handler: Handler) {
+    fun mStringToURL(string: String): URL? {
+        try {
+            return URL(string)
+        } catch (e: MalformedURLException) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    fun mSaveMediaToStorage(bitmap: Bitmap?) {
+        val filename = "${System.currentTimeMillis()}.jpg"
+        var fos: OutputStream? = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            context.contentResolver?.also { resolver ->
+                val contentValues = ContentValues().apply {
+                    put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                    put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                }
+                val imageUri: Uri? = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                fos = imageUri?.let { resolver.openOutputStream(it) }
+            }
+        } else {
+            val imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+            val image = File(imagesDir, filename)
+            fos = FileOutputStream(image)
+        }
+        fos?.use {
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, it)
+            Toast.makeText(context , "Saved to Gallery" , Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun mLoad(string: String): Bitmap? {
+        val url: URL = mStringToURL(string)!!
+        val connection: HttpURLConnection?
+        try {
+            connection = url.openConnection() as HttpURLConnection
+            connection.connect()
+            val inputStream: InputStream = connection.inputStream
+            val bufferedInputStream = BufferedInputStream(inputStream)
+            return BitmapFactory.decodeStream(bufferedInputStream)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
+        }
+        return null
+    }
+
+
+    fun setImage(url: String) {
+        executor.execute {
+            val mImage = mLoad(url)
+            handler.post {
+                imageView.setImageBitmap(mImage)
+//                if (mImage != null) {
+//                    mSaveMediaToStorage(mImage)
+//                }
+            }
+        }
+    }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 /** Charge l'image dans la WebView
  * @param imageWebView WebView destinataire
  * @param src url source de l'image à envoyer dans la WebView destinataire */
 fun loadImage(imageWebView: WebView, src: String) {
     Log.v("ImageHandler", src)
-    imageWebView.loadUrl(src)
+//    imageWebView.loadUrl(src)
 //    val a = "https://edt.grenoble-inp.fr/2023-2024/exterieur/jsp/imageEt?identifier=a5f603e1a43101eb53d6bdebac6605aaw4874&projectId=12&idPianoWeek=25&idPianoDay=0%2C1%2C2%2C3%2C4&idTree=13808%2C13807&width=382&height=690&lunchName=REPAS&displayMode=1057855&showLoad=false&ttl=1694954684416&displayConfId=15"
 //    val html = "<html style=\"height: 100%;\"><head><meta name=\"viewport\" content=\"width=device-width, minimum-scale=0.1\"><title>imageEt (382×690)</title></head><body style=\"margin: 0px; height: 100%; background-color: rgb(14, 14, 14);\"><img style=\"display: block;-webkit-user-select: none;max-width: 100%;margin: auto;background-color: hsl(0, 0%, 90%);\" src='$src'></body></html>"
 //    imageWebView.loadData(html, "text/html; charset=utf-8", "UTF-8")

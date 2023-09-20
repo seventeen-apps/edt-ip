@@ -229,6 +229,7 @@ const val set_image_resource = (
                                 "app.setImg(imgsrc);" +
                         "} else {" +
                                 "console.log('Cannot get image resource');" +
+                                "app.onLoadingFail();" +
                         "};" +
                 "};"
 //        + "};"
