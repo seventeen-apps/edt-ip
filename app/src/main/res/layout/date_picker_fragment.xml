@@ -9,32 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <!--<ListView
-            android:id="@+id/outfits_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_gravity="top"
-            android:divider="@android:drawable/divider_horizontal_bright"
-            android:dividerHeight="1dp"
-            app:layout_constraintBottom_toTopOf="@id/cancel_cloth_choice_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />-->
         <CalendarView
             android:id="@+id/date_picker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0" />
-
-        <!--<Button
-            android:id="@+id/cancel_cloth_choice_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="0"
-
-            android:text="Cancel" />-->
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

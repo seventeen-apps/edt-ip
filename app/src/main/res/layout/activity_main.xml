@@ -58,16 +58,6 @@
         android:foregroundGravity="center"
         android:elevation="5dp"
         />
-    <WebView
-        android:id="@+id/imageWebView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="start|top"
-        android:layout_marginEnd="2dp"
-        android:layout_marginTop="56dp"
-        android:foregroundGravity="center"
-        android:elevation="3dp"
-        />
 
     <TextView
         android:layout_width="wrap_content"
