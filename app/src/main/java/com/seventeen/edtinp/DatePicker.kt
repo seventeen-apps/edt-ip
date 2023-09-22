@@ -49,6 +49,7 @@ class DatePicker(private val imageHandler: ImageHandler) :
         builder.setView(view)
 
         builder.setPositiveButton("OK") { dialog, which ->
+
             // on success
             Log.v("DatePicker", MainActivity.selectedWeekId.toString())
 
@@ -64,6 +65,15 @@ class DatePicker(private val imageHandler: ImageHandler) :
         builder.setNegativeButton("Annuler") { dialog, which -> dialog.dismiss() }
 
         return builder.create()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val d = dialog as AlertDialog?
+        if (d != null && MainActivity.isNavigationRestricted) {
+            val positiveButton = d.getButton(Dialog.BUTTON_POSITIVE)
+            positiveButton.setEnabled(false)
+        }
     }
 
     interface OnDatePass {

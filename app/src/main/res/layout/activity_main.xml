@@ -35,6 +35,26 @@
             android:foregroundGravity="center"
             android:padding="5dp"
             android:layout_marginEnd="10dp" />
+        <ImageButton
+            android:id="@+id/refresh_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_refresh_24"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_gravity="end"
+            android:foregroundGravity="center"
+            android:padding="5dp"
+            android:layout_marginEnd="10dp"/>
+
+        <TextView
+            android:id="@+id/loading_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:text="Chargement..."
+            android:textColor="@color/white" />
+
     </androidx.appcompat.widget.Toolbar>
 
 

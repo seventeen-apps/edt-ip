@@ -2,18 +2,16 @@ package com.seventeen.edtinp
 
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.Color.rgb
 import android.graphics.drawable.Drawable
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.os.Looper
-import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Menu
@@ -28,20 +26,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.*
-import java.io.BufferedInputStream
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
-import java.net.URL
 import java.util.Calendar
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.concurrent.thread
+
 
 class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     @SuppressLint("SetJavaScriptEnabled")
@@ -49,7 +41,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
     val mainUrl = "https://edt.grenoble-inp.fr/2023-2024/exterieur"
 
-    val jsSetReferenceDelay = 800
+    val jsSetReferenceDelay = 1000
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,11 +52,13 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         setSupportActionBar(findViewById(R.id.toolbar))
 
         // Initialisation des paramètres de la classe ImageHandler, qui est chargée de l'affichage de l'edt
+        val imageView: ImageView = findViewById(R.id.imageView)
         val myExecutor = Executors.newSingleThreadExecutor()
         val myHandler = Handler(Looper.getMainLooper())
-        val imageView: ImageView = findViewById(R.id.imageView)
+        dataHandler = DataHandler(this) // Initialise le gestionnaire de données
+        val cacheHandler: CacheHandler = CacheHandler(this, dataHandler)
         // Initialisation de ImageHandler, cet objet n'est créé qu'une seule fois dans l'Activité
-        val imageHandler = ImageHandler(this, imageView, myExecutor, myHandler)
+        val imageHandler = ImageHandler(this, imageView, myExecutor, myHandler, cacheHandler)
 
         // Initialisation de la WebView d'arrière plan nécessaire pour générer des images à la taille de l'écran
         backgroundWebView = findViewById(R.id.backgroundWebView)
@@ -87,6 +81,15 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             datePicker.show(supportFragmentManager, DatePicker.TAG)
         }
 
+        val refreshButton = findViewById<ImageView>(R.id.refresh_button)
+        refreshButton.setOnClickListener {
+            imageHandler.updateImage(true)
+        }
+        refreshButton.isEnabled = false
+        refreshButton.setColorFilter(rgb(184, 184, 184))
+
+
+
         // On agrandit la taille du webView pour optimiser l'affichage
         // Nécessaire pour générer une image de la bonne taille
         val displayMetrics = DisplayMetrics()
@@ -98,8 +101,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             "Gained pixels: ${width * 18 / 100}"
         ) // 18% : taille trouvée dans le html
         backgroundWebView.layoutParams.width = width + width * 18 / 100 + 25
-
-        DataHandler().setup(this) // Initialise le gestionnaire de données
 
         // Obtention de l'id de la semaine actuelle
         val calendar = Calendar.getInstance()
@@ -113,7 +114,20 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             currentWeekNumber - 32
         }
         displayedWeekId = currentWeekId
+
+
+        DataHandler.data.currentWeekId = currentWeekId
+        DataHandler.data.currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1
+        dataHandler.updateSave()
+
         Log.v("Date Handler", "Week number is $currentWeekNumber week id is $currentWeekId")
+
+
+        Log.v("hello", "today ${calendar.get(Calendar.DAY_OF_WEEK)}")
+        val imageBitmap = cacheHandler.getImage("week${displayedWeekId}")
+        if (imageBitmap != null) {
+            imageView.setImageBitmap(imageBitmap)
+        }
 
 
         // Client WebView d'arrière-plan
@@ -188,12 +202,12 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             }
         }
 
-        // Charge la WebView d'arrère-plan
-        backgroundWebView.loadUrl(mainUrl)
 
         // Initialisation des boutons de navigation
         val prevButton = findViewById<Button>(R.id.prev_week)
+        prevButton.isEnabled = false
         val nextButton = findViewById<Button>(R.id.next_week)
+        nextButton.isEnabled = false
 
         //TODO désactiver les boutons par défaut et les activer lorsque la page est affichée ?
 
@@ -225,8 +239,34 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                         Log.v("Date Handler", "Moving to week $displayedWeekId")
                         // Met à jour l'image
                         imageHandler.updateImage()
-
                     }
+                }
+            }
+        }
+
+        thread {
+            if (isOnline()) {
+                this.runOnUiThread {
+                    // Charge la WebView d'arrère-plan
+                    backgroundWebView.loadUrl(mainUrl)
+                }
+            } else {
+                this.runOnUiThread {
+                    AlertDialog.Builder(this)
+                        .setTitle("Pas de connexion internet")
+                        .setMessage("Vous pouvez quand même consulter la semaine actuelle, fermer l'application ?") // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton("Fermer",
+                            DialogInterface.OnClickListener { dialog, _ ->
+                                dialog.dismiss(); finishAndRemoveTask()
+                            }) // A null listener allows the button to dismiss the dialog and take no further action.
+                        .setNegativeButton("Rester") { dialog, _ ->
+                            dialog.dismiss()
+                            prevButton.isEnabled = false
+                            nextButton.isEnabled = false
+                            isNavigationRestricted = true
+                        }
+                        .show()
                 }
             }
         }
@@ -237,7 +277,21 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     private fun changeClasse(classe: String) {
 
         DataHandler.data.classe = classe
-        DataHandler().updateSave(this)
+        dataHandler.updateSave()
+    }
+
+    fun isOnline(): Boolean {
+        val runtime = Runtime.getRuntime()
+        try {
+            val ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8")
+            val exitValue = ipProcess.waitFor()
+            return exitValue == 0
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+        return false
     }
 
     /** Initialise le menu en haut à gauche en ajoutant le nom de l'appli à côté */
@@ -251,6 +305,19 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         menuInflater.inflate(R.menu.menu, menu)
         val classeTextView = findViewById<TextView>(R.id.classe_tv)
         classeTextView.text = DataHandler.data.classe
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        if (isNavigationRestricted) {
+            for (item in menu!!.children) {
+                item.isEnabled = false
+            }
+        } else {
+            for (item in menu!!.children) {
+                item.isEnabled = true
+            }
+        }
         return true
     }
 
@@ -386,14 +453,27 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
                 // Crée le lien vers l'image
                 val spliturl = referenceURL.split("&") as MutableList
-                spliturl[idSemaineUrl +1] = "idPianoDay=0%2C1%2C2%2C3%2C4"
+                spliturl[idSemaineUrl + 1] = "idPianoDay=0%2C1%2C2%2C3%2C4"
                 referenceURL = spliturl.joinToString("&")
 
                 Log.v(
                     "ImageHandler",
                     "Reference url set to $referenceURL and week id set to $idSemaineUrl"
                 )
-                makeToast("Connection établie")
+                makeToast("Connection établie", false)
+
+                isNavigationRestricted = false
+                val prevButton = (context as Activity).findViewById<Button>(R.id.prev_week)
+                val nextButton = context.findViewById<Button>(R.id.next_week)
+                val loadingTv = context.findViewById<TextView>(R.id.loading_tv)
+                val refreshButton = context.findViewById<ImageView>(R.id.refresh_button)
+                context.runOnUiThread {
+                    prevButton.isEnabled = true
+                    nextButton.isEnabled = true
+                    refreshButton.isEnabled = true
+                    refreshButton.setColorFilter(rgb(255, 255, 255))
+                    loadingTv.visibility = View.INVISIBLE
+                }
 
                 // Affiche l'image de référence
                 imageHandler.updateImage()
@@ -412,87 +492,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         var idSemaineUrl: Int = 0
         var selectedWeekId: Int = 0
         var displayedWeekId: Int = 0
-    }
-}
-
-/** Gestionnaire de l'affichage de l'image de l'emploi du temps
- * @param imageView ImageView qui doit afficher l'image
- */
-class ImageHandler
-    (
-    private val context: Context,
-    private val imageView: ImageView,
-    private val executor: ExecutorService,
-    private val handler: Handler
-) {
-    private fun mStringToURL(string: String): URL? {
-        try {
-            return URL(string)
-        } catch (e: MalformedURLException) {
-            e.printStackTrace()
-        }
-        return null
-    }
-
-    private fun mSaveMediaToStorage(bitmap: Bitmap?) {
-        val filename = "${System.currentTimeMillis()}.jpg"
-        var fos: OutputStream? = null
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            context.contentResolver?.also { resolver ->
-                val contentValues = ContentValues().apply {
-                    put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
-                    put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
-                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-                }
-                val imageUri: Uri? =
-                    resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-                fos = imageUri?.let { resolver.openOutputStream(it) }
-            }
-        } else {
-            val imagesDir =
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            val image = File(imagesDir, filename)
-            fos = FileOutputStream(image)
-        }
-        fos?.use {
-            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, it)
-            Toast.makeText(context, "Saved to Gallery", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun mLoad(string: String): Bitmap? {
-        val url: URL = mStringToURL(string)!!
-        val connection: HttpURLConnection?
-        try {
-            connection = url.openConnection() as HttpURLConnection
-            connection.connect()
-            val inputStream: InputStream = connection.inputStream
-            val bufferedInputStream = BufferedInputStream(inputStream)
-            return BitmapFactory.decodeStream(bufferedInputStream)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
-        }
-        return null
-    }
-
-    /** Met à jour l'image à la semaine correspondant à l'objet MainActivity.displayedWeekId */
-    fun updateImage() {
-
-        // Crée le lien vers l'image
-        val spliturl = MainActivity.referenceURL.split("&") as MutableList
-        spliturl[MainActivity.idSemaineUrl] = "idPianoWeek=${MainActivity.displayedWeekId}"
-        val url = spliturl.joinToString("&")
-
-//        Log.v("call", "CALLED ${MainActivity.displayedWeekId}")
-        executor.execute {
-            val mImage = mLoad(url)
-            handler.post {
-                imageView.setImageBitmap(mImage)
-//                if (mImage != null) {
-//                    mSaveMediaToStorage(mImage)
-//                }
-            }
-        }
+        lateinit var dataHandler: DataHandler
+        var isNavigationRestricted: Boolean = true
     }
 }
