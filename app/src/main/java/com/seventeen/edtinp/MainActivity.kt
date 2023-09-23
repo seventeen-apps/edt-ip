@@ -5,7 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.content.res.AssetManager
+import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.Color.rgb
 import android.graphics.drawable.Drawable
@@ -14,7 +14,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -28,12 +27,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentActivity
-import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.*
-import org.json.JSONArray
-import org.json.JSONObject
 import java.io.IOException
 import java.util.Calendar
 import java.util.concurrent.Executors
@@ -49,7 +44,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     val jsSetReferenceDelay = 1000
 
     private lateinit var dataHandler: DataHandler
-    private lateinit var class_names: Map<String, *>
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,8 +52,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
         // Ajoute la barre d'outil supérieure
         setSupportActionBar(findViewById(R.id.toolbar))
-        val navView = findViewById<NavigationView>(R.id.nav_view)
-
 
         // Initialisation des paramètres de la classe ImageHandler, qui est chargée de l'affichage de l'edt
         val imageView: ImageView = findViewById(R.id.imageView)
@@ -99,10 +91,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         refreshButton.isEnabled = false
         refreshButton.setColorFilter(rgb(184, 184, 184)) // Filtre gris tant que la connexion n'est pas établie
 
-        // Initialise les références de classes
-        val jsonString = this.assets.readFile("class_names.json")
-        class_names = JSONObject(jsonString).toMap()
-        class_names = (class_names["Prépa INP Valence"] as Map<String, String>)
 
 
         // On agrandit la taille du webView pour optimiser l'affichage
@@ -306,19 +294,15 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
     /** Initialise le menu en haut à gauche en ajoutant le nom de l'appli à côté */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val hamButton: Drawable? = ContextCompat.getDrawable(this, R.drawable.ic_baseline_menu_24)
-        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
+//        val hamButton: Drawable? = ContextCompat.getDrawable(this, R.drawable.ic_baseline_menu_24)
+//        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
 
         // Met l'icône de menu en tant que bouton de navigation
-        toolbar.navigationIcon = hamButton
-        toolbar.setNavigationOnClickListener {
-            val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
-            drawer.openDrawer(Gravity.LEFT)
-        }
+//        toolbar.navigationIcon = hamButton
 
-        menuInflater.inflate(R.menu.menu_pinp_val, menu)
-        val classeTextView = findViewById<TextView>(R.id.classe_tv)
-        classeTextView.text = DataHandler.data.classe
+        menuInflater.inflate(R.menu.menu, menu)
+        val classTextView = findViewById<TextView>(R.id.classe_tv)
+        classTextView.text = DataHandler.data.classe
         return true
     }
     /** Active ou désactive les champs de sélection en fonction de l'objet isNavigationRestricted */
@@ -346,10 +330,37 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     /** Callback lors d'un clic dans le menu de sélection de classe en haut à droite  */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         var search = ""
+        when (item.title) {
+            getString(R.string.A1) -> {
+                changeClasse("1A-PINP")
+                Log.v("Menu Handler", DataHandler.data.classe)
+                search = search1A
+            }
 
-        Log.v("Menu Handler", class_names[item.title].toString())
-        changeClasse(class_names[item.title].toString())
-        Log.v("Menu Handler", DataHandler.data.classe)
+            getString(R.string.A2) -> {
+                changeClasse("2A-PINP")
+                Log.v("Menu Handler", DataHandler.data.classe)
+                search = search2A
+            }
+
+            getString(R.string.HN1) -> {
+                changeClasse("HN1-PINP")
+                Log.v("Menu Handler", DataHandler.data.classe)
+                search = searchHN1
+            }
+
+            getString(R.string.HN2) -> {
+                changeClasse("HN2-PINP")
+                Log.v("Menu Handler", DataHandler.data.classe)
+                search = searchHN2
+            }
+
+            getString(R.string.HN3) -> {
+                changeClasse("HN3-PINP")
+                Log.v("Menu Handler", DataHandler.data.classe)
+                search = searchHN3
+            }
+        }
 
         // Met le nom de la class à jour
         val classeTextView = findViewById<TextView>(R.id.classe_tv)
@@ -363,7 +374,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             } else {
                 // Si la classe est changée, alors on remet à jour la page
                 Log.v("DEBUG", "reload")
-                backgroundWebView.evaluateJavascript(preload + "var tosearch = \"${DataHandler.data.classe}\";" + load, null)
+                backgroundWebView.evaluateJavascript(preload + search + load, null)
                 backgroundWebView.evaluateJavascript(
                     js_functions + "push($displayedWeekId, true)",
                     null
@@ -375,26 +386,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    /** Convertit une chaîne de charactères issue de JSON en Map */
-    fun JSONObject.toMap(): Map<String, *> = keys().asSequence().associateWith {
-        when (val value = this[it])
-        {
-            is JSONArray ->
-            {
-                val map = (0 until value.length()).associate { Pair(it.toString(), value[it]) }
-                JSONObject(map).toMap().values.toList()
-            }
-            is JSONObject -> value.toMap()
-            JSONObject.NULL -> null
-            else            -> value
-        }
-    }
-
-    /** Ouvre un fichier JSON et retourne son contenu en format texte */
-    fun AssetManager.readFile(fileName: String) = open(fileName)
-        .bufferedReader()
-        .use { it.readText() }
 
     /*
      * JavaScript Interface. Web code can access methods in here
