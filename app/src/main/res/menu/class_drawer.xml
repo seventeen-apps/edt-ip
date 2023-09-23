@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <!--<item
+            android:id="@+id/item_ensecube"
+            android:title="Ense3" />
+        <item
+            android:id="@+id/item_ensimag"
+            android:title="Ensimag" />-->
+        <item
+            android:id="@+id/item_esisar"
+            android:title="Esisar" />
+        <!--<item
+            android:id="@+id/item_formation_continue"
+            android:title="Formation continue" />
+        <item
+            android:id="@+id/item_gi"
+            android:title="Génie Industriel" />
+        <item
+            android:id="@+id/item_pagora"
+            android:title="Pagora" />
+        <item
+            android:id="@+id/item_phelma"
+            android:title="Phelma" />
+        <item
+            android:id="@+id/item_polytech"
+            android:title="Polytech" />
+        <item
+            android:id="@+id/item_pinp_gre"
+            android:title="Prépa INP Grenoble" />-->
+        <item
+            android:id="@+id/item_pinp_val"
+            android:title="Prépa INP Valence" />
+        <!--<item
+            android:id="@+id/item_alternants"
+            android:title="Alternants" />-->
+    </group>
+</menu>
