@@ -5,10 +5,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.Color.rgb
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -25,7 +23,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.*
@@ -89,8 +86,13 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             imageHandler.updateImage(true)
         }
         refreshButton.isEnabled = false
-        refreshButton.setColorFilter(rgb(184, 184, 184)) // Filtre gris tant que la connexion n'est pas établie
-
+        refreshButton.setColorFilter(
+            rgb(
+                184,
+                184,
+                184
+            )
+        ) // Filtre gris tant que la connexion n'est pas établie
 
 
         // On agrandit la taille du webView pour optimiser l'affichage
@@ -192,7 +194,9 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
                             // Initialise les objets de la classe
                             backgroundWebView.evaluateJavascript(
-                                "setTimeout(function() {$set_reference_url}, $jsSetReferenceDelay)", null)
+                                "setTimeout(function() {$set_reference_url}, $jsSetReferenceDelay)",
+                                null
+                            )
                         }
                     }
                 }
@@ -305,6 +309,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         classTextView.text = DataHandler.data.classe
         return true
     }
+
     /** Active ou désactive les champs de sélection en fonction de l'objet isNavigationRestricted */
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         if (isNavigationRestricted) {
@@ -381,7 +386,10 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                 )
 
                 // Initialise les objets de la classe
-                backgroundWebView.evaluateJavascript("setTimeout(function() {$set_reference_url}, $jsSetReferenceDelay)", null)
+                backgroundWebView.evaluateJavascript(
+                    "setTimeout(function() {$set_reference_url}, $jsSetReferenceDelay)",
+                    null
+                )
             }
         }
         return super.onOptionsItemSelected(item)
@@ -444,7 +452,10 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                 spliturl[idSemaineUrl + 1] = "idPianoDay=0%2C1%2C2%2C3%2C4"
                 referenceURL = spliturl.joinToString("&")
 
-                Log.v("ImageHandler", "Reference url set to $referenceURL and week id set to $idSemaineUrl")
+                Log.v(
+                    "ImageHandler",
+                    "Reference url set to $referenceURL and week id set to $idSemaineUrl"
+                )
                 makeToast("Connection établie", false)
 
 

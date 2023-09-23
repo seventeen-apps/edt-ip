@@ -10,6 +10,7 @@ import java.io.File
 class DataHandler(private val context: Context) {
     //Setup the data storing file
     private val dataFile = "Data.txt"
+
     init {
         val defaultData = DataClass("2A-PINP", 0, 0)
         setupFile(dataFile, Json.encodeToString(defaultData))
@@ -45,14 +46,16 @@ class DataHandler(private val context: Context) {
      * @param content String-formatted content to write in the file
      */
     fun editFile(filename: String, content: String) {
-        context.openFileOutput(filename, Context.MODE_PRIVATE).use { it.write(content.toByteArray()) }
+        context.openFileOutput(filename, Context.MODE_PRIVATE)
+            .use { it.write(content.toByteArray()) }
     }
 
     /**
      * Update the save file
      */
     fun updateSave() {
-        context.openFileOutput(dataFile, Context.MODE_PRIVATE).use { it.write(Json.encodeToString(data).toByteArray()) }
+        context.openFileOutput(dataFile, Context.MODE_PRIVATE)
+            .use { it.write(Json.encodeToString(data).toByteArray()) }
     }
 
     /**
@@ -62,7 +65,8 @@ class DataHandler(private val context: Context) {
      */
     fun openFile(filename: String, test: Boolean = false): String {
         if (!test) {
-            Log.v("FileManager", "Opened $filename")}; return File(context.filesDir, filename).readText()
+            Log.v("FileManager", "Opened $filename")
+        }; return File(context.filesDir, filename).readText()
     }
 
     /***
@@ -71,7 +75,10 @@ class DataHandler(private val context: Context) {
      * @param content String-formatted content
      */
     private fun createFile(filename: String, content: String) {
-        Log.v("FileManager", "Created $filename"); context.openFileOutput(filename, Context.MODE_PRIVATE).use { it.write(content.toByteArray()) }
+        Log.v("FileManager", "Created $filename"); context.openFileOutput(
+            filename,
+            Context.MODE_PRIVATE
+        ).use { it.write(content.toByteArray()) }
     }
 
     fun getCurrentWeekId(): Int {
