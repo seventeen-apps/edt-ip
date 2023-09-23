@@ -26,14 +26,11 @@ class DatePicker(private val imageHandler: ImageHandler) :
             if ((c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) or (c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)) {
                 selectedWeekNumber += 1
             }
-            val selectedWeekId: Int
-            if (selectedWeekNumber < 32) {
-                selectedWeekId = selectedWeekNumber + 20
+            val selectedWeekId: Int = if (selectedWeekNumber < 32) {
+                selectedWeekNumber + 20
             } else {
-                selectedWeekId = selectedWeekNumber - 32
+                selectedWeekNumber - 32
             }
-
-            //TODO cleanup
             //TODO restreindre la sélection aux semaines valides
 
             /*Toast.makeText(
@@ -48,11 +45,8 @@ class DatePicker(private val imageHandler: ImageHandler) :
         builder.setTitle("Choisissez une date")
         builder.setView(view)
 
-        builder.setPositiveButton("OK") { dialog, which ->
-
-            // on success
+        builder.setPositiveButton("OK") { _, _ ->
             Log.v("DatePicker", MainActivity.selectedWeekId.toString())
-
             if (MainActivity.selectedWeekId != MainActivity.displayedWeekId) {
                 MainActivity.displayedWeekId = MainActivity.selectedWeekId
                 // Met à jour l'image
@@ -61,18 +55,18 @@ class DatePicker(private val imageHandler: ImageHandler) :
             activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
         }
 
-
-        builder.setNegativeButton("Annuler") { dialog, which -> dialog.dismiss() }
+        builder.setNegativeButton("Annuler") { dialog, _ -> dialog.dismiss() }
 
         return builder.create()
     }
 
+    /** Si utilisation en navigation restreinte, alors le bouton de validation est désactivé */
     override fun onStart() {
         super.onStart()
         val d = dialog as AlertDialog?
         if (d != null && MainActivity.isNavigationRestricted) {
             val positiveButton = d.getButton(Dialog.BUTTON_POSITIVE)
-            positiveButton.setEnabled(false)
+            positiveButton.isEnabled = false
         }
     }
 

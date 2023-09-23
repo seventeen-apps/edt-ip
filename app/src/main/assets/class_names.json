@@ -1,0 +1,20 @@
+{
+  "Prépa INP Valence": {
+  "1ère année": "1A-PINP",
+  "2ème année": "2A-PINP",
+  "HN 1": "HN1-PINP",
+  "HN 2": "HN2-PINP",
+  "HN 3": "HN3-PINP"},
+  "Esisar": {
+    "1ère année": "1A-PINP",
+    "2ème année": "2A-PINP",
+    "3ème année": "3A-PINP",
+    "3ème année PP": "3A-PP",
+    "4ème année": "4A-PP",
+    "4ème année PP": "4A-PINP",
+    "5ème année EIS": "5A-PINP",
+    "5ème année IR&C": "5A-PINP",
+    "5ème année MISTRE": "5A-PINP",
+    "5ème année PP": "5A-PINP"
+  }
+}

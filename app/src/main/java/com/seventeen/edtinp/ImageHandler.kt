@@ -10,7 +10,6 @@ import android.os.Environment
 import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
-import android.util.LruCache
 import android.widget.ImageView
 import android.widget.Toast
 import java.io.BufferedInputStream
@@ -36,29 +35,7 @@ class ImageHandler
     private val handler: Handler,
     private val cacheHandler: CacheHandler
 ) {
-    private var memoryCache: LruCache<String, Bitmap>
-
-
-    init {
-        // Get max available VM memory, exceeding this amount will throw an
-        // OutOfMemory exception. Stored in kilobytes as LruCache takes an
-        // int in its constructor.
-        val maxMemory = (Runtime.getRuntime().maxMemory() / 1024).toInt()
-
-//        Log.d("CacheHandler", File(context.cacheDir, ""))
-
-        // Use 1/8th of the available memory for this memory cache.
-        val cacheSize = maxMemory / 8
-
-        memoryCache = object : LruCache<String, Bitmap>(cacheSize) {
-
-            override fun sizeOf(key: String, bitmap: Bitmap): Int {
-                // The cache size will be measured in kilobytes rather than
-                // number of items.
-                return bitmap.byteCount / 1024
-            }
-        }
-    }
+    /** @return Retourne un objet URL à partir de l'adresse donnée en paramètre */
     private fun mStringToURL(string: String): URL? {
         try {
             return URL(string)
@@ -94,6 +71,10 @@ class ImageHandler
         }
     }
 
+
+    /**
+     * Récupère le bitmap à partir d'une url
+     */
     private fun loadBitmap(string: String): Bitmap? {
         val url: URL = mStringToURL(string)!!
         val connection: HttpURLConnection?
@@ -105,7 +86,7 @@ class ImageHandler
             return BitmapFactory.decodeStream(bufferedInputStream)
         } catch (e: IOException) {
             e.printStackTrace()
-            Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Erreur", Toast.LENGTH_SHORT).show()
         }
         return null
     }
@@ -118,16 +99,17 @@ class ImageHandler
         spliturl[MainActivity.idSemaineUrl] = "idPianoWeek=${MainActivity.displayedWeekId}"
         val url = spliturl.joinToString("&")
 
-//        Log.v("call", "CALLED ${MainActivity.displayedWeekId}")
         executor.execute {
             val imageBitmap = loadBitmap(url)!!
             val key = "week${MainActivity.displayedWeekId}"
             handler.post {
+                // Ajoute ou non l'image au cache après l'avoir chargée et affichée
                 if (cacheHandler.isExpired() or ignoreCache) {
                     imageView.setImageBitmap(imageBitmap)
-                    //TODO ajouter le jour de la semaine
+                    //TODO ajouter le jour de la semaine pour la péremption
                     cacheHandler.setImage(key, imageBitmap, ignoreCache)
                 } else { //TODO à tester
+                    // Si un cache est disponible, alors c'est l'image du cache qui est chargée
                     Log.d("CacheHandler", cacheHandler.getImage(key).toString())
                     if (cacheHandler.getImage(key) != null) {
                         imageView.setImageBitmap(cacheHandler.getImage(key))
@@ -135,24 +117,6 @@ class ImageHandler
                         updateImage(true)
                     }
                 }
-            }
-        }
-    }
-
-    /*fun loadBitmap(key: String, imageView: ImageView): Bitmap {
-        val imageKey: String = key
-
-        val bitmap: Bitmap? = getBitmapFromMemCache(imageKey)?.also {
-            return it
-    }*/
-    fun getBitmapFromMemCache(key: String): Bitmap? {
-        return memoryCache.get(key)
-    }
-    fun setBitmapIntoMemCache(key: String, value: Bitmap) {
-        synchronized (memoryCache) {
-            if (memoryCache.get(key) == null) {
-                memoryCache.put(key, value);
-                Log.d("CacheHandler", "saved $key data : $value")
             }
         }
     }

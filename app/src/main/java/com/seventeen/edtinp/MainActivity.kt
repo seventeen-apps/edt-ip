@@ -5,7 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
+import android.content.res.AssetManager
 import android.graphics.Bitmap
 import android.graphics.Color.rgb
 import android.graphics.drawable.Drawable
@@ -14,6 +14,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -27,8 +28,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.*
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.IOException
 import java.util.Calendar
 import java.util.concurrent.Executors
@@ -43,6 +48,9 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
     val jsSetReferenceDelay = 1000
 
+    private lateinit var dataHandler: DataHandler
+    private lateinit var class_names: Map<String, *>
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,13 +58,15 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
         // Ajoute la barre d'outil supérieure
         setSupportActionBar(findViewById(R.id.toolbar))
+        val navView = findViewById<NavigationView>(R.id.nav_view)
+
 
         // Initialisation des paramètres de la classe ImageHandler, qui est chargée de l'affichage de l'edt
         val imageView: ImageView = findViewById(R.id.imageView)
         val myExecutor = Executors.newSingleThreadExecutor()
         val myHandler = Handler(Looper.getMainLooper())
         dataHandler = DataHandler(this) // Initialise le gestionnaire de données
-        val cacheHandler: CacheHandler = CacheHandler(this, dataHandler)
+        val cacheHandler = CacheHandler(this, dataHandler)
         // Initialisation de ImageHandler, cet objet n'est créé qu'une seule fois dans l'Activité
         val imageHandler = ImageHandler(this, imageView, myExecutor, myHandler, cacheHandler)
 
@@ -81,13 +91,18 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             datePicker.show(supportFragmentManager, DatePicker.TAG)
         }
 
+        // Initialisation du bouton de rafraîchissement
         val refreshButton = findViewById<ImageView>(R.id.refresh_button)
         refreshButton.setOnClickListener {
             imageHandler.updateImage(true)
         }
         refreshButton.isEnabled = false
-        refreshButton.setColorFilter(rgb(184, 184, 184))
+        refreshButton.setColorFilter(rgb(184, 184, 184)) // Filtre gris tant que la connexion n'est pas établie
 
+        // Initialise les références de classes
+        val jsonString = this.assets.readFile("class_names.json")
+        class_names = JSONObject(jsonString).toMap()
+        class_names = (class_names["Prépa INP Valence"] as Map<String, String>)
 
 
         // On agrandit la taille du webView pour optimiser l'affichage
@@ -115,15 +130,14 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         }
         displayedWeekId = currentWeekId
 
-
+        // Mise à jour des données
         DataHandler.data.currentWeekId = currentWeekId
         DataHandler.data.currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1
         dataHandler.updateSave()
 
         Log.v("Date Handler", "Week number is $currentWeekNumber week id is $currentWeekId")
 
-
-        Log.v("hello", "today ${calendar.get(Calendar.DAY_OF_WEEK)}")
+        // Affiche l'image de la semaine gardée en cache
         val imageBitmap = cacheHandler.getImage("week${displayedWeekId}")
         if (imageBitmap != null) {
             imageView.setImageBitmap(imageBitmap)
@@ -180,7 +194,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                                 cacheWeekNumber = cacheWeekNumber[0].toString()
                             }
                             if (cacheWeekNumber.toInt() != currentWeekNumber) {
-                                Log.d("Preloader", "Found cached week, reloading to $currentWeekId")
+                                Log.d("Preloader", "Found wrong week, reloading to $currentWeekId")
                                 //TODO push nécessaire ? Est-il possible de juste recharger au jour J ?
                                 backgroundWebView.evaluateJavascript(
                                     js_functions + "push($displayedWeekId, true);",
@@ -188,14 +202,9 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                                 )
                             }
 
-
-                            //TODO délais
-
                             // Initialise les objets de la classe
                             backgroundWebView.evaluateJavascript(
-                                "setTimeout(function() {$set_reference_url}, $jsSetReferenceDelay)",
-                                null
-                            )
+                                "setTimeout(function() {$set_reference_url}, $jsSetReferenceDelay)", null)
                         }
                     }
                 }
@@ -208,8 +217,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         prevButton.isEnabled = false
         val nextButton = findViewById<Button>(R.id.next_week)
         nextButton.isEnabled = false
-
-        //TODO désactiver les boutons par défaut et les activer lorsque la page est affichée ?
 
         prevButton.setOnClickListener {
             backgroundWebView.evaluateJavascript(check_edt_availability) {// Nécessaire pour invalider le clic si page non chargée
@@ -244,6 +251,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             }
         }
 
+        // Vérification de la connectivité à internet
         thread {
             if (isOnline()) {
                 this.runOnUiThread {
@@ -251,15 +259,15 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                     backgroundWebView.loadUrl(mainUrl)
                 }
             } else {
+                // Affiche un dialogue et propose de rester en mode hors ligne
+                //TODO ajouter une checkbox pour ne plus afficher le dialogue
                 this.runOnUiThread {
                     AlertDialog.Builder(this)
                         .setTitle("Pas de connexion internet")
-                        .setMessage("Vous pouvez quand même consulter la semaine actuelle, fermer l'application ?") // Specifying a listener allows you to take an action before dismissing the dialog.
-                        // The dialog is automatically dismissed when a dialog button is clicked.
-                        .setPositiveButton("Fermer",
-                            DialogInterface.OnClickListener { dialog, _ ->
-                                dialog.dismiss(); finishAndRemoveTask()
-                            }) // A null listener allows the button to dismiss the dialog and take no further action.
+                        .setMessage("Vous pouvez quand même consulter la semaine actuelle, fermer l'application ?")
+                        .setPositiveButton("Fermer") { dialog, _ ->
+                            dialog.dismiss(); finishAndRemoveTask()
+                        }
                         .setNegativeButton("Rester") { dialog, _ ->
                             dialog.dismiss()
                             prevButton.isEnabled = false
@@ -273,14 +281,16 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     }
 
 
-    /** sauvegarde la nouvelle classe */
+    /** Sauvegarde la nouvelle classe */
     private fun changeClasse(classe: String) {
-
         DataHandler.data.classe = classe
         dataHandler.updateSave()
     }
 
-    fun isOnline(): Boolean {
+    /** Essaie une transaction internet
+     * @return true si connexion à internet, et false sinon
+     */
+    private fun isOnline(): Boolean {
         val runtime = Runtime.getRuntime()
         try {
             val ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8")
@@ -300,14 +310,18 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
 
         // Met l'icône de menu en tant que bouton de navigation
-//        toolbar.navigationIcon = hamButton
+        toolbar.navigationIcon = hamButton
+        toolbar.setNavigationOnClickListener {
+            val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
+            drawer.openDrawer(Gravity.LEFT)
+        }
 
-        menuInflater.inflate(R.menu.menu, menu)
+        menuInflater.inflate(R.menu.menu_pinp_val, menu)
         val classeTextView = findViewById<TextView>(R.id.classe_tv)
         classeTextView.text = DataHandler.data.classe
         return true
     }
-
+    /** Active ou désactive les champs de sélection en fonction de l'objet isNavigationRestricted */
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         if (isNavigationRestricted) {
             for (item in menu!!.children) {
@@ -329,41 +343,13 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         selectedWeekId = weekId
     }
 
-
+    /** Callback lors d'un clic dans le menu de sélection de classe en haut à droite  */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        /** Callback lors d'un clic dans le menu de sélection de classe en haut à droite  */
         var search = ""
-        when (item.title) {
-            getString(R.string.A1) -> {
-                changeClasse("1A-PINP")
-                Log.v("Menu Handler", DataHandler.data.classe)
-                search = search1A
-            }
 
-            getString(R.string.A2) -> {
-                changeClasse("2A-PINP")
-                Log.v("Menu Handler", DataHandler.data.classe)
-                search = search2A
-            }
-
-            getString(R.string.HN1) -> {
-                changeClasse("HN1-PINP")
-                Log.v("Menu Handler", DataHandler.data.classe)
-                search = searchHN1
-            }
-
-            getString(R.string.HN2) -> {
-                changeClasse("HN2-PINP")
-                Log.v("Menu Handler", DataHandler.data.classe)
-                search = searchHN2
-            }
-
-            getString(R.string.HN3) -> {
-                changeClasse("HN3-PINP")
-                Log.v("Menu Handler", DataHandler.data.classe)
-                search = searchHN3
-            }
-        }
+        Log.v("Menu Handler", class_names[item.title].toString())
+        changeClasse(class_names[item.title].toString())
+        Log.v("Menu Handler", DataHandler.data.classe)
 
         // Met le nom de la class à jour
         val classeTextView = findViewById<TextView>(R.id.classe_tv)
@@ -377,21 +363,38 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             } else {
                 // Si la classe est changée, alors on remet à jour la page
                 Log.v("DEBUG", "reload")
-                backgroundWebView.evaluateJavascript(preload + search + load, null)
+                backgroundWebView.evaluateJavascript(preload + "var tosearch = \"${DataHandler.data.classe}\";" + load, null)
                 backgroundWebView.evaluateJavascript(
                     js_functions + "push($displayedWeekId, true)",
                     null
                 )
 
                 // Initialise les objets de la classe
-                backgroundWebView.evaluateJavascript(
-                    "setTimeout(function() {$set_reference_url}, $jsSetReferenceDelay)",
-                    null
-                )
+                backgroundWebView.evaluateJavascript("setTimeout(function() {$set_reference_url}, $jsSetReferenceDelay)", null)
             }
         }
         return super.onOptionsItemSelected(item)
     }
+
+    /** Convertit une chaîne de charactères issue de JSON en Map */
+    fun JSONObject.toMap(): Map<String, *> = keys().asSequence().associateWith {
+        when (val value = this[it])
+        {
+            is JSONArray ->
+            {
+                val map = (0 until value.length()).associate { Pair(it.toString(), value[it]) }
+                JSONObject(map).toMap().values.toList()
+            }
+            is JSONObject -> value.toMap()
+            JSONObject.NULL -> null
+            else            -> value
+        }
+    }
+
+    /** Ouvre un fichier JSON et retourne son contenu en format texte */
+    fun AssetManager.readFile(fileName: String) = open(fileName)
+        .bufferedReader()
+        .use { it.readText() }
 
     /*
      * JavaScript Interface. Web code can access methods in here
@@ -427,14 +430,8 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
          * Cette méthode est appelée lorsque l'on change de classe ou lors du lancement de l'application */
         @JavascriptInterface
         fun setReferenceUrl(url: String) {
-            //TODO boucle infinie
             if (url == "") {
-                backgroundWebView.post {
-                    backgroundWebView.evaluateJavascript(
-                        set_reference_url,
-                        null
-                    )
-                }; return
+                makeToast("Erreur lors de la récupération du lien"); return
             } else {
                 referenceURL = url
 
@@ -456,12 +453,11 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                 spliturl[idSemaineUrl + 1] = "idPianoDay=0%2C1%2C2%2C3%2C4"
                 referenceURL = spliturl.joinToString("&")
 
-                Log.v(
-                    "ImageHandler",
-                    "Reference url set to $referenceURL and week id set to $idSemaineUrl"
-                )
+                Log.v("ImageHandler", "Reference url set to $referenceURL and week id set to $idSemaineUrl")
                 makeToast("Connection établie", false)
 
+
+                // Active tous les widgets de navigation
                 isNavigationRestricted = false
                 val prevButton = (context as Activity).findViewById<Button>(R.id.prev_week)
                 val nextButton = context.findViewById<Button>(R.id.next_week)
@@ -472,10 +468,10 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                     nextButton.isEnabled = true
                     refreshButton.isEnabled = true
                     refreshButton.setColorFilter(rgb(255, 255, 255))
-                    loadingTv.visibility = View.INVISIBLE
+                    loadingTv.visibility = View.GONE
                 }
 
-                // Affiche l'image de référence
+                // Affiche l'image de référence mise à jour
                 imageHandler.updateImage()
             }
         }
@@ -492,7 +488,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         var idSemaineUrl: Int = 0
         var selectedWeekId: Int = 0
         var displayedWeekId: Int = 0
-        lateinit var dataHandler: DataHandler
         var isNavigationRestricted: Boolean = true
     }
 }

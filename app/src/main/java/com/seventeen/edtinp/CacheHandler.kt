@@ -6,18 +6,20 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import android.widget.Toast
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.FileOutputStream
-import java.io.IOException
 
-
+/**
+ * Gestionnaire de cache
+ * @param dataHandler DataHandler unique
+ */
 class CacheHandler(private val context: Context, private val dataHandler: DataHandler) {
-    lateinit var cacheFile: File
-    init {
-        cacheFile = File(context.cacheDir, "ImageCache")
-//        if (cacheFile.listFiles() != null) { Log.d("CacheHandler", "Found cache"); Log.d("CacheHandler", cacheFile.listFiles().toString()) }
-//        else { Log.d("CacheHandler", "No cache found"); createCache()}
-    }
+
+    /**
+     * Ajoute un bitmap au cache
+     * @param key Nom du bitmap stocké
+     * @param value Contenu du bitmap
+     * @param ignoreCache Booléen obligeant à invalider le cache
+     */
     fun setImage(key: String, value: Bitmap, ignoreCache: Boolean = false) {
         val cacheDir = context.cacheDir
         val file = File(cacheDir, key)
@@ -51,21 +53,29 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
             }
         }
     }
+
+    /**
+     * Récupère un bitmap en cache
+     * @param key Nom du bitmap à récupérer
+     */
     fun getImage(key: String): Bitmap? {
         val cacheDir = context.cacheDir
         val file = File(cacheDir, key)
 
-        if (file.exists()) {
-            return BitmapFactory.decodeFile(file.absolutePath)
+
+        return if (file.exists()) {
+            BitmapFactory.decodeFile(file.absolutePath)
         } else {
-            return null
+            null
         }
     }
 
+    /** Vérifie si le bitmap en cache n'est pas trop vieux */
     fun isExpired(): Boolean {
         return true
     }
 
+    /** Crée un fichier cache */
     private fun createCache() {
         File.createTempFile("ImageCache", null, context.cacheDir)
     }
