@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                 imageHandler
             ), "app"
         )
-        backgroundWebView.visibility = View.INVISIBLE
+        backgroundWebView.visibility = View.VISIBLE
 
 
         // Initialisation du calendrier de sélection de date
@@ -456,7 +456,8 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                     "ImageHandler",
                     "Reference url set to $referenceURL and week id set to $idSemaineUrl"
                 )
-                makeToast("Connection établie", false)
+                makeToast("Connexion établie", false)
+                Log.v("ConnectionHandler", "Connexion établie")
 
 
                 // Active tous les widgets de navigation
@@ -474,7 +475,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                 }
 
                 // Affiche l'image de référence mise à jour
-                imageHandler.updateImage()
+                imageHandler.updateImage(forcereference = true)
             }
         }
 
