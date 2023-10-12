@@ -17,6 +17,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <style name="Theme.MyWardrobe.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="Theme.MyWardrobe.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.EDTINP.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.EDTINP.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
