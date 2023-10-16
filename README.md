@@ -1,6 +1,8 @@
 # edt-inp
 Vous pouvez maintenant accéder plus facilement à votre emploi du temps !
 
+Graphe représentant l'avancement du projet [ici](https://github.com/seventeen-apps/edt-inp/network)
+
 Interface principale:
 Naviguez entre les semaines grâce aux boutons de navigation inférieurs
 <html>
