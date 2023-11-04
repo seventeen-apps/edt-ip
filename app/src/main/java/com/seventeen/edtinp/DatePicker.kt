@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import java.util.Calendar
 
-class DatePicker(private val imageHandler: ImageHandler) :
+class DatePicker(private val imageHandler: ImageHandler, private val dataHandler: DataHandler) :
     DialogFragment(R.layout.date_dialog_fragment) {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -50,7 +50,8 @@ class DatePicker(private val imageHandler: ImageHandler) :
             if (MainActivity.selectedWeekId != MainActivity.displayedWeekId) {
                 MainActivity.displayedWeekId = MainActivity.selectedWeekId
                 // Met à jour l'image
-                imageHandler.updateImage()
+//                imageHandler.updateImage()
+                imageHandler.updateWebView()
             }
             activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
         }

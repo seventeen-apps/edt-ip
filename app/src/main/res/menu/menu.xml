@@ -20,4 +20,18 @@
     <item
         android:id="@+id/action_hn3"
         android:title="@string/HN3" />
+    <item
+        android:id="@+id/action_flush_simple"
+        android:title="Effaçage simple" />
+    <item
+        android:id="@+id/action_flush_full"
+        android:title="Effaçage général" />
+    <item
+        android:id="@+id/action_flush_data"
+        android:title="Effaçer le fichier de sauvegarde" />
+    <item
+        android:id="@+id/action_logging"
+        android:title="Logs"
+        android:checkable="true" />
+
 </menu>

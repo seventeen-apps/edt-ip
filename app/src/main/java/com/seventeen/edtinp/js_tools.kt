@@ -26,7 +26,7 @@ var load = (
         "            inputField.dispatchEvent(inputEvent);" + //simule un click humain
         "            const form = inputField.closest(\"form\");" +
         "            form.submit();" + // Lance la recherche
-        "            console.log('Pre-load done (1A)');" +
+        "            console.log('Pre-load done');" +
         "         }" +
         "      }" +
         "   }" +

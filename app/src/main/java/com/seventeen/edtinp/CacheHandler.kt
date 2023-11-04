@@ -54,6 +54,10 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
         }
     }
 
+
+
+
+
     /**
      * Récupère un bitmap en cache
      * @param key Nom du bitmap à récupérer
@@ -80,3 +84,4 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
         File.createTempFile("ImageCache", null, context.cacheDir)
     }
 }
+
