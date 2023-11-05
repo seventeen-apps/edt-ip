@@ -32,12 +32,6 @@ class DatePicker(private val imageHandler: ImageHandler, private val dataHandler
                 selectedWeekNumber - 32
             }
             //TODO restreindre la sélection aux semaines valides
-
-            /*Toast.makeText(
-                inflater.context,
-                "Selected Date = $strFormattedSelectedDate",
-                Toast.LENGTH_SHORT
-            ).show()*/
             MainActivity().onDatePass(selectedWeekId, activity)
         }
 
@@ -65,7 +59,7 @@ class DatePicker(private val imageHandler: ImageHandler, private val dataHandler
     override fun onStart() {
         super.onStart()
         val d = dialog as AlertDialog?
-        if (d != null && MainActivity.isNavigationRestricted) {
+        if (d != null && !MainActivity.navigationState) {
             val positiveButton = d.getButton(Dialog.BUTTON_POSITIVE)
             positiveButton.isEnabled = false
         }

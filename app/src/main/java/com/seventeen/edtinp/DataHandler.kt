@@ -160,8 +160,4 @@ class DataHandler(private val context: Context) {
             data.identifiers[getClass()]!!
         }
     }
-
-    /*companion object {
-        var data: DataClass = DataClass("2A-PINP", 0, 0, mutableMapOf("1A-PINP" to "","2A-PINP" to "", "HN1-PINP" to "", "HN2-PINP" to "", "HN3-PINP" to ""), listOf(0, 0), false)
-    }*/
 }

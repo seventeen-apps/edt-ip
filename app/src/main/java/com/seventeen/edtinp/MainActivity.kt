@@ -2,7 +2,6 @@ package com.seventeen.edtinp
 
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.res.Configuration
@@ -22,7 +21,6 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -32,15 +30,13 @@ import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.concurrent.Executors
 import kotlin.concurrent.thread
 
-//TODO faire une fonction switch
+
 //TODO supprimer le code inutile
-//TODO Ajouter une variable pour le délai de conversion en bitmap et affiner setreferencedelay
+
 class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     @SuppressLint("SetJavaScriptEnabled")
     lateinit var backgroundWebView: WebView
@@ -49,9 +45,11 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     val mainUrl = "https://edt.grenoble-inp.fr/2023-2024/exterieur"
 
     val jsSetReferenceDelay = 1200
+    val jsSetBitmapDelay = 100
 
     private lateinit var dataHandler: DataHandler
     private lateinit var cacheHandler: CacheHandler
+    private lateinit var imageHandler: ImageHandler
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,50 +59,37 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         setSupportActionBar(findViewById(R.id.toolbar))
 
         // Initialisation des paramètres de la classe ImageHandler, qui est chargée de l'affichage de l'edt
-        val imageView: ImageView = findViewById(R.id.imageView)
+        imageView = findViewById(R.id.imageView)
         val myExecutor = Executors.newSingleThreadExecutor()
         val myHandler = Handler(Looper.getMainLooper())
         dataHandler = DataHandler(this) // Initialise le gestionnaire de données
+        imageHandler = ImageHandler(this, imageView, dataHandler)
         cacheHandler = CacheHandler(this, dataHandler)
 
 
-        // Initialisation de la WebView d'arrière plan nécessaire pour générer des images à la taille de l'écran
+        // Initialisation de la WebView d'arrière plan nécessaire pour générer le lien de référence
         backgroundWebView = findViewById(R.id.backgroundWebView)
+        backgroundWebView.settings.javaScriptEnabled = true
+        backgroundWebView.addJavascriptInterface(BackgroundWebViewJavaScriptInterface(this, imageHandler, dataHandler), "app")
 
+
+        // Initialisation de la WebView intermédiaire nécessaire pour générer des images à partir de l'url obtenue en amont
         foregroundWebView = findViewById<WebView>(R.id.foregroundWebView)
         foregroundWebView.settings.javaScriptEnabled = true
         foregroundWebView.setBackgroundColor(Color.argb(1, 0, 0, 0))
+        foregroundWebView.addJavascriptInterface(ForegroundWebViewJavaScriptInterface(this, imageHandler), "app")
 
 
+        // Initialisation des boutons de navigation
+        val prevButton = findViewById<Button>(R.id.prev_week)
+        prevButton.isEnabled = false
+        val nextButton = findViewById<Button>(R.id.next_week)
+        nextButton.isEnabled = false
+        val refreshButton = findViewById<ImageView>(R.id.refresh_button)
+        refreshButton.isEnabled = false
+        refreshButton.setColorFilter(rgb(184, 184, 184)) // Filtre gris tant que la connexion n'est pas établie
 
 
-
-        // Initialisation de ImageHandler, cet objet n'est créé qu'une seule fois dans l'Activité
-        val imageHandler = ImageHandler(this, imageView, backgroundWebView, myExecutor, myHandler, cacheHandler, dataHandler)
-
-
-        foregroundWebView.addJavascriptInterface(
-            WebViewJavaScriptInterface(
-                this,
-                backgroundWebView,
-                imageHandler,
-                dataHandler
-            ), "app"
-        )
-
-
-
-        backgroundWebView.settings.javaScriptEnabled = true
-        backgroundWebView.addJavascriptInterface(
-            WebViewJavaScriptInterface(
-                this,
-                backgroundWebView,
-                imageHandler,
-                dataHandler
-            ), "app"
-        )
-        backgroundWebView.visibility = View.INVISIBLE
-        foregroundWebView.visibility = View.INVISIBLE
 
 
         // Initialisation du calendrier de sélection de date
@@ -114,9 +99,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                 DatePicker(imageHandler, dataHandler)
             datePicker.show(supportFragmentManager, DatePicker.TAG)
         }
-
-
-
 
         // On agrandit la taille du webView pour optimiser l'affichage
         // Nécessaire pour générer une image de la bonne taille
@@ -165,63 +147,36 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             Toast.makeText(this, "Image précédente effacée", Toast.LENGTH_SHORT).show()
         }
 
-        foregroundWebView.webViewClient = object : WebViewClient() {
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                val javascript = """
+        var javascript = """
                     javascript:(function() {
                         var body = document.querySelector('body');
                         if (body) {
                             body.style.backgroundColor = 'transparent';
-                            setTimeout(function() {app.setBitmap();}, 60);
-                            
-                            
-                        }
+                            console.log('good news ! :)');
+                            setTimeout(function() {app.setBitmap();}, $jsSetBitmapDelay);
+                        } else { console.log('I tried :('); };
                     })();
                 """.trimIndent()
-                foregroundWebView.post {
-                    foregroundWebView.evaluateJavascript(
-                        "setTimeout(function() {$javascript}, 0)", null)
-                }
-                foregroundWebView.visibility = View.INVISIBLE
+        javascript = """
+                    javascript:(function() {
+                        var body = document.querySelector('body');
+                        if (body) {
+                            body.style.backgroundColor = 'transparent';
+                            console.log('good news ! :)');
+                            setTimeout(function() {app.setBitmap();}, $jsSetBitmapDelay+100);
+                        } else { console.log('I tried :('); setTimeout(function() {$javascript}, 200); };
+                    })();
+                """.trimIndent()
 
-                var identifiant = ""
-                if (url!!.split("?")[1].split("=")[0] == "identifier") {
-                    identifiant = url.split("&")[0].split("?")[1].split("=")[1]
-                }
-                if (((identifiant != "") and (identifiant != dataHandler.getId())) or (isNavigationRestricted)) {
-                    dataHandler.setId(dataHandler.getClass(), identifiant)
 
-                    // Active tous les widgets de navigation
-                    runOnUiThread {
-                        isNavigationRestricted = false
-                        findViewById<Button>(R.id.prev_week).isEnabled = true
-                        findViewById<Button>(R.id.next_week).isEnabled = true
-                        findViewById<ImageView>(R.id.refresh_button).isEnabled = true
-                        findViewById<ImageView>(R.id.refresh_button).setColorFilter(rgb(255, 255, 255))
-                        findViewById<TextView>(R.id.loading_tv).visibility = View.GONE
-                        findViewById<ImageView>(R.id.imageView).alpha = (1).toFloat()
-                        backgroundWebView.visibility = View.INVISIBLE
-                    }
-                }
+        // Client de la WebView intermédiaire
+        foregroundWebView.webViewClient = object : WebViewClient() {
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                foregroundWebView.evaluateJavascript(javascript, null)
                 super.onPageStarted(view, url, favicon)
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                if ((displayedWeekId == currentWeekId) or (displayedWeekId == currentWeekId-1)) {
-                    val files = cacheDir.listFiles()
-                    if (files != null) {
-                        Log.d("CacheHandler", "Size: " + files.size)
-                    }
-                    if (files != null) {
-                        for (i in files.indices) {
-                            Log.d("CacheHandler", "FileName:" + files[i].name)
-                        }
-                    }
-                    captureWebViewContent()
-                    deleteDir(cacheDir, weekId = currentWeekId - 2)
-                } else {
-
-                }
                 super.onPageFinished(view, url)
             }
         }
@@ -295,13 +250,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             }
         }
 
-
-        // Initialisation des boutons de navigation
-        val prevButton = findViewById<Button>(R.id.prev_week)
-        prevButton.isEnabled = false
-        val nextButton = findViewById<Button>(R.id.next_week)
-        nextButton.isEnabled = false
-
         prevButton.setOnClickListener {
             backgroundWebView.evaluateJavascript(check_edt_availability) {// Nécessaire pour invalider le clic si page non chargée
                 if (it != "null") {
@@ -314,15 +262,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                         Log.v("Date Handler", "Moving to week $displayedWeekId")
                         // Met l'image dans une ImageView
                         imageHandler.updateWebView()
-
-                    /*backgroundWebView.evaluateJavascript(
-                            js_functions + "push($displayedWeekId, true);",
-                            null
-                        )
-                        backgroundWebView.evaluateJavascript(
-                            "setTimeout(function() {$set_reference_url}, $jsSetReferenceDelay)",
-                            null
-                        )*/
                     }
                 }
             }
@@ -338,37 +277,18 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                         displayedWeekId += 1
                         Log.v("Date Handler", "Moving to week $displayedWeekId")
                         // Met à jour l'image
-//                        imageHandler.updateImage()
                         imageHandler.updateWebView()
-
-                        /*backgroundWebView.evaluateJavascript(
-                            js_functions + "push($displayedWeekId, true);",
-                            null
-                        )
-                        backgroundWebView.evaluateJavascript(
-                            "setTimeout(function() {$set_reference_url}, $jsSetReferenceDelay)",
-                            null
-                        )*/
                     }
                 }
             }
         }
 
         // Initialisation du bouton de rafraîchissement
-        val refreshButton = findViewById<ImageView>(R.id.refresh_button)
         refreshButton.setOnClickListener {
-//            flushCache(this)
-//            imageHandler.updateImage(true)
             thread {
                 if (isOnline()) {
-                    this.runOnUiThread {
-                        prevButton.isEnabled = false
-                        nextButton.isEnabled = false
-                        refreshButton.isEnabled = false
-                        refreshButton.setColorFilter(rgb(184, 184, 184)) // Filtre gris tant que la connexion n'est pas établie
-                        isNavigationRestricted = true
-                        this.findViewById<TextView>(R.id.loading_tv).visibility = View.VISIBLE
-                        // Charge la WebView d'arrère-plan
+                    runOnUiThread {
+                        switchNavigation(this@MainActivity, navigationValue = false)
                         backgroundWebView.loadUrl(mainUrl)
                     }
                 } else {
@@ -383,29 +303,21 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                             }
                             .setNegativeButton("Rester") { dialog, _ ->
                                 dialog.dismiss()
-                                isNavigationRestricted = true
-                                prevButton.isEnabled = false
-                                nextButton.isEnabled = false
-                            }
+                                runOnUiThread { switchNavigation(this@MainActivity, navigationValue = false, loadFailure = true) }
+                                }
                             .show()
                     }
                 }
             }
         }
-        refreshButton.isEnabled = false
-        refreshButton.setColorFilter(rgb(184, 184, 184)) // Filtre gris tant que la connexion n'est pas établie
 
 
 
         thread {
             // Vérification de la connectivité à internet
             if (isOnline()) {
-                this.runOnUiThread {
-                    // Charge la WebView d'arrère-plan
-                    backgroundWebView.loadUrl(mainUrl)
-
-
-                }
+                // Charge la WebView d'arrère-plan
+                runOnUiThread {backgroundWebView.loadUrl(mainUrl) }
             } else {
                 // Affiche un dialogue et propose de rester en mode hors ligne
                 //TODO ajouter une checkbox pour ne plus afficher le dialogue
@@ -418,11 +330,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                         }
                         .setNegativeButton("Rester") { dialog, _ ->
                             dialog.dismiss()
-                            prevButton.isEnabled = false
-                            nextButton.isEnabled = false
-                            refreshButton.isEnabled = true
-                            refreshButton.setColorFilter(rgb(255, 255, 255))
-                            isNavigationRestricted = true
+                            runOnUiThread { switchNavigation(this@MainActivity, navigationValue = false, loadFailure = true) }
                         }
                         .show()
                 }
@@ -440,26 +348,34 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         }
     }
 
+    /**
+     * Récupère le contenu de la WebView intermédiaire sous forme de Bitmap puis sauvegarde ce Bitmap dans le cache sous forme d'image
+     */
     private fun captureWebViewContent() {
         val bitmap = getBitmapFromWebView()
-        // Capture the WebView content into the bitmap
+        // Récupère le contenu de la WebView intermédiaire
         val canvas = Canvas(bitmap)
         foregroundWebView.draw(canvas)
 
-        // Save the bitmap to a file
+        // Enregistre le Bitmap dans le cache
         val key = "week${MainActivity.displayedWeekId}"
         cacheHandler.setImage(key, bitmap)
     }
 
+    /**
+     * Récupère le contenu de la WebView intermédiaire sous forme de Bitmap
+     * @return Le Bitmap sur lequel a été imprimé le contenu de la WebView intermédiaire
+     */
     fun getBitmapFromWebView(): Bitmap {
-        // Get the dimensions of the WebView
+        // Récupère la dimension de la WebView intermédiaire
+        //TODO essayer avec dataHandler.getDimensions()
         val width = foregroundWebView.width
         val height = foregroundWebView.height
 
-        // Create a bitmap of the same dimensions as the WebView
+        // Crée le Bitmap vide correspondant
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
-        // Capture the WebView content into the bitmap
+        // Imprime le contenu de la WebView intermédiaire sur le Bitmap
         val canvas = Canvas(bitmap)
         foregroundWebView.draw(canvas)
 
@@ -489,14 +405,17 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         return false
     }
 
+
+    //TODO comparer les anciennes versions pour vérifier si on peut supprimer
     /** Fonction appelée lorsque l'utilisateur effectue un clic sur un jour du calendrier
      * Met à jour l'objet selectedWeekId
      * @param weekId Id de la semaine à stocker dans l'objet selectedWeekId */
     /*override fun onDatePass(weekId: Int, activity: FragmentActivity?) {
         Log.v("TempSave", "Updated to $weekId")
         selectedWeekId = weekId
-    }
-*/
+    }*/
+
+
     /** Initialise le menu en haut à gauche en ajoutant le nom de l'appli à côté */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
 //        val hamButton: Drawable? = ContextCompat.getDrawable(this, R.drawable.ic_baseline_menu_24)
@@ -513,7 +432,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
     /** Active ou désactive les champs de sélection en fonction de l'objet isNavigationRestricted */
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        if (isNavigationRestricted) {
+        if (!navigationState) {
             for (item in menu!!.children) {
                 item.isEnabled = false
             }
@@ -583,18 +502,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         // En cas de besoin, choisir une classe recharge la page (permet de sortir d'un bug)
         //TODO nécéssaire ?
         if (item.title !in arrayOf("Effaçage général", "Effaçage simple", "Effaçer le fichier de sauvegarde", "Logs")) {
-            thread {
-                //TODO faire une fonction switch
-                this.runOnUiThread {
-                    this.findViewById<Button>(R.id.prev_week).isEnabled = false
-                    this.findViewById<Button>(R.id.next_week).isEnabled = false
-                    this.findViewById<ImageButton>(R.id.refresh_button).isEnabled = false
-                    this.findViewById<ImageButton>(R.id.refresh_button)
-                        .setColorFilter(rgb(184, 184, 184))
-                    this.findViewById<TextView>(R.id.loading_tv).visibility = View.VISIBLE
-                    isNavigationRestricted = true
-                }
-            }
+            runOnUiThread { switchNavigation(this@MainActivity, navigationValue = false) }
             backgroundWebView.evaluateJavascript(get_selected_week) {
 
 
@@ -626,29 +534,16 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
      * (as long as they have the @JavascriptInterface annotation)
      */
     /**
-     * @param backgroundWebView WebView de référence (en arrière-plan)
      * @param imageHandler ImageHandler responsable du chargement de l'image
      */
-    class WebViewJavaScriptInterface    /*
-        * Need a reference to the context in order to sent a post message
-        */(
-        private val context: Activity,
-        private val backgroundWebView: WebView,
+    class BackgroundWebViewJavaScriptInterface(
+        private val context: MainActivity,
         private val imageHandler: ImageHandler,
         private val dataHandler: DataHandler
     ) {
-
         @JavascriptInterface
-                /*
-                * This method can be called from Android. @JavascriptInterface
-                * required after SDK version 17.
-                */
         fun makeToast(message: String?, lengthLong: Boolean = true) {
-            Toast.makeText(
-                context,
-                message,
-                if (lengthLong) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(context, message, if (lengthLong) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
         }
 
         /** Met à jour les objets de l'activité et affiche l'image avec la nouvelle référence
@@ -660,7 +555,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                 makeToast("Erreur lors de la récupération du lien"); return
             } else {
                 referenceURL = url
-
 
                 // Met à jour l'objet id de la semaine
                 //TODO Remplacer toutes les créations d'url avec les placeholder
@@ -679,79 +573,90 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                     i += 1
                 }
 
-                // Crée le lien vers l'image
+                // Crée le lien vers l'image avec les bon jours sélectionnés et sauvegarde la taille
                 val spliturl = referenceURL.split("&") as MutableList
                 spliturl[idSemaineUrl + 1] = "idPianoDay=0%2C1%2C2%2C3%2C4"
                 dataHandler.setDimensions(listOf(splitUrl[widthId].split("=")[1].toInt(), splitUrl[heightId].split("=")[1].toInt()))
                 referenceURL = spliturl.joinToString("&")
 
 
-                context.runOnUiThread{ context.findViewById<WebView>(R.id.foregroundWebView).loadUrl(referenceURL)
-                                        }
-                Log.v(
-                    "JavaInterface",
-                    "Reference url set to $referenceURL and week field id set to $idSemaineUrl"
-                )
+                // Met à jour l'identifiant si nécéssaire
+                var identifiant = ""
+                if (url!!.split("?")[1].split("=")[0] == "identifier") {
+                    identifiant = url.split("&")[0].split("?")[1].split("=")[1]
+                }
+                if (((identifiant != "") and (identifiant != dataHandler.getId()))) {
+                    dataHandler.setId(dataHandler.getClass(), identifiant)
+                }
+
+
+                // Charge l'url dans la WebView intermédiaire
+                context.runOnUiThread{ context.findViewById<WebView>(R.id.foregroundWebView).loadUrl(referenceURL) }
+                Log.v("JavaInterface", "Reference url set to $referenceURL and week field id set to $idSemaineUrl")
+
+                // Logs diverses
+                // TODO passer en commentaires plus tard
+                val files = context.cacheDir.listFiles()
+                if (files != null) {
+                    Log.d("CacheHandler", "Size: " + files.size)
+                }
+                if (files != null) {
+                    for (i in files.indices) {
+                        Log.d("CacheHandler", "FileName:" + files[i].name)
+                    }
+                }
+
+                // Sauvegarde l'image de la semaine dans le cache
+                context.captureWebViewContent()
+                // Efface le fichier de la semaine anteprécédente
+                deleteDir(context.cacheDir, weekId = dataHandler.getCurrentWeekId() - 2)
                 makeToast("Connexion établie", false)
-
-
-                // Affiche l'image de référence mise à jour
-                /*if (imageHandler.updateImage(src = url, saveId = true)) {
-
-                    // Active tous les widgets de navigation
-                    context.runOnUiThread {
-                        isNavigationRestricted = false
-                        context.findViewById<Button>(R.id.prev_week).isEnabled = true
-                        context.findViewById<Button>(R.id.next_week).isEnabled = true
-                        context.findViewById<ImageView>(R.id.refresh_button).isEnabled = true
-                        context.findViewById<ImageView>(R.id.refresh_button).setColorFilter(rgb(255, 255, 255))
-                        context.findViewById<TextView>(R.id.loading_tv).visibility = View.GONE
-                        context.findViewById<ImageView>(R.id.imageView).alpha = (1).toFloat()
-                        backgroundWebView.visibility = View.INVISIBLE
-                    }
-                } else {
-                    context.runOnUiThread {
-                        context.findViewById<TextView>(R.id.loading_tv).visibility = View.GONE
-                        backgroundWebView.visibility = View.VISIBLE
-                        Log.v("JavaInterface", "url : $url")
-                        Glide.with(context).load(url).into(context.findViewById(R.id.imageView))
-                    }
-                }*/
             }
         }
-
-        @JavascriptInterface
-        fun setBitmap() {
-            val foregroundWebView = context.findViewById<WebView>(R.id.foregroundWebView)
-            // Get the dimensions of the WebView
-            val width = foregroundWebView.width
-            val height = foregroundWebView.height
-
-            // Create a bitmap of the same dimensions as the WebView
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-
-            // Capture the WebView content into the bitmap
-            val canvas = Canvas(bitmap)
-            foregroundWebView.draw(canvas)
-//                    val bitmap = foregroundWebView.capturePicture()
-            Log.d("ImageHandler", "Bitmap lenght : ${bitmap.byteCount}")
-            context.findViewById<ImageView>(R.id.imageView).setImageBitmap(bitmap)
-        }
-
 
         /** Fonction appelée en cas d'échec lors de la récupération du lien de référence de l'image */
         @JavascriptInterface
         fun onLoadingFail() {
-            makeToast("Chargement échoué")
-            Log.v("JavaInterface", "Load failed")
-            (context as Activity).findViewById<ImageView>(R.id.imageView).alpha = (0.1).toFloat()
-            val refreshButton = context.findViewById<ImageView>(R.id.refresh_button)
-            context.runOnUiThread {
-                backgroundWebView.visibility = View.VISIBLE
-                refreshButton.isEnabled = true
-                refreshButton.setColorFilter(rgb(255, 255, 255))
-                context.findViewById<TextView>(R.id.loading_tv).visibility = View.GONE
-            }
+            makeToast("Chargement arrière échoué")
+            Log.v("JavaInterface", "Back load failed")
+            context.runOnUiThread { switchNavigation(context, navigationValue = false, loadFailure = true) }
+        }
+    }
+
+    /**
+     * Interface utilisée pour la WebView intermédiaire
+     * @param imageHandler ImageHandler responsable du chargement de l'image
+     */
+    class ForegroundWebViewJavaScriptInterface(
+        private val context: MainActivity,
+        private val imageHandler: ImageHandler
+    ) {
+        @JavascriptInterface
+        fun makeToast(message: String?, lengthLong: Boolean = true) {
+            Toast.makeText(context, message, if (lengthLong) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
+        }
+
+        /**
+         * Applique le contenu de la WebView intermédiaire sur un Bitmap
+         * @return Le Bitmap sur lequel a été imprimé le contenu de la WebView
+         */
+        @JavascriptInterface
+        fun setBitmap() {
+            val foregroundWebView = context.findViewById<WebView>(R.id.foregroundWebView)
+            // Récupère la dimension de la WebView intermédiaire
+            val width = foregroundWebView.width
+            val height = foregroundWebView.height
+
+            // Crée le Bitmap vide correspondant
+            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+            // Imprime le contenu de la WebView intermédiaire sur le Bitmap
+            val canvas = Canvas(bitmap)
+            foregroundWebView.draw(canvas)
+
+            // Rétablit la navigation avant de mettre à jour l'ImageView principale
+            context.runOnUiThread { switchNavigation(context, navigationValue = true) }
+            context.findViewById<ImageView>(R.id.imageView).setImageBitmap(bitmap)
         }
     }
 
@@ -760,10 +665,40 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         var idSemaineUrl: Int = 0
         var selectedWeekId: Int = 0
         var displayedWeekId: Int = 0
-        var isNavigationRestricted: Boolean = true
+        var navigationState: Boolean = false
     }
 }
 
+fun isDarkModeEnabled(context: Context): Boolean {
+    val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+    return currentNightMode == Configuration.UI_MODE_NIGHT_YES
+}
+
+
+//TODO commenter
+fun switchNavigation(context: MainActivity, navigationValue: Boolean? = null, loadFailure: Boolean = false) {
+    if (navigationValue != null) {
+        MainActivity.navigationState = navigationValue
+    } else {
+        MainActivity.navigationState = !MainActivity.navigationState
+    }
+        MainActivity.navigationState = MainActivity.navigationState
+        context.findViewById<Button>(R.id.prev_week).isEnabled = MainActivity.navigationState
+        context.findViewById<Button>(R.id.next_week).isEnabled = MainActivity.navigationState
+        context.findViewById<ImageView>(R.id.refresh_button).isEnabled = MainActivity.navigationState
+        if (MainActivity.navigationState) {
+            context.findViewById<ImageView>(R.id.refresh_button).setColorFilter(rgb(255, 255, 255))
+            context.findViewById<TextView>(R.id.loading_tv).visibility = View.GONE
+        } else {
+            context.findViewById<ImageView>(R.id.refresh_button).setColorFilter(rgb(184, 184, 184))
+            context.findViewById<TextView>(R.id.loading_tv).visibility = View.VISIBLE
+        }
+        if (loadFailure) {
+            context.findViewById<ImageView>(R.id.refresh_button).isEnabled = true
+            context.findViewById<ImageView>(R.id.refresh_button).setColorFilter(rgb(255, 255, 255))
+            context.findViewById<TextView>(R.id.loading_tv).visibility = View.GONE
+        }
+}
 
 
 /**

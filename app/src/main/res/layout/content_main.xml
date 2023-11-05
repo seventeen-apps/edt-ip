@@ -76,6 +76,8 @@
         android:layout_marginTop="56dp"
         android:foregroundGravity="center"
         android:elevation="5dp"
+        android:backgroundTint="@color/teal_700"
+        android:visibility="visible"
         />
 
     <WebView
@@ -86,6 +88,7 @@
         android:layout_marginTop="56dp"
         android:foregroundGravity="center"
         android:elevation="3dp"
+        android:backgroundTint="#0B4E67"
         android:visibility="invisible"/>
 
     <WebView
@@ -95,6 +98,7 @@
         android:layout_gravity="end"
         android:layout_marginBottom="-45dp"
         android:layout_marginTop="56dp"
+        android:visibility="invisible"
         android:backgroundTint="#003347">
     </WebView>
 

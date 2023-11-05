@@ -24,18 +24,6 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
         val cacheDir = context.cacheDir
         val file = File(cacheDir, key)
 
-        /*var previousWeek: Int
-        var thirdWeek: Int
-
-        if (dataHandler.getCurrentWeekId() > 0) {
-            previousWeek = dataHandler.getCurrentWeekId()-1
-        } else { previousWeek = 0}
-
-        if (dataHandler.getCurrentWeekId()+2 < 51) {
-            thirdWeek = dataHandler.getCurrentWeekId()+2
-        } else { thirdWeek = 51 }*/
-
-//        if (MainActivity.displayedWeekId in (previousWeek..thirdWeek)) {
         if (MainActivity.displayedWeekId == dataHandler.getCurrentWeekId()) {
             if ((getImage(key) == null) or (ignoreCache)) {
                 try {
@@ -53,10 +41,6 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
             }
         }
     }
-
-
-
-
 
     /**
      * Récupère un bitmap en cache
