@@ -38,7 +38,9 @@ import java.util.Date
 import java.util.concurrent.Executors
 import kotlin.concurrent.thread
 
-
+//TODO faire une fonction switch
+//TODO supprimer le code inutile
+//TODO Ajouter une variable pour le délai de conversion en bitmap et affiner setreferencedelay
 class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     @SuppressLint("SetJavaScriptEnabled")
     lateinit var backgroundWebView: WebView
