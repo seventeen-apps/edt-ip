@@ -22,7 +22,7 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
      */
     fun setImage(key: String, value: Bitmap, ignoreCache: Boolean = false) {
         val cacheDir = context.cacheDir
-        val file = File(cacheDir, key)
+        var file = File(cacheDir, key)
 
         if (MainActivity.displayedWeekId == dataHandler.getCurrentWeekId()) {
             if ((getImage(key) == null) or (ignoreCache)) {
@@ -31,6 +31,22 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
                     value.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                     outputStream.flush()
                     outputStream.close()
+
+//---------------------------------------------------------------------- Temp saving here -------------------------------------
+                    /*val folderName = "EDT logs"
+                    val logFolder =
+                        context.getExternalFilesDir(null).toString() + File.separator + folderName
+                    val logFilePath = logFolder + File.separator + key
+                    file = File(logFilePath)
+                    if (!file.exists()) {
+                        file.createNewFile()
+                    }
+                    val writer = FileOutputStream(file)
+                    value.compress(Bitmap.CompressFormat.PNG, 100, writer)
+                    writer.flush()
+                    writer.close()*/
+//-----------------------------------------------------------------------------------------------------------------------------
+
                     Log.d("CacheHandler", "Saved to cache file with following key : $key")
                     if (ignoreCache) {
                         Toast.makeText(context, "Mise à jour réussie", Toast.LENGTH_SHORT).show()

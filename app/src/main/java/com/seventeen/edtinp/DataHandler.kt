@@ -24,7 +24,7 @@ class DataHandler(private val context: Context) {
 //        editFile(dataFile, Json.encodeToString(defaultData))
 
         val extractedData = openFile(dataFile)
-        if (dataVersion != extractedData.split(",")[0].split(":")[1]) {
+        if (dataVersion != extractedData.split(",")[0].split(":")[1].replace(""""""", "")) {
             Log.v("DataHandler", "Found outdated data file (version ${extractedData.split(",")[0].split(":")[1].replace(""""""", "")} found, expected ${dataVersion.toFloat()}), reset to default")
             editFile(dataFile, Json.encodeToString(defaultData))
             editFile(dataVersionFile, dataVersion)

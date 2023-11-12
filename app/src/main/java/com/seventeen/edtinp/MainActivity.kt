@@ -6,7 +6,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Color.rgb
 import android.os.Bundle
@@ -37,7 +36,6 @@ import java.util.concurrent.Executors
 import kotlin.concurrent.thread
 
 
-
 class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     @SuppressLint("SetJavaScriptEnabled")
     lateinit var backgroundWebView: WebView
@@ -55,7 +53,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         // Ajoute la barre d'outil supérieure
         setSupportActionBar(findViewById(R.id.toolbar))
 
@@ -64,8 +61,8 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         val myExecutor = Executors.newSingleThreadExecutor()
         val myHandler = Handler(Looper.getMainLooper())
         dataHandler = DataHandler(this) // Initialise le gestionnaire de données
-        imageHandler = ImageHandler(this, imageView, dataHandler)
         cacheHandler = CacheHandler(this, dataHandler)
+        imageHandler = ImageHandler(this, imageView, dataHandler, cacheHandler)
 
 
         // Initialisation de la WebView d'arrière plan nécessaire pour générer le lien de référence
@@ -138,7 +135,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         if (imageBitmap != null) {
             Log.v("CacheHandler", "Displaying cached image")
             imageView.setImageBitmap(imageBitmap)
-            imageView.setBackgroundColor(rgb(200, 10, 20))
         }
 
         // Supprime l'image de la semaine précédente gardée en cache
@@ -356,41 +352,9 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         }
     }
 
-    /**
-     * Récupère le contenu de la WebView intermédiaire sous forme de Bitmap puis sauvegarde ce Bitmap dans le cache sous forme d'image
-     */
-    private fun captureWebViewContent() {
-        val bitmap = getBitmapFromWebView()
-        // Récupère le contenu de la WebView intermédiaire
-        val canvas = Canvas(bitmap)
-        this@MainActivity.runOnUiThread {
-            foregroundWebView.draw(canvas)
-        }
 
-        // Enregistre le Bitmap dans le cache
-        val key = "week${MainActivity.displayedWeekId}${dataHandler.getClass()}"
-        cacheHandler.setImage(key, bitmap)
-    }
 
-    /**
-     * Récupère le contenu de la WebView intermédiaire sous forme de Bitmap
-     * @return Le Bitmap sur lequel a été imprimé le contenu de la WebView intermédiaire
-     */
-    fun getBitmapFromWebView(): Bitmap {
-        // Récupère la dimension de la WebView intermédiaire
-        //TODO essayer avec dataHandler.getDimensions()
-        val width = foregroundWebView.width
-        val height = foregroundWebView.height
 
-        // Crée le Bitmap vide correspondant
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-
-        // Imprime le contenu de la WebView intermédiaire sur le Bitmap
-        val canvas = Canvas(bitmap)
-        foregroundWebView.draw(canvas)
-
-        return bitmap
-    }
 
 
     /** Sauvegarde la nouvelle classe */
@@ -625,8 +589,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                     }
                 }
 
-                // Sauvegarde l'image de la semaine dans le cache
-                context.captureWebViewContent()
+                saveToCache = true
 
                 makeToast("Connexion établie", false)
             }
@@ -661,23 +624,21 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         @JavascriptInterface
         fun setBitmap() {
             val foregroundWebView = context.findViewById<WebView>(R.id.foregroundWebView)
-            // Récupère la dimension de la WebView intermédiaire
-            val width = foregroundWebView.width
-            val height = foregroundWebView.height
 
-            // Crée le Bitmap vide correspondant
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-
-            // Imprime le contenu de la WebView intermédiaire sur le Bitmap
-            val canvas = Canvas(bitmap)
-            context.runOnUiThread { foregroundWebView.draw(canvas) }
+            val bitmap = imageHandler.getBitmapFromWebView()
 
             // Rétablit la navigation avant de mettre à jour l'ImageView principale
             context.runOnUiThread {
                 switchNavigation(context, navigationValue = true)
                 context.findViewById<ImageView>(R.id.imageView).setImageBitmap(bitmap)
+                if (saveToCache) {
+                    saveToCache = !saveToCache
+                    imageHandler.captureWebViewContent()
+                }
             }
         }
+
+
     }
 
     companion object {
@@ -686,6 +647,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         var selectedWeekId: Int = 0
         var displayedWeekId: Int = 0
         var navigationState: Boolean = false
+        var saveToCache: Boolean = false
     }
 }
 
