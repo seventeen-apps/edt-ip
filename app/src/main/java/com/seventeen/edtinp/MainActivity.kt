@@ -18,6 +18,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.webkit.JavascriptInterface
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
@@ -35,7 +37,6 @@ import java.util.concurrent.Executors
 import kotlin.concurrent.thread
 
 
-//TODO supprimer le code inutile
 
 class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     @SuppressLint("SetJavaScriptEnabled")
@@ -133,19 +134,16 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         Log.v("Date Handler", "Week number is $currentWeekNumber week id is $currentWeekId")
 
         // Affiche l'image de la semaine gardée en cache
-        var imageBitmap = cacheHandler.getImage("week$displayedWeekId")
+        var imageBitmap = cacheHandler.getImage("week$displayedWeekId${dataHandler.getClass()}")
         if (imageBitmap != null) {
+            Log.v("CacheHandler", "Displaying cached image")
             imageView.setImageBitmap(imageBitmap)
+            imageView.setBackgroundColor(rgb(200, 10, 20))
         }
 
-        // Affiche l'image de la semaine gardée en cache
-        imageBitmap = cacheHandler.getImage("week${displayedWeekId-1}")
-        if (imageBitmap != null) {
-            val cacheDir = this.cacheDir
-            val cacheFile = File(cacheDir, "week${displayedWeekId-1}")
-            deleteDir(cacheFile)
-            Toast.makeText(this, "Image précédente effacée", Toast.LENGTH_SHORT).show()
-        }
+        // Supprime l'image de la semaine précédente gardée en cache
+        //TODO changer la clé avec l'idTree pour compatibilité inter école
+        if (cacheHandler.clearOutdatedCache()) { Toast.makeText(this, "Images en cache effacées", Toast.LENGTH_SHORT).show(); Log.v("CacheHandler", "Outdated pictures deleted") }
 
         var javascript = """
                     javascript:(function() {
@@ -186,9 +184,9 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             var isRedirected = false
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                if (!isRedirected) {
-                    Log.v("URL_Loader", "Loading $url")
-                }
+//                if (!isRedirected) {
+                    Log.v("URLLoader", "Loading $url")
+//                }
                 isRedirected = false
             }
 
@@ -202,12 +200,12 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             override fun onPageFinished(view: WebView?, url: String) {
                 super.onPageFinished(view, url)
                 if (isRedirected) {
-                    Log.v("URL_Loader", "Redirected from $url")
+                    Log.v("URLLoader", "Redirected from $url")
                 }
 
                 // Mise en page du contenu
-                if (url != mainUrl) {
-                    Log.v("URL_Loader", "Loading page")
+                if (("plannings" in url)) {
+                    Log.v("URLLoader", "Loading page")
                     var search = ""
                     when (dataHandler.getClass()) {
                         "1A-PINP" -> search = search1A
@@ -246,6 +244,16 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                             )
                         }
                     }
+                }
+            }
+
+            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError) {
+                Log.d("URLLoader", "${error.errorCode} : ${error.description}")
+                if (error.errorCode == 500) {
+                    Toast.makeText(this@MainActivity, "Accès au site refusé, essayez de réinstaller l'application et redémarrer le téléphone. ", Toast.LENGTH_LONG).show()
+                    Log.d("URLLoader", "Error 500 : ${error.description}")
+                } else {
+                    Toast.makeText(this@MainActivity, "Une erreur est survenue : " + error.description, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -355,10 +363,12 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         val bitmap = getBitmapFromWebView()
         // Récupère le contenu de la WebView intermédiaire
         val canvas = Canvas(bitmap)
-        foregroundWebView.draw(canvas)
+        this@MainActivity.runOnUiThread {
+            foregroundWebView.draw(canvas)
+        }
 
         // Enregistre le Bitmap dans le cache
-        val key = "week${MainActivity.displayedWeekId}"
+        val key = "week${MainActivity.displayedWeekId}${dataHandler.getClass()}"
         cacheHandler.setImage(key, bitmap)
     }
 
@@ -434,7 +444,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         if (!navigationState) {
             for (item in menu!!.children) {
-                item.isEnabled = false
+                item.isEnabled = item.title in mutableListOf<String>("Effaçage général", "Effaçage simple", "Effaçer le fichier de sauvegarde", "Logs")
             }
         } else {
             for (item in menu!!.children) {
@@ -582,11 +592,20 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
                 // Met à jour l'identifiant si nécéssaire
                 var identifiant = ""
-                if (url!!.split("?")[1].split("=")[0] == "identifier") {
-                    identifiant = url.split("&")[0].split("?")[1].split("=")[1]
+                if (referenceURL.split("?")[1].split("=")[0] == "identifier") {
+                    identifiant = referenceURL.split("&")[0].split("?")[1].split("=")[1]
                 }
                 if (((identifiant != "") and (identifiant != dataHandler.getId()))) {
-                    dataHandler.setId(dataHandler.getClass(), identifiant)
+                    dataHandler.setId(identifiant)
+                }
+
+                // Met à jour l'identifiant de la classe si nécéssaire
+                var treeId = ""
+                if (referenceURL.split("&")[idSemaineUrl + 2].split("=")[0] == "idTree") {
+                    treeId = referenceURL.split("&")[idSemaineUrl + 2].split("=")[1]
+                }
+                if (((treeId != "") and (treeId != dataHandler.getTreeId()))) {
+                    dataHandler.setTreeId(treeId)
                 }
 
 
@@ -608,8 +627,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
                 // Sauvegarde l'image de la semaine dans le cache
                 context.captureWebViewContent()
-                // Efface le fichier de la semaine anteprécédente
-                deleteDir(context.cacheDir, weekId = dataHandler.getCurrentWeekId() - 2)
+
                 makeToast("Connexion établie", false)
             }
         }
@@ -652,11 +670,13 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
             // Imprime le contenu de la WebView intermédiaire sur le Bitmap
             val canvas = Canvas(bitmap)
-            foregroundWebView.draw(canvas)
+            context.runOnUiThread { foregroundWebView.draw(canvas) }
 
             // Rétablit la navigation avant de mettre à jour l'ImageView principale
-            context.runOnUiThread { switchNavigation(context, navigationValue = true) }
-            context.findViewById<ImageView>(R.id.imageView).setImageBitmap(bitmap)
+            context.runOnUiThread {
+                switchNavigation(context, navigationValue = true)
+                context.findViewById<ImageView>(R.id.imageView).setImageBitmap(bitmap)
+            }
         }
     }
 
@@ -720,7 +740,7 @@ fun deleteDir(dir: File?, full: Boolean = false, weekId: Int? = null): Boolean {
         val children = dir.list()
         for (i in children.indices) {
             if ("week" in children[i]) {
-                if ((weekId == null) or ((weekId != null) and (children[i] == "week${weekId}"))) {
+                if ((weekId == null) or ((weekId != null) and ("week${weekId}" in children[i]))) {
                     val success = deleteDir(File(dir, children[i]))
                     Log.d("CacheEraser", "Erased ${children[i]}")
                     if (!success) {

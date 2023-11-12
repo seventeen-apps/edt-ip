@@ -32,7 +32,8 @@ var load = (
         "   }" +
         "}" +
         "else {" +
-        "   console.log('Pre-load aborted')" +
+        "   app.makeToast(\"Impossible de joindre le serveur, réessayez plus tard ou réinstallez l'application si le problème persiste\", true);" +
+        "   console.log('Pre-load aborted');" +
         "};")
 
 const val reveal_input = (

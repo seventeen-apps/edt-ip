@@ -31,7 +31,7 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
                     value.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                     outputStream.flush()
                     outputStream.close()
-                    Log.d("CacheHandler", "Saved to cache")
+                    Log.d("CacheHandler", "Saved to cache file with following key : $key")
                     if (ignoreCache) {
                         Toast.makeText(context, "Mise à jour réussie", Toast.LENGTH_SHORT).show()
                     }
@@ -66,6 +66,31 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
     /** Crée un fichier cache */
     private fun createCache() {
         File.createTempFile("ImageCache", null, context.cacheDir)
+    }
+
+    /**
+     * Efface les images en cache obsolètes
+     */
+    fun clearOutdatedCache(): Boolean {
+        val cacheDir = context.cacheDir
+        val weekId = dataHandler.getCurrentWeekId()
+        if (cacheDir != null && cacheDir.isDirectory) {
+            val children = cacheDir.list()
+            for (i in children.indices) {
+                if ("week" in children[i]) {
+                    if ("week${weekId}" !in children[i]) {
+                        val success = deleteDir(File(cacheDir, children[i]))
+                        Log.d("CacheEraser", "Erased ${children[i]}")
+                        if (!success) {
+                            return false
+                        }
+                    }
+                }
+            }
+        }
+
+        // The directory is now empty so delete it
+        return cacheDir!!.delete()
     }
 }
 

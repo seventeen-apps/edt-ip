@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  Prépa INP Valence  -->
+    <string name="PINPV_1A">13795%2C13796%2C13798%2C13799</string>
+    <string name="PINPV_2A">13808%2C13807%2C12201%2C17862%2C12200</string>
+    <string name="PINPV_HN1">13801</string>
+    <string name="PINPV_HN2">13803</string>
+    <string name="PINPV_HN3">13802</string>
+
+    <!--  ESISAR  -->
+    <string name="ESISAR_1A">12727%2C12726%2C12729%2C12730</string>
+    <string name="ESISAR_2A">12723%2C12722%2C12719%2C12720</string>
+    <string name="ESISAR_3AS5">13217%2C13218%2C13214%2C13215%2C13232%2C13231%2C13229%2C13228%2C13224%2C13225%2C13221%2C13222</string>
+    <string name="ESISAR_3AS6EIS">13245%2C13244%2C13248%2C13247%2C13240%2C13241%2C13238%2C13237</string>
+    <string name="ESISAR_3AS6IRC">13253%2C13251</string>
+    <string name="ESISAR_3APP">13255%2C13256</string>
+    <string name="ESISAR_4A">13472%2C13471%2C13434%2C13435%2C13437%2C13438%2C13452%2C13450%2C13448%2C13446%2C13444%2C13442%2C13440%2C13469%2C13468%2C13466%2C13465%2C13464%2C13463%2C13462%2C13461%2C13460%2C13459%2C13458%2C13457%2C13456%2C13455%2C13454%2C13453%2C13451%2C13449%2C13447%2C13445%2C13443%2C13441%2C13467%2C13430%2C13429%2C13431%2C13425%2C13426%2C13427%2C13421%2C13419</string>
+    <string name="ESISAR_4APP">13666%2C13665%2C13669%2C13668</string>
+    <string name="ESISAR_5AEIS">13430%2C13429%2C13431%2C13425%2C13426%2C13427</string>
+    <string name="ESISAR_5AIRC">13421%2C13419</string>
+    <string name="ESISAR_5AMISTRE">12897%2C12899%2C12898</string>
+    <string name="ESISAR_5APP">12902%2C12901</string>
+
+
+
+
+    <string name="PINPG_1A_A"></string>
+    <string name="PINPG_1A_B"></string>
+    <string name="PINPG_1A_C"></string>
+    <string name="PINPG_1A_D"></string>
+
+    <string name="PINPG_2A_A"></string>
+    <string name="PINPG_2A_B"></string>
+    <string name="PINPG_2A_C"></string>
+    <string name="PINPG_2A_D"></string>
+
+    <string name="PINPG_HN1_A"></string>
+    <string name="PINPG_HN1_B"></string>
+    <string name="PINPG_HN1_C"></string>
+    <string name="PINPG_HN1_D"></string>
+
+    <string name="PINPG_HN2_A"></string>
+    <string name="PINPG_HN2_B"></string>
+    <string name="PINPG_HN2_C"></string>
+    <string name="PINPG_HN2_D"></string>
+
+    <string name="PINPG_HN3_A"></string>
+    <string name="PINPG_HN3_B"></string>
+    <string name="PINPG_HN3_C"></string>
+    <string name="PINPG_HN3_D"></string>
+</resources>

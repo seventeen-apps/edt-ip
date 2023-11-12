@@ -6,20 +6,33 @@ import android.widget.Toast
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.io.BufferedReader
 import java.io.File
 import java.util.Calendar
 
 class DataHandler(private val context: Context) {
     //Setup the data storing file
     private val dataFile = "Data.txt"
-    private var data: DataClass = DataClass("2A-PINP", 0, 0, mutableMapOf("1A-PINP" to "","2A-PINP" to "", "HN1-PINP" to "", "HN2-PINP" to "", "HN3-PINP" to ""), listOf(0, 0), false)
+    private val dataVersionFile = "DataVersion.txt"
+    private val dataVersion: String = "1.1"
+    private var data: DataClass = DataClass(dataVersion, "2A-PINP", 0, 0, "", listOf(0, 0), "", false)
 
 
     init {
-        val defaultData = DataClass("2A-PINP", 0, 0, mutableMapOf("1A-PINP" to "","2A-PINP" to "", "HN1-PINP" to "", "HN2-PINP" to "", "HN3-PINP" to ""), listOf(0, 0), false)
+        val defaultData = DataClass(dataVersion, "2A-PINP", 0, 0, "", listOf(0, 0),"", false)
         setupFile(dataFile, Json.encodeToString(defaultData))
 //        editFile(dataFile, Json.encodeToString(defaultData))
-        data = Json.decodeFromString<DataClass>(openFile(dataFile))
+
+        val extractedData = openFile(dataFile)
+        if (dataVersion != extractedData.split(",")[0].split(":")[1]) {
+            Log.v("DataHandler", "Found outdated data file (version ${extractedData.split(",")[0].split(":")[1].replace(""""""", "")} found, expected ${dataVersion.toFloat()}), reset to default")
+            editFile(dataFile, Json.encodeToString(defaultData))
+            editFile(dataVersionFile, dataVersion)
+            data = defaultData
+        } else {
+            data = Json.decodeFromString(extractedData)
+        }
+
         Log.v("FileManager", "Loaded: ${Json.encodeToString(data)}")
     }
 
@@ -97,7 +110,7 @@ class DataHandler(private val context: Context) {
         } else {
             currentWeekNumber - 32
         }
-        data = DataClass(data.classe, calendar.get(Calendar.DAY_OF_WEEK) - 1, currentWeekId, mutableMapOf("1A-PINP" to "","2A-PINP" to "", "HN1-PINP" to "", "HN2-PINP" to "", "HN3-PINP" to ""), listOf(0, 0), false)
+        data = DataClass(dataVersion, data.classe, calendar.get(Calendar.DAY_OF_WEEK) - 1, currentWeekId, "", listOf(0, 0), "", false)
 
         editFile(dataFile, Json.encodeToString(data))
 
@@ -115,6 +128,9 @@ class DataHandler(private val context: Context) {
         updateSave()
     }
 
+    /**
+     * @return Id de la semaine actuelle
+     */
     fun getCurrentWeekId(): Int {
         return data.currentWeekId
     }
@@ -146,18 +162,26 @@ class DataHandler(private val context: Context) {
         return data.loggingState
     }
 
-    fun setId(classe: String, id: String) {
-        data.identifiers[classe] = id
+    fun setId(id: String) {
+        data.identifier = id
         updateSave()
-        Toast.makeText(context, "Identifiant sauvegardé ${id}", Toast.LENGTH_SHORT).show()
         Log.v("DataHandler", "Saved id ${id}")
     }
 
     fun getId(): String {
-        return if (data.identifiers[getClass()] == null) {
+        return if (data.identifier == null) {
             ""
         } else {
-            data.identifiers[getClass()]!!
+            data.identifier
         }
+    }
+
+    fun setTreeId(treeId: String) {
+        data.treeId = treeId
+        updateSave()
+    }
+
+    fun getTreeId(): String {
+        return data.treeId
     }
 }
