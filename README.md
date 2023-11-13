@@ -1,5 +1,5 @@
 # edt-inp
-Vous pouvez maintenant accéder plus facilement à votre emploi du temps !
+Accédez plus facilement à votre emploi du temps avec cette application !
 
 Graphe représentant l'avancement du projet [ici](https://github.com/seventeen-apps/edt-inp/network)
 
