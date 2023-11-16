@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import java.util.Calendar
 
-class DatePicker(private val imageHandler: ImageHandler) :
+class DatePicker(private val imageHandler: ImageHandler, private val dataHandler: DataHandler) :
     DialogFragment(R.layout.date_dialog_fragment) {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -32,12 +32,6 @@ class DatePicker(private val imageHandler: ImageHandler) :
                 selectedWeekNumber - 32
             }
             //TODO restreindre la sélection aux semaines valides
-
-            /*Toast.makeText(
-                inflater.context,
-                "Selected Date = $strFormattedSelectedDate",
-                Toast.LENGTH_SHORT
-            ).show()*/
             MainActivity().onDatePass(selectedWeekId, activity)
         }
 
@@ -50,7 +44,8 @@ class DatePicker(private val imageHandler: ImageHandler) :
             if (MainActivity.selectedWeekId != MainActivity.displayedWeekId) {
                 MainActivity.displayedWeekId = MainActivity.selectedWeekId
                 // Met à jour l'image
-                imageHandler.updateImage()
+//                imageHandler.updateImage()
+                imageHandler.updateWebView()
             }
             activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
         }
@@ -64,7 +59,7 @@ class DatePicker(private val imageHandler: ImageHandler) :
     override fun onStart() {
         super.onStart()
         val d = dialog as AlertDialog?
-        if (d != null && MainActivity.isNavigationRestricted) {
+        if (d != null && !MainActivity.navigationState) {
             val positiveButton = d.getButton(Dialog.BUTTON_POSITIVE)
             positiveButton.isEnabled = false
         }

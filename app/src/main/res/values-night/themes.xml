@@ -2,12 +2,12 @@
     <!-- Base application theme. -->
     <style name="Theme.EDTINP" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#FF3700B3</item>
-        <item name="colorPrimaryVariant">#250471</item>
+        <item name="colorPrimary">#175771</item>
+        <item name="colorPrimaryVariant">#154051</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorSecondary">#207698</item>
+        <item name="colorSecondaryVariant">#17536A</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
@@ -17,6 +17,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <style name="Theme.MyWardrobe.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="Theme.MyWardrobe.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.EDTINP.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.EDTINP.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

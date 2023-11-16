@@ -26,13 +26,14 @@ var load = (
         "            inputField.dispatchEvent(inputEvent);" + //simule un click humain
         "            const form = inputField.closest(\"form\");" +
         "            form.submit();" + // Lance la recherche
-        "            console.log('Pre-load done (1A)');" +
+        "            console.log('Pre-load done');" +
         "         }" +
         "      }" +
         "   }" +
         "}" +
         "else {" +
-        "   console.log('Pre-load aborted')" +
+        "   app.makeToast(\"Impossible de joindre le serveur, réessayez plus tard ou réinstallez l'application si le problème persiste\", true);" +
+        "   console.log('Pre-load aborted');" +
         "};")
 
 const val reveal_input = (

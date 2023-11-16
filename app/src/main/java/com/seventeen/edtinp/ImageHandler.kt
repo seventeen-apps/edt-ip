@@ -1,27 +1,9 @@
 package com.seventeen.edtinp
 
-import android.content.ContentValues
-import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.os.Build
-import android.os.Environment
-import android.os.Handler
-import android.provider.MediaStore
-import android.util.Log
+import android.graphics.Canvas
+import android.webkit.WebView
 import android.widget.ImageView
-import android.widget.Toast
-import java.io.BufferedInputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
-import java.net.URL
-import java.util.concurrent.ExecutorService
 
 
 /** Gestionnaire de l'affichage de l'image de l'emploi du temps
@@ -29,96 +11,49 @@ import java.util.concurrent.ExecutorService
  */
 class ImageHandler
     (
-    private val context: Context,
+    private val context: MainActivity,
     private val imageView: ImageView,
-    private val executor: ExecutorService,
-    private val handler: Handler,
+    private val dataHandler: DataHandler,
     private val cacheHandler: CacheHandler
 ) {
-    /** @return Retourne un objet URL à partir de l'adresse donnée en paramètre */
-    private fun mStringToURL(string: String): URL? {
-        try {
-            return URL(string)
-        } catch (e: MalformedURLException) {
-            e.printStackTrace()
-        }
-        return null
+    /** Met à jour l'image à la semaine correspondant à l'objet MainActivity.displayedWeekId */
+    fun updateWebView() {
+        val url = "https://edt.grenoble-inp.fr/2023-2024/exterieur/jsp/imageEt?identifier=${dataHandler.getId()}&projectId=12&idPianoWeek=${MainActivity.displayedWeekId}&idPianoDay=0%2C1%2C2%2C3%2C4&idTree=${dataHandler.getTreeId()}&width=${dataHandler.getDimensions()[0]}&height=${dataHandler.getDimensions()[1]}&lunchName=REPAS&displayMode=1057855&showLoad=false&ttl=1698251931648&displayConfId=15"
+        context.runOnUiThread { switchNavigation(context, navigationValue = false) }
+        context.findViewById<WebView>(R.id.foregroundWebView).loadUrl(url)
     }
-
-    private fun mSaveMediaToStorage(bitmap: Bitmap?) {
-        val filename = "${System.currentTimeMillis()}.jpg"
-        var fos: OutputStream? = null
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            context.contentResolver?.also { resolver ->
-                val contentValues = ContentValues().apply {
-                    put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
-                    put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
-                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-                }
-                val imageUri: Uri? =
-                    resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-                fos = imageUri?.let { resolver.openOutputStream(it) }
-            }
-        } else {
-            val imagesDir =
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            val image = File(imagesDir, filename)
-            fos = FileOutputStream(image)
-        }
-        fos?.use {
-            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, it)
-            Toast.makeText(context, "Saved to Gallery", Toast.LENGTH_SHORT).show()
-        }
-    }
-
 
     /**
-     * Récupère le bitmap à partir d'une url
+     * Récupère le contenu de la WebView intermédiaire sous forme de Bitmap puis sauvegarde ce Bitmap dans le cache sous forme d'image
      */
-    private fun loadBitmap(string: String): Bitmap? {
-        val url: URL = mStringToURL(string)!!
-        val connection: HttpURLConnection?
-        try {
-            connection = url.openConnection() as HttpURLConnection
-            connection.connect()
-            val inputStream: InputStream = connection.inputStream
-            val bufferedInputStream = BufferedInputStream(inputStream)
-            return BitmapFactory.decodeStream(bufferedInputStream)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Toast.makeText(context, "Erreur", Toast.LENGTH_SHORT).show()
-        }
-        return null
+    fun captureWebViewContent() {
+        val foregroundWebView = context.findViewById<WebView>(R.id.foregroundWebView)
+        // Récupère le Bitmap de la WebView intermédiaire
+        val bitmap = getBitmapFromWebView()
+
+        // Enregistre le Bitmap dans le cache
+        val key = "week${MainActivity.displayedWeekId}${dataHandler.getClass()}"
+        cacheHandler.setImage(key, bitmap)
     }
 
-    /** Met à jour l'image à la semaine correspondant à l'objet MainActivity.displayedWeekId */
-    fun updateImage(ignoreCache: Boolean = false) {
+    /**
+     * Récupère le contenu de la WebView intermédiaire sous forme de Bitmap
+     * @return Le Bitmap sur lequel a été imprimé le contenu de la WebView intermédiaire
+     */
+    fun getBitmapFromWebView(): Bitmap {
+        val foregroundWebView = context.findViewById<WebView>(R.id.foregroundWebView)
+        // Récupère la dimension de la WebView intermédiaire
+        //TODO essayer avec dataHandler.getDimensions()
+        val width = foregroundWebView.width
+        val height = foregroundWebView.height
 
-        // Crée le lien vers l'image
-        val spliturl = MainActivity.referenceURL.split("&") as MutableList
-        spliturl[MainActivity.idSemaineUrl] = "idPianoWeek=${MainActivity.displayedWeekId}"
-        val url = spliturl.joinToString("&")
+        // Crée le Bitmap vide correspondant
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
-        executor.execute {
-            val imageBitmap = loadBitmap(url)!!
-            val key = "week${MainActivity.displayedWeekId}"
-            handler.post {
-                // Ajoute ou non l'image au cache après l'avoir chargée et affichée
-                if (cacheHandler.isExpired() or ignoreCache) {
-                    imageView.setImageBitmap(imageBitmap)
-                    //TODO ajouter le jour de la semaine pour la péremption
-                    cacheHandler.setImage(key, imageBitmap, ignoreCache)
-                } else { //TODO à tester
-                    // Si un cache est disponible, alors c'est l'image du cache qui est chargée
-                    Log.d("CacheHandler", cacheHandler.getImage(key).toString())
-                    if (cacheHandler.getImage(key) != null) {
-                        imageView.setImageBitmap(cacheHandler.getImage(key))
-                    } else {
-                        updateImage(true)
-                    }
-                }
-            }
-        }
+        // Imprime le contenu de la WebView intermédiaire sur le Bitmap
+        val canvas = Canvas(bitmap)
+        foregroundWebView.draw(canvas)
+
+        return bitmap
     }
 }
-

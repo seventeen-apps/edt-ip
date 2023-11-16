@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/Theme.MyWardrobe.PopupOverlay" >
+        app:popupTheme="@style/Theme.EDTINP.PopupOverlay" >
         <TextView
             android:id="@+id/classe_tv"
             android:layout_width="wrap_content"
@@ -68,34 +68,44 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />-->
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="start|top"
-        android:layout_marginEnd="2dp"
         android:layout_marginTop="56dp"
         android:foregroundGravity="center"
         android:elevation="5dp"
+        android:visibility="visible"
         />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chargement..."
-        android:layout_gravity="center"/>
+    <WebView
+        android:id="@+id/foregroundWebView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="start|top"
+        android:layout_marginTop="56dp"
+        android:foregroundGravity="center"
+        android:elevation="3dp"
+        android:backgroundTint="#0B4E67"
+        android:visibility="invisible"/>
 
     <WebView
         android:id="@+id/backgroundWebView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="end"
-        android:layout_marginEnd="2dp"
         android:layout_marginBottom="-45dp"
         android:layout_marginTop="56dp"
+        android:visibility="invisible"
         android:backgroundTint="#003347">
     </WebView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chargement..."
+        android:layout_gravity="center"/>
 
     <!--    android:layout_marginBottom="-70px"-->
     <androidx.constraintlayout.widget.ConstraintLayout

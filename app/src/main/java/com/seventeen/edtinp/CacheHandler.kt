@@ -22,20 +22,8 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
      */
     fun setImage(key: String, value: Bitmap, ignoreCache: Boolean = false) {
         val cacheDir = context.cacheDir
-        val file = File(cacheDir, key)
+        var file = File(cacheDir, key)
 
-        /*var previousWeek: Int
-        var thirdWeek: Int
-
-        if (dataHandler.getCurrentWeekId() > 0) {
-            previousWeek = dataHandler.getCurrentWeekId()-1
-        } else { previousWeek = 0}
-
-        if (dataHandler.getCurrentWeekId()+2 < 51) {
-            thirdWeek = dataHandler.getCurrentWeekId()+2
-        } else { thirdWeek = 51 }*/
-
-//        if (MainActivity.displayedWeekId in (previousWeek..thirdWeek)) {
         if (MainActivity.displayedWeekId == dataHandler.getCurrentWeekId()) {
             if ((getImage(key) == null) or (ignoreCache)) {
                 try {
@@ -43,7 +31,8 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
                     value.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                     outputStream.flush()
                     outputStream.close()
-                    Log.d("CacheHandler", "Saved to cache")
+
+                    Log.d("CacheHandler", "Saved to cache file with following key : $key")
                     if (ignoreCache) {
                         Toast.makeText(context, "Mise à jour réussie", Toast.LENGTH_SHORT).show()
                     }
@@ -79,4 +68,30 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
     private fun createCache() {
         File.createTempFile("ImageCache", null, context.cacheDir)
     }
+
+    /**
+     * Efface les images en cache obsolètes
+     */
+    fun clearOutdatedCache(): Boolean {
+        val cacheDir = context.cacheDir
+        val weekId = dataHandler.getCurrentWeekId()
+        if (cacheDir != null && cacheDir.isDirectory) {
+            val children = cacheDir.list()
+            for (i in children.indices) {
+                if ("week" in children[i]) {
+                    if ("week${weekId}" !in children[i]) {
+                        val success = deleteDir(File(cacheDir, children[i]))
+                        Log.d("CacheEraser", "Erased ${children[i]}")
+                        if (!success) {
+                            return false
+                        }
+                    }
+                }
+            }
+        }
+
+        // The directory is now empty so delete it
+        return cacheDir!!.delete()
+    }
 }
+
