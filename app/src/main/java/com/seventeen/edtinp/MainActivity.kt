@@ -248,8 +248,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                 if (error.errorCode == 500) {
                     Toast.makeText(this@MainActivity, "Accès au site refusé, essayez de réinstaller l'application et redémarrer le téléphone. ", Toast.LENGTH_LONG).show()
                     Log.d("URLLoader", "Error 500 : ${error.description}")
-                } else {
-                    Toast.makeText(this@MainActivity, "Une erreur est survenue : " + error.description, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -468,7 +466,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             "Logs" -> { item.isChecked = !item.isChecked; dataHandler.setLoggingState(item.isChecked) }
         }
 
-        // Met le nom de la class à jour
+        // Met le nom de la classe à jour
         val classeTextView = findViewById<TextView>(R.id.classe_tv)
         classeTextView.text = dataHandler.getClass()
 
