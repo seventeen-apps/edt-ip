@@ -1,3 +1,13 @@
+/**
+ * Copyright (C)  - All Rights Reserved
+ *
+ * Copyright details are in the LICENSE.md file located in the root of this Android project.
+ * Everything written in the LICENSE.md file applies on this file.
+ *
+ * Any unauthorized copying, editing, or publishing, even partial, of this file is strictly forbidden.
+ *
+ * Owner of this file, its content, and the copyright related : Paul Musial, paul.musial.dev@gmail.com
+ */
 package com.seventeen.edtinp
 
 
@@ -5,7 +15,8 @@ var preload = (
         "var framesets = document.getElementsByTagName(\"frameset\");" +// Les frameset sur la raçine
                 "var treeFrameset = framesets[1];" +
                 "if (treeFrameset) {" +
-                "   var treeFrame = treeFrameset.getElementsByTagName(\"frame\")[0];")
+                "   var treeFrame = treeFrameset.getElementsByTagName(\"frame\")[0];" +
+                "   app.setProgress(30);")
 
 var search1A = "   var tosearch = \"1A-PINP\";"
 var search2A = "   var tosearch = \"2A-PINP\";"
@@ -27,6 +38,7 @@ var load = (
         "            const form = inputField.closest(\"form\");" +
         "            form.submit();" + // Lance la recherche
         "            console.log('Pre-load done');" +
+        "            app.setProgress(40);" +
         "         }" +
         "      }" +
         "   }" +
@@ -87,6 +99,7 @@ const val get_selected_week = ("(function() {" +
         "      var divs = frame.contentDocument.getElementsByTagName('div');" +
         "      for (i = 0;i<divs.length;i++) {" +
         "        if (divs[i].className == 'pianoselected') {" +
+        "          app.setProgress(50);" +
         "          return divs[i].getElementsByTagName('img')[0].alt;" +
         "        }" +
         "      }" +

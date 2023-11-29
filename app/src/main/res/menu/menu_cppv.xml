@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.seventeen.mywardrobe.MainRecyclerViewActivity">
+    <item
+        android:title="@string/PINPV_1A_name" />
+    <item
+        android:title="@string/PINPV_2A_name" />
+    <item
+        android:title="@string/PINPV_HN1_name" />
+    <item
+        android:title="@string/PINPV_HN2_name" />
+    <item
+        android:title="@string/PINPV_HN3_name" />
+    <!--<item
+        android:id="@+id/action_flush_simple"
+        android:title="Effaçage simple" />
+    <item
+        android:id="@+id/action_flush_full"
+        android:title="Effaçage général" />
+    <item
+        android:id="@+id/action_flush_data"
+        android:title="Effaçer le fichier de sauvegarde" />-->
+    <item
+        android:id="@+id/action_logging"
+        android:checkable="true"
+        android:title="@string/menuitem_logs_title"/>
+
+</menu>
+<!--Copyright (C)  - All Rights Reserved
+
+Copyright details are in the LICENSE.md file located in the root of this Android project.
+Everything written in the LICENSE.md file applies on this file.
+
+Any unauthorized copying, editing, or publishing, even partial, of this file is strictly forbidden.
+
+Owner of this file, its content, and the copyright related : Paul Musial, paul.musial.dev@gmail.com-->

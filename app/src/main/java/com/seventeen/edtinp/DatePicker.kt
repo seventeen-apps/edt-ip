@@ -1,3 +1,13 @@
+/**
+ * Copyright (C)  - All Rights Reserved
+ *
+ * Copyright details are in the LICENSE.md file located in the root of this Android project.
+ * Everything written in the LICENSE.md file applies on this file.
+ *
+ * Any unauthorized copying, editing, or publishing, even partial, of this file is strictly forbidden.
+ *
+ * Owner of this file, its content, and the copyright related : Paul Musial, paul.musial.dev@gmail.com
+ */
 package com.seventeen.edtinp
 
 import android.app.Dialog
@@ -45,7 +55,7 @@ class DatePicker(private val imageHandler: ImageHandler, private val dataHandler
                 MainActivity.displayedWeekId = MainActivity.selectedWeekId
                 // Met à jour l'image
 //                imageHandler.updateImage()
-                imageHandler.updateWebView()
+                imageHandler.updateForegroundWebView()
             }
             activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
         }

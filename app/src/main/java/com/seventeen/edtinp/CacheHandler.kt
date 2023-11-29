@@ -1,3 +1,13 @@
+/**
+ * Copyright (C)  - All Rights Reserved
+ *
+ * Copyright details are in the LICENSE.md file located in the root of this Android project.
+ * Everything written in the LICENSE.md file applies on this file.
+ *
+ * Any unauthorized copying, editing, or publishing, even partial, of this file is strictly forbidden.
+ *
+ * Owner of this file, its content, and the copyright related : Paul Musial, paul.musial.dev@gmail.com
+ */
 package com.seventeen.edtinp
 
 import android.content.Context
@@ -23,9 +33,10 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
     fun setImage(key: String, value: Bitmap, ignoreCache: Boolean = false) {
         val cacheDir = context.cacheDir
         var file = File(cacheDir, key)
-
-        if (MainActivity.displayedWeekId == dataHandler.getCurrentWeekId()) {
-            if ((getImage(key) == null) or (ignoreCache)) {
+        //TODO Nettoyer test plus tard
+        if ((MainActivity.displayedWeekId == dataHandler.getCurrentWeekId()) or true) {
+            //TODO Nettoyer test ici aussi
+            if (true or ((getImage(key) == null) or (ignoreCache))) {
                 try {
                     val outputStream = FileOutputStream(file)
                     value.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
@@ -78,9 +89,9 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
         if (cacheDir != null && cacheDir.isDirectory) {
             val children = cacheDir.list()
             for (i in children.indices) {
-                if ("week" in children[i]) {
-                    if ("week${weekId}" !in children[i]) {
-                        val success = deleteDir(File(cacheDir, children[i]))
+                if ("week" in children[i]) { // Donc le fichier est une image de cache
+                    if (("week${weekId}" !in children[i]) and ("week${weekId+1}" !in children[i])) { // On ne veut pas supprimer le cache actuel ou suivant
+                        val success = deleteDir(File(cacheDir, children[i])) // En revanche, on veut supprimer tous les auteres
                         Log.d("CacheEraser", "Erased ${children[i]}")
                         if (!success) {
                             return false
@@ -90,8 +101,20 @@ class CacheHandler(private val context: Context, private val dataHandler: DataHa
             }
         }
 
-        // The directory is now empty so delete it
-        return cacheDir!!.delete()
+        //TODO supprimer ?
+        return cacheDir!!.delete() // Supprime le fichier de cache
+    }
+
+    fun listCache() {
+        val directory = context.cacheDir
+        val files = directory.listFiles()
+        if (files != null) {
+            Log.d("CacheHandler", "Size: " + files.size)
+        }
+        if (files != null) {
+            for (i in files.indices) {
+                Log.d("CacheHandler", "FileName:" + files[i].name)
+            }
+        }
     }
 }
-
