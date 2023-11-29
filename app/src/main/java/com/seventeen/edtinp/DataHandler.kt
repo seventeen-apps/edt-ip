@@ -1,3 +1,13 @@
+/**
+ * Copyright (C)  - All Rights Reserved
+ *
+ * Copyright details are in the LICENSE.md file located in the root of this Android project.
+ * Everything written in the LICENSE.md file applies on this file.
+ *
+ * Any unauthorized copying, editing, or publishing, even partial, of this file is strictly forbidden.
+ *
+ * Owner of this file, its content, and the copyright related : Paul Musial, paul.musial.dev@gmail.com
+ */
 package com.seventeen.edtinp
 
 import android.content.Context
@@ -14,12 +24,12 @@ class DataHandler(private val context: Context) {
     //Setup the data storing file
     private val dataFile = "Data.txt"
     private val dataVersionFile = "DataVersion.txt"
-    private val dataVersion: String = "1.1"
-    private var data: DataClass = DataClass(dataVersion, "2A-PINP", 0, 0, "", listOf(0, 0), "", false)
+    private val dataVersion: String = "1.2"
+    private var data: DataClass = DataClass(dataVersion, "CPPV", 0, 0, "", listOf(0, 0), "", false)
 
 
     init {
-        val defaultData = DataClass(dataVersion, "2A-PINP", 0, 0, "", listOf(0, 0),"", false)
+        val defaultData = DataClass(dataVersion, "CPPV", 0, 0, "", listOf(0, 0),"", false)
         setupFile(dataFile, Json.encodeToString(defaultData))
 //        editFile(dataFile, Json.encodeToString(defaultData))
 
@@ -110,12 +120,12 @@ class DataHandler(private val context: Context) {
         } else {
             currentWeekNumber - 32
         }
-        data = DataClass(dataVersion, data.classe, calendar.get(Calendar.DAY_OF_WEEK) - 1, currentWeekId, "", listOf(0, 0), "", false)
+        data = DataClass(dataVersion, data.ecole, calendar.get(Calendar.DAY_OF_WEEK) - 1, currentWeekId, "", listOf(0, 0), "", false)
 
         editFile(dataFile, Json.encodeToString(data))
 
-        Toast.makeText(context, "Mémoire mise à jour :\n classe ${data.classe} \n jour ${calendar.get(Calendar.DAY_OF_WEEK) - 1} \n semaine $currentWeekId", Toast.LENGTH_SHORT).show()
-        Log.v("DataHandler", "Memory updated :\n class ${data.classe} \n day ${calendar.get(Calendar.DAY_OF_WEEK) - 1} \n week $currentWeekId")
+        Toast.makeText(context, "Mémoire mise à jour :\n ecole ${data.ecole} \n jour ${calendar.get(Calendar.DAY_OF_WEEK) - 1} \n semaine $currentWeekId", Toast.LENGTH_SHORT).show()
+        Log.v("DataHandler", "Memory updated :\n class ${data.ecole} \n day ${calendar.get(Calendar.DAY_OF_WEEK) - 1} \n week $currentWeekId")
     }
 
     fun setCurrentDayOfWeek(day: Int) {
@@ -135,13 +145,13 @@ class DataHandler(private val context: Context) {
         return data.currentWeekId
     }
 
-    fun setClass(classe: String) {
-        data.classe = classe
+    fun setSchool(ecole: String) {
+        data.ecole = ecole
         updateSave()
     }
 
-    fun getClass(): String {
-        return data.classe
+    fun getSchool(): String {
+        return data.ecole
     }
 
     fun setDimensions(dimensions: List<Int>) {
@@ -177,8 +187,15 @@ class DataHandler(private val context: Context) {
     }
 
     fun setTreeId(treeId: String) {
-        data.treeId = treeId
+        if (treeId == "") {
+            Toast.makeText(context, "Id vide reçu, réinitialisation de la classe séléctionnée", Toast.LENGTH_LONG).show()
+            Log.v("DataHandler", "Got null id !")
+            data.treeId = context.getString(R.string.PINPV_1A)
+        } else {
+            data.treeId = treeId
+        }
         updateSave()
+        Log.v("DataHandler", "Changing tree id to $treeId")
     }
 
     fun getTreeId(): String {

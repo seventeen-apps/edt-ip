@@ -1,8 +1,18 @@
 <resources>
     <string name="app_name">EDT INP</string>
-    <string name="A1">1ère année</string>
-    <string name="A2">2ème année</string>
-    <string name="HN1">HN 1</string>
-    <string name="HN2">HN 2</string>
-    <string name="HN3">HN 3</string>
+    <!-- to toggle the open close button of the navigation drawer -->
+    <string name="nav_open">Ouvrir</string>
+    <string name="nav_close">Fermer</string>
+
+    <string name="menuitem_logs_title">Logs (désactivé par défaut)</string>
+    <string name="nav_pinpv">Prépa INP Valence</string>
+    <string name="nav_esisar">Esisar</string>
 </resources>
+<!--Copyright (C)  - All Rights Reserved
+
+Copyright details are in the LICENSE.md file located in the root of this Android project.
+Everything written in the LICENSE.md file applies on this file.
+
+Any unauthorized copying, editing, or publishing, even partial, of this file is strictly forbidden.
+
+Owner of this file, its content, and the copyright related : Paul Musial, paul.musial.dev@gmail.com-->

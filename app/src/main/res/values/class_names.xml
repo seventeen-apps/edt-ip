@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  Prépa INP Valence  -->
+    <string name="PINPV_1A_name">CPPV 1A</string>
+    <string name="PINPV_2A_name">CPPV 2A</string>
+    <string name="PINPV_HN1_name">CPPV HN 1</string>
+    <string name="PINPV_HN2_name">CPPV HN 2</string>
+    <string name="PINPV_HN3_name">CPPV HN 3</string>
+
+    <!--  ESISAR  -->
+    <string name="ESISAR_1A_name">ESISAR 1A</string>
+    <string name="ESISAR_2A_name">ESISAR 2A</string>
+    <string name="ESISAR_3AS5_name">ESISAR 3A S5</string>
+    <string name="ESISAR_3AS6EIS_name">ESISAR 3A S6 EIS</string>
+    <string name="ESISAR_3AS6IRC_name">ESISAR 3A S6 IRC</string>
+    <string name="ESISAR_3APP_name">ESISAR 3A PP</string>
+    <string name="ESISAR_4A_name">ESISAR 4A</string>
+    <string name="ESISAR_4APP_name">ESISAR 4A PP</string>
+    <string name="ESISAR_5AEIS_name">ESISAR_5A EIS</string>
+    <string name="ESISAR_5AIRC_name">ESISAR 5A IRC</string>
+    <string name="ESISAR_5AMISTRE_name">ESISAR 5A MISTRE</string>
+    <string name="ESISAR_5APP_name">ESISAR 5A PP</string>
+</resources>
+<!--Copyright (C)  - All Rights Reserved
+
+Copyright details are in the LICENSE.md file located in the root of this Android project.
+Everything written in the LICENSE.md file applies on this file.
+
+Any unauthorized copying, editing, or publishing, even partial, of this file is strictly forbidden.
+
+Owner of this file, its content, and the copyright related : Paul Musial, paul.musial.dev@gmail.com-->

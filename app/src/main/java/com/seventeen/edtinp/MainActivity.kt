@@ -1,3 +1,14 @@
+/**
+ * Copyright (C)  - All Rights Reserved
+ *
+ * Copyright details are in the LICENSE.md file located in the root of this Android project.
+ * Everything written in the LICENSE.md file applies on this file.
+ *
+ * Any unauthorized copying, editing, or publishing, even partial, of this file is strictly forbidden.
+ *
+ * Owner of this file, its content, and the copyright related : Paul Musial, paul.musial.dev@gmail.com
+ */
+
 package com.seventeen.edtinp
 
 
@@ -23,11 +34,13 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
@@ -36,8 +49,11 @@ import java.util.concurrent.Executors
 import kotlin.concurrent.thread
 
 
-class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
+//TODO ajouter la possibilité d'afficher uniquement le jour J
+
+class MainActivity : AppCompatActivity(), DatePicker.OnDatePass, NavigationView.OnNavigationItemSelectedListener {
     @SuppressLint("SetJavaScriptEnabled")
+
     lateinit var backgroundWebView: WebView
     lateinit var foregroundWebView: WebView
     lateinit var imageView: ImageView
@@ -49,6 +65,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     private lateinit var dataHandler: DataHandler
     private lateinit var cacheHandler: CacheHandler
     private lateinit var imageHandler: ImageHandler
+    private lateinit var classHandler: ClassHandler
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,36 +73,32 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         // Ajoute la barre d'outil supérieure
         setSupportActionBar(findViewById(R.id.toolbar))
 
+        // Initialise le tiroir d'écoles
+        val navView = findViewById<NavigationView>(R.id.nav_view)
+        navView.setNavigationItemSelectedListener(this)
+
         // Initialisation des paramètres de la classe ImageHandler, qui est chargée de l'affichage de l'edt
         imageView = findViewById(R.id.imageView)
         val myExecutor = Executors.newSingleThreadExecutor()
         val myHandler = Handler(Looper.getMainLooper())
         dataHandler = DataHandler(this) // Initialise le gestionnaire de données
         cacheHandler = CacheHandler(this, dataHandler)
-        imageHandler = ImageHandler(this, imageView, dataHandler, cacheHandler)
-
+        imageHandler = ImageHandler(this, dataHandler, cacheHandler)
+        classHandler = ClassHandler(this, dataHandler)
 
         // Initialisation de la WebView d'arrière plan nécessaire pour générer le lien de référence
         backgroundWebView = findViewById(R.id.backgroundWebView)
         backgroundWebView.settings.javaScriptEnabled = true
-        backgroundWebView.addJavascriptInterface(BackgroundWebViewJavaScriptInterface(this, imageHandler, dataHandler), "app")
+        backgroundWebView.addJavascriptInterface(BackgroundWebViewJavaScriptInterface(this, imageHandler, dataHandler, cacheHandler), "app")
 
 
         // Initialisation de la WebView intermédiaire nécessaire pour générer des images à partir de l'url obtenue en amont
         foregroundWebView = findViewById<WebView>(R.id.foregroundWebView)
         foregroundWebView.settings.javaScriptEnabled = true
         foregroundWebView.setBackgroundColor(Color.argb(1, 0, 0, 0))
-        foregroundWebView.addJavascriptInterface(ForegroundWebViewJavaScriptInterface(this, imageHandler), "app")
+        foregroundWebView.addJavascriptInterface(ForegroundWebViewJavaScriptInterface(this, imageHandler, dataHandler), "app")
 
 
-        // Initialisation des boutons de navigation
-        val prevButton = findViewById<Button>(R.id.prev_week)
-        prevButton.isEnabled = false
-        val nextButton = findViewById<Button>(R.id.next_week)
-        nextButton.isEnabled = false
-        val refreshButton = findViewById<ImageView>(R.id.refresh_button)
-        refreshButton.isEnabled = false
-        refreshButton.setColorFilter(rgb(184, 184, 184)) // Filtre gris tant que la connexion n'est pas établie
 
 
 
@@ -130,15 +143,23 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
         Log.v("Date Handler", "Week number is $currentWeekNumber week id is $currentWeekId")
 
+
+        // Désactive les boutons par défaut
+        switchNavigation(this@MainActivity, navigationValue = false)
+        val prevButton = findViewById<Button>(R.id.prev_week)
+        val nextButton = findViewById<Button>(R.id.next_week)
+        val refreshButton = findViewById<ImageView>(R.id.refresh_button)
         // Affiche l'image de la semaine gardée en cache
-        var imageBitmap = cacheHandler.getImage("week$displayedWeekId${dataHandler.getClass()}")
+        var imageBitmap = cacheHandler.getImage("week$displayedWeekId${dataHandler.getTreeId()}")
         if (imageBitmap != null) {
             Log.v("CacheHandler", "Displaying cached image")
             imageView.setImageBitmap(imageBitmap)
+            if (cacheHandler.getImage("week${displayedWeekId+1}${dataHandler.getTreeId()}") != null) {
+                findViewById<Button>(R.id.next_week).isEnabled = true
+            }
         }
 
         // Supprime l'image de la semaine précédente gardée en cache
-        //TODO changer la clé avec l'idTree pour compatibilité inter école
         if (cacheHandler.clearOutdatedCache()) { Toast.makeText(this, "Images en cache effacées", Toast.LENGTH_SHORT).show(); Log.v("CacheHandler", "Outdated pictures deleted") }
 
         var javascript = """
@@ -182,6 +203,8 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
 //                if (!isRedirected) {
                     Log.v("URLLoader", "Loading $url")
+                    failChecking = true
+                    backgroundWebView.evaluateJavascript("setTimeout(function() { app.checkFail() }, 10000)", null)
 //                }
                 isRedirected = false
             }
@@ -197,18 +220,22 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                 super.onPageFinished(view, url)
                 if (isRedirected) {
                     Log.v("URLLoader", "Redirected from $url")
+                    if (url == "https://edt.grenoble-inp.fr/2023-2024/exterieur") {
+                        findViewById<ProgressBar>(R.id.progressBar).setProgress(20, true)
+                    }
                 }
 
                 // Mise en page du contenu
                 if (("plannings" in url)) {
                     Log.v("URLLoader", "Loading page")
                     var search = ""
-                    when (dataHandler.getClass()) {
+                    when (dataHandler.getSchool()) {
                         "1A-PINP" -> search = search1A
                         "2A-PINP" -> search = search2A
                         "HN1-PINP" -> search = searchHN1
                         "HN2-PINP" -> search = searchHN2
                         "HN3-PINP" -> search = searchHN3
+                        else -> search = search1A
                     }
                     val jsCode =
                         (preload + search + load)
@@ -220,6 +247,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                         if ((it == "null") or (it.length < 5)) {
                             Log.d("Preloader", "Got null resource")
                         } else {
+                            findViewById<ProgressBar>(R.id.progressBar).setProgress(60, true)
                             cacheWeekNumber = it.subSequence(2, 4).toString()
                             if (cacheWeekNumber[0].toString() == " ") {
                                 cacheWeekNumber = cacheWeekNumber[0].toString()
@@ -246,40 +274,58 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError) {
                 Log.d("URLLoader", "${error.errorCode} : ${error.description}")
                 if (error.errorCode == 500) {
-                    Toast.makeText(this@MainActivity, "Accès au site refusé, essayez de réinstaller l'application et redémarrer le téléphone. ", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@MainActivity, "Accès au site refusé, essayez de réinstaller l'application ou redémarrez le téléphone. ", Toast.LENGTH_LONG).show()
                     Log.d("URLLoader", "Error 500 : ${error.description}")
                 }
             }
         }
 
         prevButton.setOnClickListener {
-            backgroundWebView.evaluateJavascript(check_edt_availability) {// Nécessaire pour invalider le clic si page non chargée
-                if (it != "null") {
-                    val result =
-                        it.toInt() // Taille de la recherche du tag img dans la fenêtre, 1 si edt visible, 0 sinon
+        	if (navigationState == false) {
+        	    displayedWeekId = dataHandler.getCurrentWeekId()
+                Log.v("Date Handler", "Moving to week $displayedWeekId")
+        	    imageView.setImageBitmap(cacheHandler.getImage("week${displayedWeekId}${dataHandler.getTreeId()}"))
+                prevButton.isEnabled = false
+                if (cacheHandler.getImage("week${displayedWeekId+1}${dataHandler.getTreeId()}") != null) {
+                    nextButton.isEnabled = true
+                }
+            } else {
+                backgroundWebView.evaluateJavascript(check_edt_availability) {// Nécessaire pour invalider le clic si page non chargée
+                    if (it != "null") {
+                        val result =
+                            it.toInt() // Taille de la recherche du tag img dans la fenêtre, 1 si edt visible, 0 sinon
 
-                    // Incrémentation de l'id de la semaine
-                    if ((displayedWeekId > 0) and (result != 0)) { // result == 0 => edt non visible
-                        displayedWeekId -= 1
-                        Log.v("Date Handler", "Moving to week $displayedWeekId")
-                        // Met l'image dans une ImageView
-                        imageHandler.updateWebView()
+                        // Incrémentation de l'id de la semaine
+                        if ((displayedWeekId > 0) and (result != 0)) { // result == 0 => edt non visible
+                            displayedWeekId -= 1
+                            Log.v("Date Handler", "Moving to week $displayedWeekId")
+                            // Met l'image dans une ImageView
+                            imageHandler.updateForegroundWebView()
+                        }
                     }
                 }
             }
         }
         nextButton.setOnClickListener {
-            backgroundWebView.evaluateJavascript(check_edt_availability) {// Nécessaire pour invalider le clic si page non chargée
-                if (it != "null") {
-                    val result =
-                        it.toInt() // Taille de la recherche du tag img dans la fenêtre, 1 si edt visible, 0 sinon
+        	if (navigationState == false) {
+            	displayedWeekId = dataHandler.getCurrentWeekId()+1
+                Log.v("Date Handler", "Moving to week $displayedWeekId")
+        	    imageView.setImageBitmap(cacheHandler.getImage("week${displayedWeekId}${dataHandler.getTreeId()}"))
+                prevButton.isEnabled = true
+                nextButton.isEnabled = false
+            } else {
+                backgroundWebView.evaluateJavascript(check_edt_availability) {// Nécessaire pour invalider le clic si page non chargée
+                    if (it != "null") {
+                        val result =
+                            it.toInt() // Taille de la recherche du tag img dans la fenêtre, 1 si edt visible, 0 sinon
 
-                    // Incrémentation de l'id de la semaine
-                    if ((displayedWeekId < 51) and (result != 0)) { // Result == 0 => edt non visible
-                        displayedWeekId += 1
-                        Log.v("Date Handler", "Moving to week $displayedWeekId")
-                        // Met à jour l'image
-                        imageHandler.updateWebView()
+                        // Incrémentation de l'id de la semaine
+                        if ((displayedWeekId < 51) and (result != 0)) { // Result == 0 => edt non visible
+                            displayedWeekId += 1
+                            Log.v("Date Handler", "Moving to week $displayedWeekId")
+                            // Met à jour l'image
+                            imageHandler.updateForegroundWebView()
+                        }
                     }
                 }
             }
@@ -291,6 +337,8 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                 if (isOnline()) {
                     runOnUiThread {
                         switchNavigation(this@MainActivity, navigationValue = false)
+                        findViewById<ProgressBar>(R.id.progressBar).visibility = View.VISIBLE
+                        findViewById<ProgressBar>(R.id.progressBar).setProgress(10, true)
                         backgroundWebView.loadUrl(mainUrl)
                     }
                 } else {
@@ -299,40 +347,73 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                     this.runOnUiThread {
                         AlertDialog.Builder(this)
                             .setTitle("Pas de connexion internet")
-                            .setMessage("Vous pouvez quand même consulter la semaine actuelle, fermer l'application ?")
-                            .setPositiveButton("Fermer") { dialog, _ ->
+                            .setMessage("Vous pouvez quand même consulter les semaines en cache, fermer l'application ?")
+                            .setPositiveButton("Fermer l'application") { dialog, _ ->
                                 dialog.dismiss(); finishAndRemoveTask()
                             }
                             .setNegativeButton("Rester") { dialog, _ ->
                                 dialog.dismiss()
-                                runOnUiThread { switchNavigation(this@MainActivity, navigationValue = false, loadFailure = true) }
+                                runOnUiThread {
+                                    switchNavigation(this@MainActivity, navigationValue = false, loadFailure = true)
+                                    if (cacheHandler.getImage("week${displayedWeekId+1}${dataHandler.getTreeId()}") != null) {
+                                        findViewById<Button>(R.id.next_week).isEnabled = true
+                                    } else if (cacheHandler.getImage("week${displayedWeekId-1}${dataHandler.getTreeId()}") != null) {
+                                        findViewById<Button>(R.id.prev_week).isEnabled = true
+                                    }
                                 }
+                            }
+                            .setOnCancelListener {
+                                it.dismiss()
+                                runOnUiThread {
+                                    switchNavigation(this@MainActivity, navigationValue = false, loadFailure = true)
+                                    if (cacheHandler.getImage("week${displayedWeekId+1}${dataHandler.getTreeId()}") != null) {
+                                        findViewById<Button>(R.id.next_week).isEnabled = true
+                                    } else if (cacheHandler.getImage("week${displayedWeekId-1}${dataHandler.getTreeId()}") != null) {
+                                        findViewById<Button>(R.id.prev_week).isEnabled = true
+                                    }
+                                }
+                            }
                             .show()
                     }
                 }
             }
         }
 
-
+        cacheHandler.listCache()
 
         thread {
             // Vérification de la connectivité à internet
             if (isOnline()) {
                 // Charge la WebView d'arrère-plan
-                runOnUiThread {backgroundWebView.loadUrl(mainUrl) }
+                runOnUiThread {backgroundWebView.loadUrl(mainUrl); findViewById<ProgressBar>(R.id.progressBar).setProgress(10, true) }
             } else {
                 // Affiche un dialogue et propose de rester en mode hors ligne
                 //TODO ajouter une checkbox pour ne plus afficher le dialogue
                 this.runOnUiThread {
                     AlertDialog.Builder(this)
                         .setTitle("Pas de connexion internet")
-                        .setMessage("Vous pouvez quand même consulter la semaine actuelle, fermer l'application ?")
-                        .setPositiveButton("Fermer") { dialog, _ ->
+                        .setMessage("Vous pouvez quand même consulter les semaines en cache, fermer l'application ?")
+                        .setPositiveButton("Fermer l'application") { dialog, _ ->
                             dialog.dismiss(); finishAndRemoveTask()
                         }
                         .setNegativeButton("Rester") { dialog, _ ->
                             dialog.dismiss()
-                            runOnUiThread { switchNavigation(this@MainActivity, navigationValue = false, loadFailure = true) }
+                            runOnUiThread { switchNavigation(this@MainActivity, navigationValue = false, loadFailure = true)
+                                if (cacheHandler.getImage("week${displayedWeekId+1}${dataHandler.getTreeId()}") != null) {
+                                    findViewById<Button>(R.id.next_week).isEnabled = true
+                                } else if (cacheHandler.getImage("week${displayedWeekId-1}${dataHandler.getTreeId()}") != null) {
+                                    findViewById<Button>(R.id.prev_week).isEnabled = true
+                                }}
+                        }
+                        .setOnCancelListener {
+                            it.dismiss()
+                            runOnUiThread { switchNavigation(this@MainActivity, navigationValue = false, loadFailure = true)
+                                if (cacheHandler.getImage("week${displayedWeekId+1}${dataHandler.getTreeId()}") != null) {
+                                    findViewById<Button>(R.id.next_week).isEnabled = true
+                                } else if (cacheHandler.getImage("week${displayedWeekId-1}${dataHandler.getTreeId()}") != null) {
+                                    findViewById<Button>(R.id.prev_week).isEnabled = true
+                                }
+                            }
                         }
                         .show()
                 }
@@ -340,25 +421,22 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         }
     }
 
-
-
+    // TODO on resume renvoie en navgation limitée avec la possibilité de recharger
+    override fun onPause() {
+        super.onPause()
+        foregroundWebView.stopLoading()
+        backgroundWebView.stopLoading()
+    }
 
     override fun onStop() {
         super.onStop()
+        foregroundWebView.stopLoading()
+        backgroundWebView.stopLoading()
         if (dataHandler.getLoggingState()) {
             LogcatToFile.saveLogcatToFile(this)
         }
     }
 
-
-
-
-
-
-    /** Sauvegarde la nouvelle classe */
-    private fun changeClasse(classe: String) {
-        dataHandler.setClass(classe)
-    }
 
     /** Essaie une transaction internet
      * @return true si connexion à internet, et false sinon
@@ -378,15 +456,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     }
 
 
-    //TODO comparer les anciennes versions pour vérifier si on peut supprimer
-    /** Fonction appelée lorsque l'utilisateur effectue un clic sur un jour du calendrier
-     * Met à jour l'objet selectedWeekId
-     * @param weekId Id de la semaine à stocker dans l'objet selectedWeekId */
-    /*override fun onDatePass(weekId: Int, activity: FragmentActivity?) {
-        Log.v("TempSave", "Updated to $weekId")
-        selectedWeekId = weekId
-    }*/
-
 
     /** Initialise le menu en haut à gauche en ajoutant le nom de l'appli à côté */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -395,10 +464,15 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
 
         // Met l'icône de menu en tant que bouton de navigation
 //        toolbar.navigationIcon = hamButton
-
-        menuInflater.inflate(R.menu.menu, menu)
+        var menuId = R.menu.menu_cppv
+        when (dataHandler.getSchool()) {
+            "ESISAR" -> { menuId = R.menu.menu_esisar }
+            "CPPV" -> { menuId = R.menu.menu_cppv }
+        }
+        menuInflater.inflate(menuId, menu)
         val classTextView = findViewById<TextView>(R.id.classe_tv)
-        classTextView.text = dataHandler.getClass()
+        // TODO changer pour afficher le nom de la classe
+        classTextView.text = dataHandler.getSchool()
         return true
     }
 
@@ -430,52 +504,66 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     /** Callback lors d'un clic dans le menu de sélection de classe en haut à droite  */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         var search = ""
+        var classeId = ""
         when (item.title) {
-            getString(R.string.A1) -> {
-                changeClasse("1A-PINP")
-                Log.v("Menu Handler", dataHandler.getClass())
+            /*getString(R.string.A1) -> {
+//                changeClasse("1A-PINP")
+//                Log.v("Menu Handler", dataHandler.getClass())
                 search = search1A
+
             }
 
             getString(R.string.A2) -> {
-                changeClasse("2A-PINP")
-                Log.v("Menu Handler", dataHandler.getClass())
+//                changeClasse("2A-PINP")
+//                Log.v("Menu Handler", dataHandler.getClass())
                 search = search2A
             }
 
             getString(R.string.HN1) -> {
-                changeClasse("HN1-PINP")
-                Log.v("Menu Handler", dataHandler.getClass())
+//                changeClasse("HN1-PINP")
+//                Log.v("Menu Handler", dataHandler.getClass())
                 search = searchHN1
             }
 
             getString(R.string.HN2) -> {
-                changeClasse("HN2-PINP")
-                Log.v("Menu Handler", dataHandler.getClass())
+//                changeClasse("HN2-PINP")
+//                Log.v("Menu Handler", dataHandler.getClass())
                 search = searchHN2
             }
 
             getString(R.string.HN3) -> {
-                changeClasse("HN3-PINP")
-                Log.v("Menu Handler", dataHandler.getClass())
+//                changeClasse("HN3-PINP")
+//                Log.v("Menu Handler", dataHandler.getClass())
                 search = searchHN3
-            }
-            "Effaçage général" -> { flushCache(applicationContext, true) }
-            "Effaçage simple" -> { flushCache(applicationContext) }
-            "Effaçer le fichier de sauvegarde" -> { dataHandler.flushData() }
+            }*/
+//            "Effaçage général" -> { flushCache(applicationContext, true) }
+//            "Effaçage simple" -> { flushCache(applicationContext) }
+//            "Effaçer le fichier de sauvegarde" -> { dataHandler.flushData() }
             "Logs" -> { item.isChecked = !item.isChecked; dataHandler.setLoggingState(item.isChecked) }
+            else -> {
+                if ((item.title != null) or (item.title != "")) {
+                    classHandler.switchClass(item.title.toString())
+                }
+            }
         }
+        /*if ((item.title != null) or (item.title != "")) {
+            classHandler.switchClass(item.title.toString())
+        }*/
 
         // Met le nom de la classe à jour
         val classeTextView = findViewById<TextView>(R.id.classe_tv)
-        classeTextView.text = dataHandler.getClass()
+        //TODO Changer ça aussi
+        classeTextView.text = item.title
 
 
         // En cas de besoin, choisir une classe recharge la page (permet de sortir d'un bug)
         //TODO nécéssaire ?
         if (item.title !in arrayOf("Effaçage général", "Effaçage simple", "Effaçer le fichier de sauvegarde", "Logs")) {
-            runOnUiThread { switchNavigation(this@MainActivity, navigationValue = false) }
-            backgroundWebView.evaluateJavascript(get_selected_week) {
+            runOnUiThread {
+                switchNavigation(this@MainActivity, navigationValue = false)
+                imageHandler.updateForegroundWebView()
+            }
+            /*backgroundWebView.evaluateJavascript(get_selected_week) {
 
 
                 if ((it == "null") or (it.length < 5)) {
@@ -496,10 +584,28 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                         null
                     )
                 }
-            }
+            }*/
         }
         return super.onOptionsItemSelected(item)
     }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        var newClassName = ""
+        when (item.title) {
+
+            getString(R.string.nav_esisar) -> { newClassName = getString(R.string.ESISAR_1A_name); invalidateOptionsMenu() }
+
+            getString(R.string.nav_pinpv) -> { newClassName = getString(R.string.PINPV_1A_name); invalidateOptionsMenu() }
+        }
+        if (newClassName != "") {
+            if (classHandler.switchClass(newClassName)) {
+                imageHandler.updateForegroundWebView()
+            }
+        }
+        return true
+    }
+
+
 
     /*
      * JavaScript Interface. Web code can access methods in here
@@ -511,12 +617,53 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
     class BackgroundWebViewJavaScriptInterface(
         private val context: MainActivity,
         private val imageHandler: ImageHandler,
-        private val dataHandler: DataHandler
+        private val dataHandler: DataHandler,
+        private val cacheHandler: CacheHandler
     ) {
         @JavascriptInterface
         fun makeToast(message: String?, lengthLong: Boolean = true) {
             Toast.makeText(context, message, if (lengthLong) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
         }
+
+        @JavascriptInterface
+        fun checkFail() {
+            if (failChecking) {
+                Log.v("FailHandler", "Failed to load the page")
+//                makeToast("Contacter les serveurs prend un temps anormal, les serveurs sont peut-être inaccessibles. Essayez de relancer/réactiver le wifi/données.", true)
+                context.runOnUiThread {
+                    context.findViewById<WebView>(R.id.backgroundWebView).stopLoading()
+                    context.findViewById<WebView>(R.id.foregroundWebView).stopLoading()
+                    context.findViewById<ProgressBar>(R.id.progressBar).setProgress(0, false)
+                    switchNavigation(context, navigationValue = false, loadFailure = true)
+                    if (cacheHandler.getImage("week${displayedWeekId + 1}${dataHandler.getTreeId()}") != null) {
+                        context.findViewById<Button>(R.id.next_week).isEnabled = true
+                    } else if (cacheHandler.getImage("week${displayedWeekId - 1}${dataHandler.getTreeId()}") != null) {
+                        context.findViewById<Button>(R.id.prev_week).isEnabled = true
+                    }
+                    AlertDialog.Builder(context)
+                        .setTitle("Les serveurs mettent du temps à répondre")
+                        .setMessage(
+                            "Contacter les serveurs prend un temps anormal, les serveurs sont peut-être inaccessibles. Essayez de relancer/réactiver le wifi/données. \n" +
+                                    "\n" +
+                                    " Vous pouvez quand même consulter les semaines en cache, fermer l'application ?"
+                        )
+                        .setPositiveButton("Fermer l'application") { dialog, _ ->
+                            dialog.dismiss(); context.finishAndRemoveTask()
+                        }
+                        .setNegativeButton("Rester") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .show()
+                }
+            } else { Log.v("FailHandler", "No failure detected") }
+        }
+
+        @JavascriptInterface
+        fun setProgress(progress: Int) {
+            context.runOnUiThread { context.findViewById<ProgressBar>(R.id.progressBar).setProgress(progress, true) }
+        }
+
+
 
         /** Met à jour les objets de l'activité et affiche l'image avec la nouvelle référence
          * Objets mis à jour :  referenceUrl; idSemaineUrl
@@ -529,7 +676,6 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                 referenceURL = url
 
                 // Met à jour l'objet id de la semaine
-                //TODO Remplacer toutes les créations d'url avec les placeholder
                 val splitUrl = referenceURL.split("&") as MutableList
                 var widthId = 0
                 var heightId = 0
@@ -546,6 +692,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                 }
 
                 // Crée le lien vers l'image avec les bon jours sélectionnés et sauvegarde la taille
+                //TODO Remplacer par un placeholder
                 val spliturl = referenceURL.split("&") as MutableList
                 spliturl[idSemaineUrl + 1] = "idPianoDay=0%2C1%2C2%2C3%2C4"
                 dataHandler.setDimensions(listOf(splitUrl[widthId].split("=")[1].toInt(), splitUrl[heightId].split("=")[1].toInt()))
@@ -566,13 +713,15 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                 if (referenceURL.split("&")[idSemaineUrl + 2].split("=")[0] == "idTree") {
                     treeId = referenceURL.split("&")[idSemaineUrl + 2].split("=")[1]
                 }
-                if (((treeId != "") and (treeId != dataHandler.getTreeId()))) {
+                if (((treeId != "") and (dataHandler.getTreeId() == ""))) {
+                    Log.v("URLHandler", "Saved tree id")
                     dataHandler.setTreeId(treeId)
                 }
-
+                context.findViewById<ProgressBar>(R.id.progressBar).setProgress(80, true)
 
                 // Charge l'url dans la WebView intermédiaire
-                context.runOnUiThread{ context.findViewById<WebView>(R.id.foregroundWebView).loadUrl(referenceURL) }
+//                context.runOnUiThread{ context.findViewById<WebView>(R.id.foregroundWebView).loadUrl(referenceURL) }
+                context.runOnUiThread{ imageHandler.updateForegroundWebView() }
                 Log.v("JavaInterface", "Reference url set to $referenceURL and week field id set to $idSemaineUrl")
 
                 // Logs diverses
@@ -587,7 +736,8 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
                     }
                 }
 
-                saveToCache = true
+                savedBitmaps["current"] = false
+                failChecking = false
 
                 makeToast("Connexion établie", false)
             }
@@ -608,7 +758,8 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
      */
     class ForegroundWebViewJavaScriptInterface(
         private val context: MainActivity,
-        private val imageHandler: ImageHandler
+        private val imageHandler: ImageHandler,
+        private val dataHandler: DataHandler
     ) {
         @JavascriptInterface
         fun makeToast(message: String?, lengthLong: Boolean = true) {
@@ -621,6 +772,8 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
          */
         @JavascriptInterface
         fun setBitmap() {
+            context.findViewById<ProgressBar>(R.id.progressBar).setProgress(100, false)
+
             val foregroundWebView = context.findViewById<WebView>(R.id.foregroundWebView)
 
             val bitmap = imageHandler.getBitmapFromWebView()
@@ -628,9 +781,14 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
             // Rétablit la navigation avant de mettre à jour l'ImageView principale
             context.runOnUiThread {
                 switchNavigation(context, navigationValue = true)
+                context.findViewById<ProgressBar>(R.id.progressBar).visibility = View.INVISIBLE
                 context.findViewById<ImageView>(R.id.imageView).setImageBitmap(bitmap)
-                if (saveToCache) {
-                    saveToCache = !saveToCache
+                if (savedBitmaps["current"] == false) {
+                    savedBitmaps["current"] = true
+                    imageHandler.captureWebViewContent()
+                }
+                if ((savedBitmaps["next"] == false) and (displayedWeekId == dataHandler.getCurrentWeekId()+1)) {
+                    savedBitmaps["next"] = true
                     imageHandler.captureWebViewContent()
                 }
             }
@@ -645,7 +803,8 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass {
         var selectedWeekId: Int = 0
         var displayedWeekId: Int = 0
         var navigationState: Boolean = false
-        var saveToCache: Boolean = false
+        var failChecking: Boolean = false
+        var savedBitmaps: MutableMap<String, Boolean> = mutableMapOf("current" to true, "next" to false)
     }
 }
 
@@ -674,6 +833,7 @@ fun switchNavigation(context: MainActivity, navigationValue: Boolean? = null, lo
             context.findViewById<TextView>(R.id.loading_tv).visibility = View.VISIBLE
         }
         if (loadFailure) {
+            context.findViewById<ProgressBar>(R.id.progressBar).visibility = View.INVISIBLE
             context.findViewById<ImageView>(R.id.refresh_button).isEnabled = true
             context.findViewById<ImageView>(R.id.refresh_button).setColorFilter(rgb(255, 255, 255))
             context.findViewById<TextView>(R.id.loading_tv).visibility = View.GONE
