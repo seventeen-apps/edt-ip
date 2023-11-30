@@ -12,6 +12,9 @@ Any mention of the Owner or the Author aims to Paul Musial alias seventeen-apps,
 
 
 RIGHTS
+
+The built application, may it be in .apk file or not, cannot be distributed. Any copy of the built application must be as a .apk file and must originate from the Owner itself.
+
 Copying, even if partial, of the content in this directory, via any medium is only authorized if the Owner has the written and signed authorization.
 
 Unauthorized copying, editing, publishing, even partial, of the Project and its content is strictly forbidden.
