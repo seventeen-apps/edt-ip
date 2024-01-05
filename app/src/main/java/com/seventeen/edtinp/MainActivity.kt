@@ -204,7 +204,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass, NavigationView.
 //                if (!isRedirected) {
                     Log.v("URLLoader", "Loading $url")
                     failChecking = true
-                    backgroundWebView.evaluateJavascript("setTimeout(function() { app.checkFail() }, 10000)", null)
+                    backgroundWebView.evaluateJavascript("setTimeout(function() { app.checkFail() }, 15000)", null)
 //                }
                 isRedirected = false
             }
@@ -252,6 +252,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass, NavigationView.
                             if (cacheWeekNumber[0].toString() == " ") {
                                 cacheWeekNumber = cacheWeekNumber[0].toString()
                             }
+                            cacheWeekNumber = cacheWeekNumber.replace(" ", "")
                             if ((cacheWeekNumber.toInt() != currentWeekNumber) and (cacheWeekNumber.toInt() != currentWeekNumber)) {
                                 Log.d("Preloader", "Found wrong week : $cacheWeekNumber, reloading to $currentWeekId")
                                 //TODO push nécessaire ? Est-il possible de juste recharger au jour J ?
@@ -281,7 +282,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass, NavigationView.
         }
 
         prevButton.setOnClickListener {
-        	if (navigationState == false) {
+        	if (!navigationState) {
         	    displayedWeekId = dataHandler.getCurrentWeekId()
                 Log.v("Date Handler", "Moving to week $displayedWeekId")
         	    imageView.setImageBitmap(cacheHandler.getImage("week${displayedWeekId}${dataHandler.getTreeId()}"))
@@ -307,7 +308,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass, NavigationView.
             }
         }
         nextButton.setOnClickListener {
-        	if (navigationState == false) {
+        	if (!navigationState) {
             	displayedWeekId = dataHandler.getCurrentWeekId()+1
                 Log.v("Date Handler", "Moving to week $displayedWeekId")
         	    imageView.setImageBitmap(cacheHandler.getImage("week${displayedWeekId}${dataHandler.getTreeId()}"))
@@ -457,7 +458,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass, NavigationView.
 
 
 
-    /** Initialise le menu en haut à gauche en ajoutant le nom de l'appli à côté */
+    /** Initialise le menu en haut à droite en fonction de l'école sélectionnée */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
 //        val hamButton: Drawable? = ContextCompat.getDrawable(this, R.drawable.ic_baseline_menu_24)
 //        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
@@ -468,6 +469,8 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass, NavigationView.
         when (dataHandler.getSchool()) {
             "ESISAR" -> { menuId = R.menu.menu_esisar }
             "CPPV" -> { menuId = R.menu.menu_cppv }
+            "ENSIMAG Ingé" -> { menuId = R.menu.menu_ensimag_ingenieurs }
+            "ENSIMAG Masters" -> { menuId = R.menu.menu_ensimag_masters }
         }
         menuInflater.inflate(menuId, menu)
         val classTextView = findViewById<TextView>(R.id.classe_tv)
@@ -480,12 +483,16 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass, NavigationView.
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         if (!navigationState) {
             for (item in menu!!.children) {
-                item.isEnabled = item.title in mutableListOf<String>("Effaçage général", "Effaçage simple", "Effaçer le fichier de sauvegarde", "Logs")
+                if (item.title == getString(R.string.menuitem_logs_title)) {
+                    item.isEnabled = true
+                    item.isChecked = dataHandler.getLoggingState()
+                } else { item.isEnabled = false }
+
             }
         } else {
             for (item in menu!!.children) {
                 item.isEnabled = true
-                if (item.title == "Logs") {
+                if (item.title == getString(R.string.menuitem_logs_title)) {
                     item.isChecked = dataHandler.getLoggingState()
                 }
             }
@@ -539,7 +546,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass, NavigationView.
 //            "Effaçage général" -> { flushCache(applicationContext, true) }
 //            "Effaçage simple" -> { flushCache(applicationContext) }
 //            "Effaçer le fichier de sauvegarde" -> { dataHandler.flushData() }
-            "Logs" -> { item.isChecked = !item.isChecked; dataHandler.setLoggingState(item.isChecked) }
+            getString(R.string.menuitem_logs_title) -> { item.isChecked = !item.isChecked; dataHandler.setLoggingState(item.isChecked) }
             else -> {
                 if ((item.title != null) or (item.title != "")) {
                     classHandler.switchClass(item.title.toString())
@@ -553,12 +560,12 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass, NavigationView.
         // Met le nom de la classe à jour
         val classeTextView = findViewById<TextView>(R.id.classe_tv)
         //TODO Changer ça aussi
-        classeTextView.text = item.title
+        if (item.title != getString(R.string.menuitem_logs_title)) { classeTextView.text = item.title }
 
 
         // En cas de besoin, choisir une classe recharge la page (permet de sortir d'un bug)
         //TODO nécéssaire ?
-        if (item.title !in arrayOf("Effaçage général", "Effaçage simple", "Effaçer le fichier de sauvegarde", "Logs")) {
+        if (item.title !in arrayOf("Effaçage général", "Effaçage simple", "Effaçer le fichier de sauvegarde", getString(R.string.menuitem_logs_title))) {
             runOnUiThread {
                 switchNavigation(this@MainActivity, navigationValue = false)
                 imageHandler.updateForegroundWebView()
@@ -589,6 +596,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass, NavigationView.
         return super.onOptionsItemSelected(item)
     }
 
+    /** Callback appelé lors d'un click sur un champ du menu déroulant à gauche */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         var newClassName = ""
         when (item.title) {
@@ -596,6 +604,10 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass, NavigationView.
             getString(R.string.nav_esisar) -> { newClassName = getString(R.string.ESISAR_1A_name); invalidateOptionsMenu() }
 
             getString(R.string.nav_pinpv) -> { newClassName = getString(R.string.PINPV_1A_name); invalidateOptionsMenu() }
+
+            getString(R.string.nav_ensimag_ingenieurs) -> { newClassName = getString(R.string.ENSIMAG_INGENIEURS_1A_g1g2_name); invalidateOptionsMenu() }
+
+            getString(R.string.nav_ensimag_masters) -> { newClassName = getString(R.string.ENSIMAG_MASTERS_CODAS1_name); invalidateOptionsMenu() }
         }
         if (newClassName != "") {
             if (classHandler.switchClass(newClassName)) {

@@ -20,6 +20,40 @@
     <string name="ESISAR_5AIRC_name">ESISAR 5A IRC</string>
     <string name="ESISAR_5AMISTRE_name">ESISAR 5A MISTRE</string>
     <string name="ESISAR_5APP_name">ESISAR 5A PP</string>
+
+    <!--  ENSIMAG  Ingénieurs -->
+    <string name="ENSIMAG_INGENIEURS_1A_g1g2_name">Étudiants 1A G1G2</string>
+    <string name="ENSIMAG_INGENIEURS_1A_g3g4_name">Étudiants 1A G3G4</string>
+    <string name="ENSIMAG_INGENIEURS_1A_g5g6_name">Étudiants 1A G5G6</string>
+    <string name="ENSIMAG_INGENIEURS_1A_g7g8_name">Étudiants 1A G7G8</string>
+    <string name="ENSIMAG_INGENIEURS_2A_IF_g1_name">Étudiants 2A IF G1</string>
+    <string name="ENSIMAG_INGENIEURS_2A_IF_g2_name">Étudiants 2A IF G2</string>
+    <string name="ENSIMAG_INGENIEURS_2A_ISI_g1_name">Étudiants 2A ISI</string>
+    <string name="ENSIMAG_INGENIEURS_2A_ISI_g2_name">Étudiants 2A ISI</string>
+    <string name="ENSIMAG_INGENIEURS_2A_ISI_g3_name">Étudiants 2A ISI</string>
+    <string name="ENSIMAG_INGENIEURS_2A_ISI_g4_name">Étudiants 2A ISI</string>
+    <string name="ENSIMAG_INGENIEURS_2A_MMIS_g1_name">Étudiants 2A MMIS</string>
+    <string name="ENSIMAG_INGENIEURS_2A_MMIS_g2_name">Étudiants 2A MMIS</string>
+    <string name="ENSIMAG_INGENIEURS_2A_SEOC_name">Étudiants 2A SEOC</string>
+    <string name="ENSIMAG_INGENIEURS_3A_I2MF_name">Étudiants 3A IF I2MF</string>
+    <string name="ENSIMAG_INGENIEURS_3A_MEQA_name">Étudiants 3A IF MEQA</string>
+    <string name="ENSIMAG_INGENIEURS_3A_ISI_name">Étudiants 3A ISI</string>
+    <string name="ENSIMAG_INGENIEURS_3A_MMIS_name">Étudiants 3A MMIS</string>
+    <string name="ENSIMAG_INGENIEURS_3A_SEOC_name">Étudiants 3A SEOC</string>
+    <string name="ENSIMAG_INGENIEURS_1A_ALT_name">Alternants 1A</string>
+    <string name="ENSIMAG_INGENIEURS_2A_ALT_name">Alternants 2A</string>
+
+    <!--  ENSIMAG  Masters -->
+    <string name="ENSIMAG_MASTERS_CODAS1_name">CODAS 1</string>
+    <string name="ENSIMAG_MASTERS_CODAS2_name">CODAS 2</string>
+    <string name="ENSIMAG_MASTERS_CYSEC_name">CYSEC</string>
+    <string name="ENSIMAG_MASTERS_MOSIG2_name">MOSIG 2</string>
+    <string name="ENSIMAG_MASTERS_MSIAM2_DS_name">MSIAM2 DS</string>
+    <string name="ENSIMAG_MASTERS_MSIAM2_MSCI_name">MSIAM2 MSCI</string>
+    <string name="ENSIMAG_MASTERS_RIE1_name">RIE 1</string>
+    <string name="ENSIMAG_MASTERS_RIE2_name">RIE 2</string>
+
+
 </resources>
 <!--Copyright (C)  - All Rights Reserved
 

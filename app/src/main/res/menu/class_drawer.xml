@@ -6,10 +6,13 @@
     <group android:checkableBehavior="single">
         <!--<item
             android:id="@+id/item_ensecube"
-            android:title="Ense3" />
+            android:title="Ense3" />-->
         <item
-            android:id="@+id/item_ensimag"
-            android:title="Ensimag" />-->
+            android:id="@+id/item_ensimag_ingenieurs"
+            android:title="@string/nav_ensimag_ingenieurs" />
+        <item
+            android:id="@+id/item_ensimag_masters"
+            android:title="@string/nav_ensimag_masters" />
         <item
             android:id="@+id/item_esisar"
             android:title="@string/nav_esisar" />

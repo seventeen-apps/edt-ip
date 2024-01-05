@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_1A_g1g2_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_1A_g3g4_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_1A_g5g6_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_1A_g7g8_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_2A_IF_g1_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_2A_IF_g2_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_2A_ISI_g1_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_2A_ISI_g2_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_2A_ISI_g3_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_2A_ISI_g4_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_2A_MMIS_g1_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_2A_MMIS_g2_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_2A_SEOC_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_3A_I2MF_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_3A_MEQA_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_3A_ISI_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_3A_MMIS_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_3A_SEOC_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_1A_ALT_name" />
+    <item
+        android:title="@string/ENSIMAG_INGENIEURS_2A_ALT_name" />
+
+    <!--<item
+        android:id="@+id/action_flush_simple"
+        android:title="Effaçage simple" />
+    <item
+        android:id="@+id/action_flush_full"
+        android:title="Effaçage général" />
+    <item
+        android:id="@+id/action_flush_data"
+        android:title="Effaçer le fichier de sauvegarde" />-->
+    <item
+        android:id="@+id/action_logging"
+        android:checkable="true"
+        android:title="@string/menuitem_logs_title"/>
+
+</menu>
+<!--Copyright (C)  - All Rights Reserved
+
+Copyright details are in the LICENSE.md file located in the root of this Android project.
+Everything written in the LICENSE.md file applies on this file.
+
+Any unauthorized copying, editing, or publishing, even partial, of this file is strictly forbidden.
+
+Owner of this file, its content, and the copyright related : Paul Musial, paul.musial.dev@gmail.com-->

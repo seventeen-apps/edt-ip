@@ -20,8 +20,8 @@ class ClassHandler(val context: MainActivity, val dataHandler: DataHandler) {
         when (name) {
 
             /*
-            * Prépa INP Valence
-            */
+             * Prépa INP Valence
+             */
 
             context.getString(R.string.PINPV_1A_name) -> {
                 changeEcole("CPPV")
@@ -49,8 +49,8 @@ class ClassHandler(val context: MainActivity, val dataHandler: DataHandler) {
             }
 
             /*
-            * ESISAR
-            */
+             * ESISAR
+             */
 
             context.getString(R.string.ESISAR_1A_name) -> {
                 changeEcole("ESISAR")
@@ -111,6 +111,146 @@ class ClassHandler(val context: MainActivity, val dataHandler: DataHandler) {
                 changeEcole("ESISAR")
                 classeId = context.getString(R.string.ESISAR_5APP)
             }
+
+            /*
+             * ENSIMAG INGENIEURS
+             */
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_1A_g1g2_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_1A_g1g2)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_1A_g3g4_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_1A_g3g4)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_1A_g5g6_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_1A_g5g6)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_1A_g7g8_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_1A_g7g8)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_2A_IF_g1_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_2A_IF_g1)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_2A_IF_g2_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_2A_IF_g2)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_2A_ISI_g1_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_2A_ISI_g1)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_2A_ISI_g2_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_2A_ISI_g2)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_2A_ISI_g3_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_2A_ISI_g3)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_2A_ISI_g4_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_2A_ISI_g4)
+            }
+
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_2A_MMIS_g1_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_2A_MMIS_g1)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_2A_MMIS_g2_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_2A_MMIS_g2)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_2A_SEOC_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_2A_SEOC)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_3A_I2MF_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_3A_I2MF)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_3A_MEQA_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_3A_MEQA)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_3A_ISI_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_3A_ISI)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_3A_MMIS_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_3A_MMIS)
+            }
+
+            context.getString(R.string.ENSIMAG_INGENIEURS_3A_SEOC_name) -> {
+                changeEcole("ENSIMAG Ingé")
+                classeId = context.getString(R.string.ENSIMAG_INGENIEURS_3A_SEOC)
+            }
+
+            /*
+             * ENSIMAG MASTERS
+             */
+
+            context.getString(R.string.ENSIMAG_MASTERS_CODAS1_name) -> {
+                changeEcole("ENSIMAG Masters")
+                classeId = context.getString(R.string.ENSIMAG_MASTERS_CODAS1)
+            }
+
+            context.getString(R.string.ENSIMAG_MASTERS_CODAS2_name) -> {
+                changeEcole("ENSIMAG Masters")
+                classeId = context.getString(R.string.ENSIMAG_MASTERS_CODAS2)
+            }
+
+            context.getString(R.string.ENSIMAG_MASTERS_CYSEC_name) -> {
+                changeEcole("ENSIMAG Masters")
+                classeId = context.getString(R.string.ENSIMAG_MASTERS_CYSEC)
+            }
+
+            context.getString(R.string.ENSIMAG_MASTERS_MOSIG2_name) -> {
+                changeEcole("ENSIMAG Masters")
+                classeId = context.getString(R.string.ENSIMAG_MASTERS_MOSIG2)
+            }
+
+            context.getString(R.string.ENSIMAG_MASTERS_MSIAM2_DS_name) -> {
+                changeEcole("ENSIMAG Masters")
+                classeId = context.getString(R.string.ENSIMAG_MASTERS_MSIAM2_DS)
+            }
+
+            context.getString(R.string.ENSIMAG_MASTERS_MSIAM2_MSCI_name) -> {
+                changeEcole("ENSIMAG Masters")
+                classeId = context.getString(R.string.ENSIMAG_MASTERS_MSIAM2_MSCI)
+            }
+
+            context.getString(R.string.ENSIMAG_MASTERS_RIE1_name) -> {
+                changeEcole("ENSIMAG Masters")
+                classeId = context.getString(R.string.ENSIMAG_MASTERS_RIE1)
+            }
+
+            context.getString(R.string.ENSIMAG_MASTERS_RIE2_name) -> {
+                changeEcole("ENSIMAG Masters")
+                classeId = context.getString(R.string.ENSIMAG_MASTERS_RIE2)
+            }
+
 
         }
         if ((name != null) or (name != "") or (name != "null")) {

@@ -7,6 +7,8 @@
     <string name="menuitem_logs_title">Logs (désactivé par défaut)</string>
     <string name="nav_pinpv">Prépa INP Valence</string>
     <string name="nav_esisar">Esisar</string>
+    <string name="nav_ensimag_ingenieurs">Ensimag Ingénieurs</string>
+    <string name="nav_ensimag_masters">Ensimag Masters</string>
 </resources>
 <!--Copyright (C)  - All Rights Reserved
 
