@@ -22,6 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="AAAA"
+            android:onClick="openCloseNavigationDrawer"
             android:textColor="@color/white"
             android:gravity="end"
             android:layout_gravity="end" />
@@ -160,11 +161,11 @@
 
 </FrameLayout>
 
-    <!--Copyright (C)  - All Rights Reserved
+<!--Copyright (C)  - All Rights Reserved
 
-    Copyright details are in the LICENSE.md file located in the root of this Android project.
-    Everything written in the LICENSE.md file applies on this file.
+Copyright details are in the LICENSE.md file located in the root of this Android project.
+Everything written in the LICENSE.md file applies on this file.
 
-    Any unauthorized copying, editing, or publishing, even partial, of this file is strictly forbidden.
+Any unauthorized copying, editing, or publishing, even partial, of this file is strictly forbidden.
 
-    Owner of this file, its content, and the copyright related : Paul Musial, paul.musial.dev@gmail.com-->
+Owner of this file, its content, and the copyright related : Paul Musial, paul.musial.dev@gmail.com-->
