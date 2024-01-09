@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--  Prépa INP Valence  -->
-    <string name="PINPV_1A">13795%2C13796%2C13798%2C13799</string>
-    <string name="PINPV_2A">13808%2C13807%2C12201%2C17862%2C12200</string>
+    <string name="PINPV_1A">13795</string>
+    <string name="PINPV_2A">13808</string>
     <string name="PINPV_HN1">13801</string>
     <string name="PINPV_HN2">13803</string>
     <string name="PINPV_HN3">13802</string>
