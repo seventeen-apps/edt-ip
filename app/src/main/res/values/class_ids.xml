@@ -21,6 +21,37 @@
     <string name="ESISAR_5AMISTRE">12897%2C12899%2C12898</string>
     <string name="ESISAR_5APP">12902%2C12901</string>
 
+    <!--  ENSIMAG  Ingénieurs -->
+    <string name="ENSIMAG_INGENIEURS_1A_g1g2">7656%2C7660</string>
+    <string name="ENSIMAG_INGENIEURS_1A_g3g4">7661%2C7657</string>
+    <string name="ENSIMAG_INGENIEURS_1A_g5g6">7658%2C7654</string>
+    <string name="ENSIMAG_INGENIEURS_1A_g7g8">7655%2C7659</string>
+    <string name="ENSIMAG_INGENIEURS_2A_IF_g1">7671</string>
+    <string name="ENSIMAG_INGENIEURS_2A_IF_g2">7672</string>
+    <string name="ENSIMAG_INGENIEURS_2A_ISI_g1">7678</string>
+    <string name="ENSIMAG_INGENIEURS_2A_ISI_g2">7679</string>
+    <string name="ENSIMAG_INGENIEURS_2A_ISI_g3">7680</string>
+    <string name="ENSIMAG_INGENIEURS_2A_ISI_g4">7681</string>
+    <string name="ENSIMAG_INGENIEURS_2A_MMIS_g1">7683</string>
+    <string name="ENSIMAG_INGENIEURS_2A_MMIS_g2">7683</string>
+    <string name="ENSIMAG_INGENIEURS_2A_SEOC">7675%2C7674%2C7676</string>
+    <string name="ENSIMAG_INGENIEURS_3A_I2MF">7666</string>
+    <string name="ENSIMAG_INGENIEURS_3A_MEQA">7667</string>
+    <string name="ENSIMAG_INGENIEURS_3A_ISI">7663</string>
+    <string name="ENSIMAG_INGENIEURS_3A_MMIS">7668</string>
+    <string name="ENSIMAG_INGENIEURS_3A_SEOC">7664</string>
+    <string name="ENSIMAG_INGENIEURS_1A_ALT">7689</string>
+    <string name="ENSIMAG_INGENIEURS_2A_ALT">7688</string>
+
+    <!--  ENSIMAG  Masters -->
+    <string name="ENSIMAG_MASTERS_CODAS1">11152</string>
+    <string name="ENSIMAG_MASTERS_CODAS2">11144</string>
+    <string name="ENSIMAG_MASTERS_CYSEC">11151</string>
+    <string name="ENSIMAG_MASTERS_MOSIG2">11148</string>
+    <string name="ENSIMAG_MASTERS_MSIAM2_DS">11147</string>
+    <string name="ENSIMAG_MASTERS_MSIAM2_MSCI">11149</string>
+    <string name="ENSIMAG_MASTERS_RIE1">11153</string>
+    <string name="ENSIMAG_MASTERS_RIE2">11150</string>
 
 
 

@@ -4,29 +4,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:title="@string/ESISAR_1A_name" />
+        android:title="@string/ENSIMAG_MASTERS_CODAS1_name" />
     <item
-        android:title="@string/ESISAR_2A_name" />
+        android:title="@string/ENSIMAG_MASTERS_CODAS2_name" />
     <item
-        android:title="@string/ESISAR_3APP_name" />
+        android:title="@string/ENSIMAG_MASTERS_CYSEC_name" />
     <item
-        android:title="@string/ESISAR_3AS5_name" />
+        android:title="@string/ENSIMAG_MASTERS_MOSIG2_name" />
     <item
-        android:title="@string/ESISAR_3AS6EIS_name" />
+        android:title="@string/ENSIMAG_MASTERS_MSIAM2_DS_name" />
     <item
-        android:title="@string/ESISAR_3AS6IRC_name" />
+        android:title="@string/ENSIMAG_MASTERS_MSIAM2_MSCI_name" />
     <item
-        android:title="@string/ESISAR_4A_name" />
+        android:title="@string/ENSIMAG_MASTERS_RIE1_name" />
     <item
-        android:title="@string/ESISAR_4APP_name" />
-    <item
-        android:title="@string/ESISAR_5APP_name" />
-    <item
-        android:title="@string/ESISAR_5AEIS_name" />
-    <item
-        android:title="@string/ESISAR_5AIRC_name" />
-    <item
-        android:title="@string/ESISAR_5AMISTRE_name" />
+        android:title="@string/ENSIMAG_MASTERS_RIE2_name" />
     <!--<item
         android:id="@+id/action_flush_simple"
         android:title="Effaçage simple" />
