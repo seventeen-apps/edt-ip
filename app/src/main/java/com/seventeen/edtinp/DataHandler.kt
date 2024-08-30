@@ -25,11 +25,11 @@ class DataHandler(private val context: Context) {
     private val dataFile = "Data.txt"
     private val dataVersionFile = "DataVersion.txt"
     private val dataVersion: String = "1.2"
-    private var data: DataClass = DataClass(dataVersion, "CPPV", 0, 0, "", listOf(0, 0), "", false)
+    private var data: DataClass = DataClass(dataVersion, "", 0, 0, "", listOf(0, 0), "", false)
 
 
     init {
-        val defaultData = DataClass(dataVersion, "CPPV", 0, 0, "", listOf(0, 0),"", false)
+        val defaultData = DataClass(dataVersion, "CPPV", 0, 0, "", listOf(0, 0), context.getString(R.string.PINPV_1A), false)
         setupFile(dataFile, Json.encodeToString(defaultData))
 //        editFile(dataFile, Json.encodeToString(defaultData))
 
@@ -41,6 +41,9 @@ class DataHandler(private val context: Context) {
             data = defaultData
         } else {
             data = Json.decodeFromString(extractedData)
+            if (data.treeId == "") {
+                setTreeId(context.getString(R.string.PINPV_1A))
+            }
         }
 
         Log.v("FileManager", "Loaded: ${Json.encodeToString(data)}")

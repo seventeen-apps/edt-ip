@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass,
     lateinit var backgroundWebView: WebView
     lateinit var foregroundWebView: WebView
     lateinit var imageView: ImageView
-    val mainUrl = "https://edt.grenoble-inp.fr/2023-2024/exterieur"
+    val mainUrl = "https://edt.grenoble-inp.fr/" + scholarYear + "/exterieur"
 
     val jsSetReferenceDelay = 1200
     val jsSetBitmapDelay = 100
@@ -219,7 +219,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass,
                 super.onPageFinished(view, url)
                 if (isRedirected) {
                     Log.v("URLLoader", "Redirected from $url")
-                    if (url == "https://edt.grenoble-inp.fr/2023-2024/exterieur") {
+                    if (url == mainUrl) {
                         findViewById<ProgressBar>(R.id.progressBar).setProgress(20, true)
                     }
                 }
@@ -334,9 +334,9 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass,
         // Initialisation du bouton de rafraîchissement
         refreshButton.setOnClickListener {
             thread {
+                runOnUiThread { switchNavigation(this@MainActivity, navigationValue = false) }
                 if (isOnline()) {
                     runOnUiThread {
-                        switchNavigation(this@MainActivity, navigationValue = false)
                         findViewById<ProgressBar>(R.id.progressBar).visibility = View.VISIBLE
                         findViewById<ProgressBar>(R.id.progressBar).setProgress(10, true)
                         backgroundWebView.loadUrl(mainUrl)
