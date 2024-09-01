@@ -12,6 +12,8 @@ package com.seventeen.edtinp
 
 const val scholarYear= "2024-2025"
 
+const val scholarYear = "2024-2025"
+
 var preload = (
         "var framesets = document.getElementsByTagName(\"frameset\");" +// Les frameset sur la raçine
                 "var treeFrameset = framesets[1];" +
