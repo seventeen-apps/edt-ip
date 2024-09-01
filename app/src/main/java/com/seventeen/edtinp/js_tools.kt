@@ -10,6 +10,7 @@
  */
 package com.seventeen.edtinp
 
+const val scholarYear= "2024-2025"
 
 const val scholarYear = "2024-2025"
 

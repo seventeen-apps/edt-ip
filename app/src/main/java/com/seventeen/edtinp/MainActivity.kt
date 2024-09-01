@@ -219,6 +219,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass,
                 super.onPageFinished(view, url)
                 if (isRedirected) {
                     Log.v("URLLoader", "Redirected from $url")
+
                     if (url == mainUrl) {
                         findViewById<ProgressBar>(R.id.progressBar).setProgress(20, true)
                     }
