@@ -10,6 +10,7 @@
  */
 package com.seventeen.edtinp
 
+const val scholarYear= "2024-2025"
 
 var preload = (
         "var framesets = document.getElementsByTagName(\"frameset\");" +// Les frameset sur la raçine
@@ -193,12 +194,12 @@ const val js_functions =
         "      }" +
         "   function launchImg(id, reset)" +
         "      {" +
-        "         top.frames[\"et\"].location='/2023-2024/exterieur/jsp/custom/modules/plannings/bounds.jsp?clearTree=false&week='+id+'&reset='+reset;" +
+        "         top.frames[\"et\"].location='/" + scholarYear + "/exterieur/jsp/custom/modules/plannings/bounds.jsp?clearTree=false&week='+id+'&reset='+reset;" +
         "      }" +
         "      " +
         "   function launchImg2()" +
         "      {" +
-        "         top.frames[\"et\"].location='/2023-2024/exterieur/jsp/custom/modules/plannings/bounds.jsp?clearTree=false';" +
+        "         top.frames[\"et\"].location='/" + scholarYear + "/exterieur/jsp/custom/modules/plannings/bounds.jsp?clearTree=false';" +
         "      }" +
         "   function push(id, reset)" +
         "      {" +
