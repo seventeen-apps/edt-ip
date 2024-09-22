@@ -54,6 +54,68 @@
     <string name="ENSIMAG_MASTERS_RIE2_name">RIE 2</string>
 
 
+    <!--  ENSE3 ALT  -->
+    <string name="ENSE3_1A_ALT_name">1A ALT</string>
+    <string name="ENSE3_2A_ALT_name">2A ALT</string>
+    <string name="ENSE3_3A_ALT_name">3A ALT</string>
+
+
+    <!--  ENSE3 ETU  -->
+    <string name="ENSE3_1A_ETU_A_name">1A ETU A</string>
+    <string name="ENSE3_1A_ETU_B_name">1A ETU B</string>
+    <string name="ENSE3_1A_ETU_C_name">1A ETU C</string>
+    <string name="ENSE3_1A_ETU_3EUS_2APP_name">1A ETU 3EUS 2APP</string>
+
+
+    <string name="ENSE3_2A_ASI_G1_name">2A ASI G1</string>
+    <string name="ENSE3_2A_ASI_G2_name">2A ASI G2</string>
+    <string name="ENSE3_2A_ASI_G3_name">2A ASI G3</string>
+    <string name="ENSE3_2A_ASI_G4_name">2A ASI G4</string>
+
+    <string name="ENSE3_2A_HOE_S7_name">2A HOE S7</string>
+    <string name="ENSE3_2A_HOE_S8_name">2A HOE S8</string>
+
+    <string name="ENSE3_2A_IEE_G1_name">2A IEE G1</string>
+    <string name="ENSE3_2A_IEE_G2_name">2A IEE G2</string>
+    <string name="ENSE3_2A_IEE_G3_name">2A IEE G3</string>
+    <string name="ENSE3_2A_IEE_G4_name">2A IEE G4</string>
+
+    <string name="ENSE3_2A_IEN_G1_name">2A IEN G1</string>
+    <string name="ENSE3_2A_IEN_G2_name">2A IEN G2</string>
+    <string name="ENSE3_2A_IEN_ECOUL_name">2A IEN ECOULEMENTS</string>
+    <string name="ENSE3_2A_IEN_STRUCT_MAT_name">2A IEN STRUCT MAT</string>
+
+    <string name="ENSE3_2A_ME_ETUD_name">2A ME SYST MECA</string>
+    <string name="ENSE3_2A_ME_G1_name">2A ME G1</string>
+    <string name="ENSE3_2A_ME_G2_name">2A ME G2</string>
+    <string name="ENSE3_2A_ME_G3_name">2A ME G3</string>
+    <string name="ENSE3_2A_ME_G4_name">2A ME G4</string>
+    <string name="ENSE3_2A_ME_GEXTRATP_name">2A ME GextraTP</string>
+    <string name="ENSE3_2A_ME_SIMFLU_name">2A ME SIMU FLUIDES</string>
+
+    <string name="ENSE3_2A_PARIN_ETU_name">2A PARIN ETU</string>
+    <string name="ENSE3_2A_PARCOURSNUM_name">2A PARCOURS NUM</string>
+
+    <string name="ENSE3_2A_SEM_G1_name">2A SEM G1</string>
+    <string name="ENSE3_2A_SEM_G2_name">2A SEM G2</string>
+    <string name="ENSE3_2A_SEM_G3_name">2A SEM G3</string>
+    <string name="ENSE3_2A_SEM_G4_name">2A SEM G4</string>
+
+    <string name="ENSE3_2A_SICOM_name">2A SICOM</string>
+
+    <string name="ENSE3_3A_ML_name">3A ML</string>
+    <string name="ENSE3_3A_ASI_name">3A ASI</string>
+    <string name="ENSE3_3A_HOE_name">3A HOE</string>
+    <string name="ENSE3_3A_IDP_name">3A IDP</string>
+    <string name="ENSE3_3A_IEE_name">3A IEE</string>
+    <string name="ENSE3_3A_IEN_name">3A IEN</string>
+    <string name="ENSE3_3A_MANINTEC_name">3A MANINTEC</string>
+    <string name="ENSE3_3A_ME_name">3A ME</string>
+    <string name="ENSE3_3A_PARIN_ETU_name">3A PARIN ETU</string>
+    <string name="ENSE3_3A_PISTE_name">3A PISTE</string>
+    <string name="ENSE3_3A_SEM_name">3A SEM</string>
+    <string name="ENSE3_3A_SICOM_name">3A SICOM</string>
+
 </resources>
 <!--Copyright (C)  - All Rights Reserved
 

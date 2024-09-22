@@ -4,9 +4,9 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <!--<item
+        <item
             android:id="@+id/item_ensecube"
-            android:title="Ense3" />-->
+            android:title="@string/nav_ense3" />
         <item
             android:id="@+id/item_ensimag_ingenieurs"
             android:title="@string/nav_ensimag_ingenieurs" />

@@ -481,6 +481,7 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass,
             "CPPV" -> { menuId = R.menu.menu_cppv }
             "ENSIMAG Ingé" -> { menuId = R.menu.menu_ensimag_ingenieurs }
             "ENSIMAG Masters" -> { menuId = R.menu.menu_ensimag_masters }
+            "ENSE3" -> { menuId = R.menu.menu_ense3 }
         }
         menuInflater.inflate(menuId, menu)
         val classTextView = findViewById<TextView>(R.id.classe_tv)
@@ -618,6 +619,8 @@ class MainActivity : AppCompatActivity(), DatePicker.OnDatePass,
             getString(R.string.nav_ensimag_ingenieurs) -> { newClassName = getString(R.string.ENSIMAG_INGENIEURS_1A_g1g2_name); invalidateOptionsMenu() }
 
             getString(R.string.nav_ensimag_masters) -> { newClassName = getString(R.string.ENSIMAG_MASTERS_CODAS1_name); invalidateOptionsMenu() }
+
+            getString(R.string.nav_ense3) -> { newClassName = getString(R.string.ENSE3_1A_ETU_A_name); invalidateOptionsMenu() }
         }
         if (newClassName != "") {
             if (classHandler.switchClass(newClassName)) {
