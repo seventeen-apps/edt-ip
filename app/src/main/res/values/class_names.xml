@@ -116,6 +116,38 @@
     <string name="ENSE3_3A_SEM_name">3A SEM</string>
     <string name="ENSE3_3A_SICOM_name">3A SICOM</string>
 
+
+    <!--  PHELMA  -->
+    <string name="PHELMA_1A_AP_MEP_name">1A AP MEP</string>
+    <string name="PHELMA_1A_AP_MT_name">1A AP MT</string>
+    <string name="PHELMA_1A_PET_name">1A PET</string>
+    <string name="PHELMA_1A_PI_name">1A PI</string>
+    <string name="PHELMA_1A_PMP_name">1A PMP</string>
+
+    <string name="PHELMA_2A_AM_name">2A AM</string>
+    <string name="PHELMA_2A_AP_MT_name">2A AP MT</string>
+    <string name="PHELMA_2A_BIOMED_name">2A BIOMED</string>
+    <string name="PHELMA_2A_EPEE_name">2A EPEE</string>
+    <string name="PHELMA_2A_GEN_name">2A GEN</string>
+    <string name="PHELMA_2A_IPHY_name">2A IPHY</string>
+    <string name="PHELMA_2A_NTK_name">2A NTK</string>
+    <string name="PHELMA_2A_SEI_name">2A SEI</string>
+    <string name="PHELMA_2A_SEOC_name">2A SEOC</string>
+    <string name="PHELMA_2A_SICOM_name">2A SICOM</string>
+    <string name="PHELMA_2A_SIM_name">2A SIM</string>
+
+    <string name="PHELMA_3A_AM_name">3A AM</string>
+    <string name="PHELMA_3A_AP_MT_name">3A AP MT</string>
+    <string name="PHELMA_3A_BIOMED_name">3A BIOMED</string>
+    <string name="PHELMA_3A_EPEE_name">3A EPEE</string>
+    <string name="PHELMA_3A_GEN_name">3A GEN</string>
+    <string name="PHELMA_3A_IPHY_name">3A IPHY</string>
+    <string name="PHELMA_3A_SEI_name">3A SEI</string>
+    <string name="PHELMA_3A_SEOC_name">3A SEOC</string>
+    <string name="PHELMA_3A_SICOM_name">3A SICOM</string>
+    <string name="PHELMA_3A_SIM_name">3A SIM</string>
+    <string name="PHELMA_3A_SAC_name">3A SAC</string>
+
 </resources>
 <!--Copyright (C)  - All Rights Reserved
 

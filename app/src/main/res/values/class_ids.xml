@@ -142,6 +142,40 @@
     <string name="ENSE3_3A_SEM">8334</string>
     <string name="ENSE3_3A_SICOM">8334</string>
 
+
+
+    <!--  PHELMA  -->
+    <string name="PHELMA_1A_AP_MEP">19581%2C19583</string>
+    <string name="PHELMA_1A_AP_MT">20876%2C9661</string>
+    <string name="PHELMA_1A_PET">5564%2C5565%2C5566%2C5574%2C5862%2C20866%2C20870%2C20869</string>
+    <string name="PHELMA_1A_PI">20868%2C20867%2C20872</string>
+    <string name="PHELMA_1A_PMP">12733%2C13577%2C13579%2C13582%2C13583%2C20871%2C20875%2C20874%2C20873</string>
+
+    <string name="PHELMA_2A_AM">20880%2C20881</string>
+    <string name="PHELMA_2A_AP_MT">20922</string>
+    <string name="PHELMA_2A_BIOMED">1592%2C1597%2C20893%2C20892</string>
+    <string name="PHELMA_2A_EPEE">20896%2C20897%2C20911</string>
+    <string name="PHELMA_2A_GEN">20899%2C20900</string>
+    <string name="PHELMA_2A_IPHY">1598%2C1610%2C1620%2C1627</string>
+    <string name="PHELMA_2A_NTK">20912</string>
+    <string name="PHELMA_2A_SEI">20915%2C20914</string>
+    <string name="PHELMA_2A_SEOC">12256%2C12257</string>
+    <string name="PHELMA_2A_SICOM">20917%2C20918</string>
+    <string name="PHELMA_2A_SIM">20921%2C20920</string>
+
+
+
+    <string name="PHELMA_3A_AM">20925%2C20926</string>
+    <string name="PHELMA_3A_AP_MT">20923</string>
+    <string name="PHELMA_3A_BIOMED">20929%2C20928%2C20931%2C20930</string>
+    <string name="PHELMA_3A_EPEE">20947</string>
+    <string name="PHELMA_3A_GEN">20949%2C20951%2C20953%2C20952</string>
+    <string name="PHELMA_3A_IPHY">20961%2C20962%2C20957%2C20958</string>
+    <string name="PHELMA_3A_SEI">20964%2C20965%2C20966</string>
+    <string name="PHELMA_3A_SEOC">9664</string>
+    <string name="PHELMA_3A_SICOM">20969%2C20970%2C20971%2C20984</string>
+    <string name="PHELMA_3A_SIM">20975</string>
+    <string name="PHELMA_3A_SAC">20978%2C20977</string>
 </resources>
 <!--Copyright (C)  - All Rights Reserved
 

@@ -490,6 +490,144 @@ class ClassHandler(val context: MainActivity, val dataHandler: DataHandler) {
                 classeId = context.getString(R.string.ENSE3_3A_SICOM)
             }
 
+            /*
+             * PHELMA
+             */
+
+            context.getString(R.string.PHELMA_1A_AP_MEP_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_1A_AP_MEP)
+            }
+
+            context.getString(R.string.PHELMA_1A_AP_MT_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_1A_AP_MT)
+            }
+
+            context.getString(R.string.PHELMA_1A_PET_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_1A_PET)
+            }
+
+            context.getString(R.string.PHELMA_1A_PI_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_1A_PI)
+            }
+
+            context.getString(R.string.PHELMA_1A_PMP_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_1A_PMP)
+            }
+
+            context.getString(R.string.PHELMA_2A_AM_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_AM)
+            }
+
+            context.getString(R.string.PHELMA_2A_AP_MT_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_AP_MT)
+            }
+
+            context.getString(R.string.PHELMA_2A_BIOMED_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_BIOMED)
+            }
+
+            context.getString(R.string.PHELMA_2A_EPEE_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_EPEE)
+            }
+
+            context.getString(R.string.PHELMA_2A_GEN_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_GEN)
+            }
+
+            context.getString(R.string.PHELMA_2A_IPHY_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_IPHY)
+            }
+
+            context.getString(R.string.PHELMA_2A_NTK_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_NTK)
+            }
+
+            context.getString(R.string.PHELMA_2A_SEI_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_SEI)
+            }
+
+            context.getString(R.string.PHELMA_2A_SEOC_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_SEOC)
+            }
+
+            context.getString(R.string.PHELMA_2A_SICOM_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_SICOM)
+            }
+
+            context.getString(R.string.PHELMA_2A_SIM_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_SIM)
+            }
+
+            context.getString(R.string.PHELMA_3A_AM_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_AM)
+            }
+
+            context.getString(R.string.PHELMA_3A_AP_MT_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_AP_MT)
+            }
+
+            context.getString(R.string.PHELMA_3A_BIOMED_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_BIOMED)
+            }
+
+            context.getString(R.string.PHELMA_3A_EPEE_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_EPEE)
+            }
+
+            context.getString(R.string.PHELMA_3A_GEN_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_GEN)
+            }
+
+            context.getString(R.string.PHELMA_3A_IPHY_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_IPHY)
+            }
+
+            context.getString(R.string.PHELMA_3A_SEI_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_SEI)
+            }
+
+            context.getString(R.string.PHELMA_3A_SEOC_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_SEOC)
+            }
+
+            context.getString(R.string.PHELMA_3A_SICOM_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_SICOM)
+            }
+
+            context.getString(R.string.PHELMA_3A_SIM_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_SIM)
+            }
+
+            context.getString(R.string.PHELMA_3A_SAC_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_SAC)
+            }
 
         }
         if ((name != null) or (name != "") or (name != "null")) {
