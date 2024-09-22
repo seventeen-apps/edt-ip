@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:title="@string/PHELMA_1A_AP_MEP_name" />
+    <item
+        android:title="@string/PHELMA_1A_AP_MT_name" />
+    <item
+        android:title="@string/PHELMA_1A_PET_name" />
+    <item
+        android:title="@string/PHELMA_1A_PI_name" />
+    <item
+        android:title="@string/PHELMA_1A_PMP_name" />
+
+    <item
+        android:title="@string/PHELMA_2A_AM_name" />
+    <item
+        android:title="@string/PHELMA_2A_AP_MT_name" />
+    <item
+        android:title="@string/PHELMA_2A_BIOMED_name" />
+    <item
+        android:title="@string/PHELMA_2A_EPEE_name" />
+    <item
+        android:title="@string/PHELMA_2A_GEN_name" />
+    <item
+        android:title="@string/PHELMA_2A_IPHY_name" />
+    <item
+        android:title="@string/PHELMA_2A_NTK_name" />
+    <item
+        android:title="@string/PHELMA_2A_SEI_name" />
+    <item
+        android:title="@string/PHELMA_2A_SEOC_name" />
+    <item
+        android:title="@string/PHELMA_2A_SICOM_name" />
+    <item
+        android:title="@string/PHELMA_2A_SIM_name" />
+
+    <item
+        android:title="@string/PHELMA_3A_AM_name" />
+    <item
+        android:title="@string/PHELMA_3A_AP_MT_name" />
+    <item
+        android:title="@string/PHELMA_3A_BIOMED_name" />
+    <item
+        android:title="@string/PHELMA_3A_EPEE_name" />
+    <item
+        android:title="@string/PHELMA_3A_GEN_name" />
+    <item
+        android:title="@string/PHELMA_3A_IPHY_name" />
+    <item
+        android:title="@string/PHELMA_3A_SEI_name" />
+    <item
+        android:title="@string/PHELMA_3A_SEOC_name" />
+    <item
+        android:title="@string/PHELMA_3A_SICOM_name" />
+    <item
+        android:title="@string/PHELMA_3A_SIM_name" />
+    <item
+        android:title="@string/PHELMA_3A_SAC_name" />
+
+</menu>
+    <!--Copyright (C)  - All Rights Reserved
+
+    Copyright details are in the LICENSE.md file located in the root of this Android project.
+    Everything written in the LICENSE.md file applies on this file.
+
+    Any unauthorized copying, editing, or publishing, even partial, of this file is strictly forbidden.
+
+    Owner of this file, its content, and the copyright related : Paul Musial, paul.musial.dev@gmail.com-->

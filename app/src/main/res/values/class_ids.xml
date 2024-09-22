@@ -54,7 +54,7 @@
     <string name="ENSIMAG_MASTERS_RIE2">11150</string>
 
 
-
+    <!--  Prépa INP Grenoble  -->
     <string name="PINPG_1A_A"></string>
     <string name="PINPG_1A_B"></string>
     <string name="PINPG_1A_C"></string>
@@ -79,6 +79,103 @@
     <string name="PINPG_HN3_B"></string>
     <string name="PINPG_HN3_C"></string>
     <string name="PINPG_HN3_D"></string>
+
+    <!--  ENSE3 ALT  -->
+    <string name="ENSE3_1A_ALT">793%2C790%2C791%2C796%2C798%2C795</string>
+    <string name="ENSE3_2A_ALT">835%2C806%2C838%2C836%2C805%2C803</string>
+    <string name="ENSE3_3A_ALT">8244</string>
+
+
+    <!--  ENSE3 ETU  -->
+    <string name="ENSE3_1A_ETU_A">643%2C642%2C597%2C596%2C593%2C591</string>
+    <string name="ENSE3_1A_ETU_B">737%2C733%2C727%2C721%2C708%2C696</string>
+    <string name="ENSE3_1A_ETU_C">451%2C372%2C204%2C312%2C187%2C199</string>
+    <string name="ENSE3_1A_ETU_3EUS_2APP">765%2C748%2C785%2C784%2C742%2C787%2C788%2C768%2C749%2C741</string>
+
+
+    <string name="ENSE3_2A_ASI_G1">984%2C975%2C977</string>
+    <string name="ENSE3_2A_ASI_G2">993%2C995%2C997</string>
+    <string name="ENSE3_2A_ASI_G3">1006%2C1007%2C1009</string>
+    <string name="ENSE3_2A_ASI_G4">989%2C987%2C988</string>
+
+    <string name="ENSE3_2A_HOE_S7">1051%2C1055%2C1052%2C1072%2C1071%2C1075%2C1074%2C1049%2C1047%2C1048%2C1045%2C1046%2C1042%2C1044</string>
+    <string name="ENSE3_2A_HOE_S8">1051%2C1055%2C1052%2C1072%2C1071%2C1075%2C1074%2C1049%2C1047%2C1048%2C1045%2C1046%2C1042%2C1044</string>
+
+    <string name="ENSE3_2A_IEE_G1">1051%2C1055%2C1052%2C1072%2C1071%2C1075%2C1074%2C1049%2C1047%2C1048%2C1045%2C1046%2C1042%2C1044</string>
+    <string name="ENSE3_2A_IEE_G2">879%2C877%2C872</string>
+    <string name="ENSE3_2A_IEE_G3">879%2C877%2C872</string>
+    <string name="ENSE3_2A_IEE_G4">889%2C883%2C881</string>
+
+    <string name="ENSE3_2A_IEN_G1">889%2C883%2C881</string>
+    <string name="ENSE3_2A_IEN_G2">889%2C883%2C881</string>
+    <string name="ENSE3_2A_IEN_ECOUL">889%2C883%2C881</string>
+    <string name="ENSE3_2A_IEN_STRUCT_MAT">1148</string>
+
+    <string name="ENSE3_2A_ME_ETUD">920%2C924%2C907</string>
+    <string name="ENSE3_2A_ME_G1">949%2C948%2C946</string>
+    <string name="ENSE3_2A_ME_G2">949%2C948%2C946</string>
+    <string name="ENSE3_2A_ME_G3">949%2C948%2C946</string>
+    <string name="ENSE3_2A_ME_G4">949%2C948%2C946</string>
+    <string name="ENSE3_2A_ME_GEXTRATP">949%2C948%2C946</string>
+    <string name="ENSE3_2A_ME_SIMFLU">949%2C948%2C946</string>
+
+    <string name="ENSE3_2A_PARIN_ETU">892%2C1174</string>
+    <string name="ENSE3_2A_PARCOURSNUM">846</string>
+
+    <string name="ENSE3_2A_SEM_G1">846</string>
+    <string name="ENSE3_2A_SEM_G2">846</string>
+    <string name="ENSE3_2A_SEM_G3">846</string>
+    <string name="ENSE3_2A_SEM_G4">846</string>
+
+    <string name="ENSE3_2A_SICOM">846</string>
+
+    <string name="ENSE3_3A_ML">846</string>
+    <string name="ENSE3_3A_ASI">846</string>
+    <string name="ENSE3_3A_HOE">846</string>
+    <string name="ENSE3_3A_IDP">8259</string>
+    <string name="ENSE3_3A_IEE">8259</string>
+    <string name="ENSE3_3A_IEN">8259</string>
+    <string name="ENSE3_3A_MANINTEC">8259</string>
+    <string name="ENSE3_3A_ME">8259</string>
+    <string name="ENSE3_3A_PARIN_ETU">8259</string>
+    <string name="ENSE3_3A_PISTE">8259</string>
+    <string name="ENSE3_3A_SEM">8334</string>
+    <string name="ENSE3_3A_SICOM">8334</string>
+
+
+
+    <!--  PHELMA  -->
+    <string name="PHELMA_1A_AP_MEP">19581%2C19583</string>
+    <string name="PHELMA_1A_AP_MT">20876%2C9661</string>
+    <string name="PHELMA_1A_PET">5564%2C5565%2C5566%2C5574%2C5862%2C20866%2C20870%2C20869</string>
+    <string name="PHELMA_1A_PI">20868%2C20867%2C20872</string>
+    <string name="PHELMA_1A_PMP">12733%2C13577%2C13579%2C13582%2C13583%2C20871%2C20875%2C20874%2C20873</string>
+
+    <string name="PHELMA_2A_AM">20880%2C20881</string>
+    <string name="PHELMA_2A_AP_MT">20922</string>
+    <string name="PHELMA_2A_BIOMED">1592%2C1597%2C20893%2C20892</string>
+    <string name="PHELMA_2A_EPEE">20896%2C20897%2C20911</string>
+    <string name="PHELMA_2A_GEN">20899%2C20900</string>
+    <string name="PHELMA_2A_IPHY">1598%2C1610%2C1620%2C1627</string>
+    <string name="PHELMA_2A_NTK">20912</string>
+    <string name="PHELMA_2A_SEI">20915%2C20914</string>
+    <string name="PHELMA_2A_SEOC">12256%2C12257</string>
+    <string name="PHELMA_2A_SICOM">20917%2C20918</string>
+    <string name="PHELMA_2A_SIM">20921%2C20920</string>
+
+
+
+    <string name="PHELMA_3A_AM">20925%2C20926</string>
+    <string name="PHELMA_3A_AP_MT">20923</string>
+    <string name="PHELMA_3A_BIOMED">20929%2C20928%2C20931%2C20930</string>
+    <string name="PHELMA_3A_EPEE">20947</string>
+    <string name="PHELMA_3A_GEN">20949%2C20951%2C20953%2C20952</string>
+    <string name="PHELMA_3A_IPHY">20961%2C20962%2C20957%2C20958</string>
+    <string name="PHELMA_3A_SEI">20964%2C20965%2C20966</string>
+    <string name="PHELMA_3A_SEOC">9664</string>
+    <string name="PHELMA_3A_SICOM">20969%2C20970%2C20971%2C20984</string>
+    <string name="PHELMA_3A_SIM">20975</string>
+    <string name="PHELMA_3A_SAC">20978%2C20977</string>
 </resources>
 <!--Copyright (C)  - All Rights Reserved
 

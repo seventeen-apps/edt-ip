@@ -251,6 +251,383 @@ class ClassHandler(val context: MainActivity, val dataHandler: DataHandler) {
                 classeId = context.getString(R.string.ENSIMAG_MASTERS_RIE2)
             }
 
+            /*
+             * ENSE3
+             */
+
+            context.getString(R.string.ENSE3_1A_ALT_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_1A_ALT)
+            }
+
+            context.getString(R.string.ENSE3_2A_ALT_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_ALT)
+            }
+
+            context.getString(R.string.ENSE3_3A_ALT_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_3A_ALT)
+            }
+
+            context.getString(R.string.ENSE3_1A_ETU_A_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_1A_ETU_A)
+            }
+
+            context.getString(R.string.ENSE3_1A_ETU_B_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_1A_ETU_B)
+            }
+
+            context.getString(R.string.ENSE3_1A_ETU_C_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_1A_ETU_C)
+            }
+
+            context.getString(R.string.ENSE3_1A_ETU_3EUS_2APP_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_1A_ETU_3EUS_2APP)
+            }
+
+            context.getString(R.string.ENSE3_2A_ASI_G1_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_ASI_G1)
+            }
+
+            context.getString(R.string.ENSE3_2A_ASI_G2_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_ASI_G2)
+            }
+
+            context.getString(R.string.ENSE3_2A_ASI_G3_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_ASI_G3)
+            }
+
+            context.getString(R.string.ENSE3_2A_ASI_G4_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_ASI_G4)
+            }
+
+            context.getString(R.string.ENSE3_2A_HOE_S7_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_HOE_S7)
+            }
+
+            context.getString(R.string.ENSE3_2A_HOE_S8_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_HOE_S8)
+            }
+
+            context.getString(R.string.ENSE3_2A_IEE_G1_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_IEE_G1)
+            }
+
+            context.getString(R.string.ENSE3_2A_IEE_G2_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_IEE_G2)
+            }
+
+            context.getString(R.string.ENSE3_2A_IEE_G3_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_IEE_G3)
+            }
+
+            context.getString(R.string.ENSE3_2A_IEE_G4_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_IEE_G4)
+            }
+
+            context.getString(R.string.ENSE3_2A_IEN_G1_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_IEN_G1)
+            }
+
+            context.getString(R.string.ENSE3_2A_IEN_G2_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_IEN_G2)
+            }
+
+            context.getString(R.string.ENSE3_2A_IEN_ECOUL_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_IEN_ECOUL)
+            }
+
+            context.getString(R.string.ENSE3_2A_IEN_STRUCT_MAT_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_IEN_STRUCT_MAT)
+            }
+
+            context.getString(R.string.ENSE3_2A_ME_ETUD_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_ME_ETUD)
+            }
+
+            context.getString(R.string.ENSE3_2A_ME_G1_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_ME_G1)
+            }
+
+            context.getString(R.string.ENSE3_2A_ME_G2_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_ME_G2)
+            }
+
+            context.getString(R.string.ENSE3_2A_ME_G3_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_ME_G3)
+            }
+
+            context.getString(R.string.ENSE3_2A_ME_G4_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_ME_G4)
+            }
+
+            context.getString(R.string.ENSE3_2A_ME_GEXTRATP_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_ME_GEXTRATP)
+            }
+
+            context.getString(R.string.ENSE3_2A_ME_SIMFLU_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_ME_SIMFLU)
+            }
+
+            context.getString(R.string.ENSE3_2A_PARIN_ETU_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_PARIN_ETU)
+            }
+
+            context.getString(R.string.ENSE3_2A_PARCOURSNUM_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_PARCOURSNUM)
+            }
+
+            context.getString(R.string.ENSE3_2A_SEM_G1_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_SEM_G1)
+            }
+
+            context.getString(R.string.ENSE3_2A_SEM_G2_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_SEM_G2)
+            }
+
+            context.getString(R.string.ENSE3_2A_SEM_G3_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_SEM_G3)
+            }
+
+            context.getString(R.string.ENSE3_2A_SEM_G4_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_SEM_G4)
+            }
+
+            context.getString(R.string.ENSE3_2A_SICOM_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_2A_SICOM)
+            }
+
+            context.getString(R.string.ENSE3_3A_ML_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_3A_ML)
+            }
+
+            context.getString(R.string.ENSE3_3A_ASI_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_3A_ASI)
+            }
+
+            context.getString(R.string.ENSE3_3A_HOE_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_3A_HOE)
+            }
+
+            context.getString(R.string.ENSE3_3A_IDP_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_3A_IDP)
+            }
+
+            context.getString(R.string.ENSE3_3A_IEE_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_3A_IEE)
+            }
+
+            context.getString(R.string.ENSE3_3A_IEN_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_3A_IEN)
+            }
+
+            context.getString(R.string.ENSE3_3A_MANINTEC_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_3A_MANINTEC)
+            }
+
+            context.getString(R.string.ENSE3_3A_ME_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_3A_ME)
+            }
+
+            context.getString(R.string.ENSE3_3A_PARIN_ETU_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_3A_PARIN_ETU)
+            }
+
+            context.getString(R.string.ENSE3_3A_PISTE_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_3A_PISTE)
+            }
+
+            context.getString(R.string.ENSE3_3A_SEM_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_3A_SEM)
+            }
+
+            context.getString(R.string.ENSE3_3A_SICOM_name) -> {
+                changeEcole("ENSE3")
+                classeId = context.getString(R.string.ENSE3_3A_SICOM)
+            }
+
+            /*
+             * PHELMA
+             */
+
+            context.getString(R.string.PHELMA_1A_AP_MEP_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_1A_AP_MEP)
+            }
+
+            context.getString(R.string.PHELMA_1A_AP_MT_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_1A_AP_MT)
+            }
+
+            context.getString(R.string.PHELMA_1A_PET_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_1A_PET)
+            }
+
+            context.getString(R.string.PHELMA_1A_PI_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_1A_PI)
+            }
+
+            context.getString(R.string.PHELMA_1A_PMP_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_1A_PMP)
+            }
+
+            context.getString(R.string.PHELMA_2A_AM_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_AM)
+            }
+
+            context.getString(R.string.PHELMA_2A_AP_MT_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_AP_MT)
+            }
+
+            context.getString(R.string.PHELMA_2A_BIOMED_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_BIOMED)
+            }
+
+            context.getString(R.string.PHELMA_2A_EPEE_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_EPEE)
+            }
+
+            context.getString(R.string.PHELMA_2A_GEN_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_GEN)
+            }
+
+            context.getString(R.string.PHELMA_2A_IPHY_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_IPHY)
+            }
+
+            context.getString(R.string.PHELMA_2A_NTK_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_NTK)
+            }
+
+            context.getString(R.string.PHELMA_2A_SEI_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_SEI)
+            }
+
+            context.getString(R.string.PHELMA_2A_SEOC_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_SEOC)
+            }
+
+            context.getString(R.string.PHELMA_2A_SICOM_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_SICOM)
+            }
+
+            context.getString(R.string.PHELMA_2A_SIM_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_2A_SIM)
+            }
+
+            context.getString(R.string.PHELMA_3A_AM_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_AM)
+            }
+
+            context.getString(R.string.PHELMA_3A_AP_MT_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_AP_MT)
+            }
+
+            context.getString(R.string.PHELMA_3A_BIOMED_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_BIOMED)
+            }
+
+            context.getString(R.string.PHELMA_3A_EPEE_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_EPEE)
+            }
+
+            context.getString(R.string.PHELMA_3A_GEN_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_GEN)
+            }
+
+            context.getString(R.string.PHELMA_3A_IPHY_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_IPHY)
+            }
+
+            context.getString(R.string.PHELMA_3A_SEI_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_SEI)
+            }
+
+            context.getString(R.string.PHELMA_3A_SEOC_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_SEOC)
+            }
+
+            context.getString(R.string.PHELMA_3A_SICOM_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_SICOM)
+            }
+
+            context.getString(R.string.PHELMA_3A_SIM_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_SIM)
+            }
+
+            context.getString(R.string.PHELMA_3A_SAC_name) -> {
+                changeEcole("PHELMA")
+                classeId = context.getString(R.string.PHELMA_3A_SAC)
+            }
 
         }
         if ((name != null) or (name != "") or (name != "null")) {

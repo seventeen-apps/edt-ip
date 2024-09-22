@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:title="@string/ENSE3_1A_ALT_name" />
+    <item
+        android:title="@string/ENSE3_2A_ALT_name" />
+    <item
+        android:title="@string/ENSE3_3A_ALT_name" />
+
+    <item
+        android:title="@string/ENSE3_1A_ETU_A_name" />
+    <item
+        android:title="@string/ENSE3_1A_ETU_B_name" />
+    <item
+        android:title="@string/ENSE3_1A_ETU_C_name" />
+    <item
+        android:title="@string/ENSE3_1A_ETU_3EUS_2APP_name" />
+
+    <item
+        android:title="@string/ENSE3_2A_ASI_G1_name" />
+    <item
+        android:title="@string/ENSE3_2A_ASI_G2_name" />
+    <item
+        android:title="@string/ENSE3_2A_ASI_G3_name" />
+    <item
+        android:title="@string/ENSE3_2A_ASI_G4_name" />
+
+    <item
+        android:title="@string/ENSE3_2A_HOE_S7_name" />
+    <item
+        android:title="@string/ENSE3_2A_HOE_S8_name" />
+
+    <item
+        android:title="@string/ENSE3_2A_IEE_G1_name" />
+    <item
+        android:title="@string/ENSE3_2A_IEE_G2_name" />
+    <item
+        android:title="@string/ENSE3_2A_IEE_G3_name" />
+    <item
+        android:title="@string/ENSE3_2A_IEE_G4_name" />
+
+    <item
+        android:title="@string/ENSE3_2A_IEN_G1_name" />
+    <item
+        android:title="@string/ENSE3_2A_IEN_G2_name" />
+    <item
+        android:title="@string/ENSE3_2A_IEN_ECOUL_name" />
+    <item
+        android:title="@string/ENSE3_2A_IEN_STRUCT_MAT_name" />
+
+    <item
+        android:title="@string/ENSE3_2A_ME_ETUD_name" />
+    <item
+        android:title="@string/ENSE3_2A_ME_G1_name" />
+    <item
+        android:title="@string/ENSE3_2A_ME_G2_name" />
+    <item
+        android:title="@string/ENSE3_2A_ME_G3_name" />
+    <item
+        android:title="@string/ENSE3_2A_ME_G4_name" />
+    <item
+        android:title="@string/ENSE3_2A_ME_GEXTRATP_name" />
+    <item
+        android:title="@string/ENSE3_2A_ME_SIMFLU_name" />
+
+    <item
+        android:title="@string/ENSE3_2A_PARIN_ETU_name" />
+    <item
+        android:title="@string/ENSE3_2A_PARCOURSNUM_name" />
+
+    <item
+        android:title="@string/ENSE3_2A_SEM_G1_name" />
+    <item
+        android:title="@string/ENSE3_2A_SEM_G2_name" />
+    <item
+        android:title="@string/ENSE3_2A_SEM_G3_name" />
+    <item
+        android:title="@string/ENSE3_2A_SEM_G4_name" />
+
+    <item
+        android:title="@string/ENSE3_2A_SICOM_name" />
+
+    <item
+        android:title="@string/ENSE3_3A_ML_name" />
+    <item
+        android:title="@string/ENSE3_3A_ASI_name" />
+    <item
+        android:title="@string/ENSE3_3A_HOE_name" />
+    <item
+        android:title="@string/ENSE3_3A_IDP_name" />
+    <item
+        android:title="@string/ENSE3_3A_IEE_name" />
+    <item
+        android:title="@string/ENSE3_3A_IEN_name" />
+    <item
+        android:title="@string/ENSE3_3A_MANINTEC_name" />
+    <item
+        android:title="@string/ENSE3_3A_ME_name" />
+    <item
+        android:title="@string/ENSE3_3A_PARIN_ETU_name" />
+    <item
+        android:title="@string/ENSE3_3A_PISTE_name" />
+    <item
+        android:title="@string/ENSE3_3A_SEM_name" />
+    <item
+        android:title="@string/ENSE3_3A_SICOM_name" />
+
+</menu>
+<!--Copyright (C)  - All Rights Reserved
+
+Copyright details are in the LICENSE.md file located in the root of this Android project.
+Everything written in the LICENSE.md file applies on this file.
+
+Any unauthorized copying, editing, or publishing, even partial, of this file is strictly forbidden.
+
+Owner of this file, its content, and the copyright related : Paul Musial, paul.musial.dev@gmail.com-->

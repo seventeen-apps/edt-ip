@@ -4,9 +4,9 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <!--<item
+        <item
             android:id="@+id/item_ensecube"
-            android:title="Ense3" />-->
+            android:title="@string/nav_ense3" />
         <item
             android:id="@+id/item_ensimag_ingenieurs"
             android:title="@string/nav_ensimag_ingenieurs" />
@@ -16,6 +16,9 @@
         <item
             android:id="@+id/item_esisar"
             android:title="@string/nav_esisar" />
+        <item
+            android:id="@+id/item_phelma"
+            android:title="@string/nav_phelma" />
         <!--<item
             android:id="@+id/item_formation_continue"
             android:title="Formation continue" />
@@ -25,9 +28,6 @@
         <item
             android:id="@+id/item_pagora"
             android:title="Pagora" />
-        <item
-            android:id="@+id/item_phelma"
-            android:title="Phelma" />
         <item
             android:id="@+id/item_polytech"
             android:title="Polytech" />
